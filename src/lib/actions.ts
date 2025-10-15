@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { multiStepTaskExecution } from '@/ai/flows/multi-step-task-execution';
 import { generateRcaReport as generateRcaReportFlow } from '@/ai/flows/rca-report-generation';
 import { proactiveIssueResolution } from '@/ai/flows/proactive-issue-resolution';
+import { taskExecutionSimulation } from '@/ai/flows/task-execution-simulation';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { getFirebaseAdminApp } from '@/lib/firebase-admin';
 import { marked } from 'marked';
