@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // TASKS
+    match /tasks/{taskId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ALERTS
+    match /alerts/{alertId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // SYSTEMS
+    match /systems/{systemId} {
+      allow read: if isSignedIn();
+    }
+  }
+}

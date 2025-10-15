@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache';
 import { multiStepTaskExecution } from '@/ai/flows/multi-step-task-execution';
 import { generateRcaReport as generateRcaReportFlow } from '@/ai/flows/rca-report-generation';
 import { proactiveIssueResolution } from '@/ai/flows/proactive-issue-resolution';
+import { getFirestore } from 'firebase-admin/firestore';
+import { getFirebaseAdminApp } from '@/lib/firebase-admin';
 
 export interface GoalFormState {
   message: string;
@@ -13,15 +15,19 @@ export interface GoalFormState {
 }
 
 // Simulate a database call to get a task
-const getTaskLogs = async (taskId: string) => {
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return `Task ID: ${taskId}
-Log 1: Server discovery initiated. Found 10 servers.
-Log 2: Patching server-01... Success.
-Log 3: Patching server-02... Success.
-Log 4: Patching server-03... Failed. Connection timeout.
-Log 5: Retrying patch on server-03... Success.
-Log 6: All servers patched. Verification complete.`;
+const getTaskLogs = async (taskId: string): Promise<string> => {
+    getFirebaseAdminApp();
+    const db = getFirestore();
+    const taskDoc = await db.collection('tasks').doc(taskId).get();
+    if (!taskDoc.exists) {
+        return `No task found with ID: ${taskId}`;
+    }
+    const task = taskDoc.data();
+    const logs = task?.steps
+        .map((step: any, index: number) => `Step ${index + 1} (${step.status}): ${step.description}\nLog: ${step.log || 'No log available'}`)
+        .join('\n');
+
+    return `Task ID: ${taskId}\nGoal: ${task?.goal}\n\n${logs}`;
 };
 
 
@@ -41,25 +47,16 @@ export async function submitGoal(
   }
 
   try {
-    // This is a mock AI call. In a real app, you'd use the Genkit flow.
-    const response = await multiStepTaskExecution({
-      goal,
-      systemContext: { 'info': 'mock system context' },
-      availableTools: ['patch_server', 'create_jira_ticket', 'send_slack_alert', 'reboot_vm'],
-    });
-
-    console.log('AI Response:', response);
-
-    // Here you would save the new task to your database.
-    // For this demo, we just log it and revalidate the path.
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await multiStepTaskExecution({ goal });
+    console.log('AI flow `multiStepTaskExecution` invoked.');
 
     revalidatePath('/');
     return { message: 'Successfully created task.' };
   } catch (error) {
     console.error(error);
+    const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
     return {
-      message: 'An unexpected error occurred.',
+      message: `Failed to create task: ${errorMessage}`,
       errors: {},
     };
   }
@@ -86,8 +83,7 @@ export async function resolveAlert(alertTitle: string) {
         
         console.log(`Generated resolution goal: ${goal}`);
         
-        // Simulate creating a new task from this goal
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await multiStepTaskExecution({ goal });
 
         revalidatePath('/');
 

@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { FileText, CheckCircle2, XCircle, Loader, ChevronDown, ChevronUp, Bot } from 'lucide-react';
 
-import { type Task, type Step } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { RcaReportDialog } from './rca-report-dialog';
+import { Task } from '@/lib/firestore-types';
 
 const statusIcons = {
   'in-progress': <Loader className="h-4 w-4 animate-spin text-blue-500" />,

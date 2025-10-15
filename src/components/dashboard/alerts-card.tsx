@@ -6,10 +6,13 @@ import { formatDistanceToNow } from 'date-fns';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { type Alert } from '@/lib/data';
 import { resolveAlert } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { useCollection, useFirestore } from '@/firebase';
+import { Alert } from '@/lib/firestore-types';
+import { collection, query, orderBy } from 'firebase/firestore';
+import { Skeleton } from '../ui/skeleton';
 
 const severityIcons = {
   high: <AlertTriangle className="h-5 w-5 text-red-500" />,
@@ -48,7 +51,31 @@ function ResolveButton({ alertTitle }: { alertTitle: string }) {
   );
 }
 
-export function AlertsCard({ alerts }: { alerts: Alert[] }) {
+function AlertsListSkeleton() {
+  return (
+    <div className="space-y-4">
+      {[...Array(3)].map((_, i) => (
+        <div key={i} className="flex items-start justify-between">
+          <div className="flex items-start gap-3">
+            <Skeleton className="h-5 w-5 rounded-full" />
+            <div className="space-y-1">
+              <Skeleton className="h-5 w-48" />
+              <Skeleton className="h-4 w-64" />
+              <Skeleton className="h-3 w-24 mt-1" />
+            </div>
+          </div>
+          <Skeleton className="h-9 w-32" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function AlertsCard() {
+  const firestore = useFirestore();
+  const alertsQuery = firestore ? query(collection(firestore, 'alerts'), orderBy('timestamp', 'desc')) : null;
+  const { data: alerts, loading } = useCollection<Alert>(alertsQuery);
+
   return (
     <Card className="col-span-1 lg:col-span-2">
       <CardHeader>
@@ -61,23 +88,27 @@ export function AlertsCard({ alerts }: { alerts: Alert[] }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {alerts.map((alert) => (
-            <div key={alert.id} className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                {severityIcons[alert.severity]}
-                <div>
-                  <p className="font-semibold">{alert.title}</p>
-                  <p className="text-sm text-muted-foreground">{alert.description}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {formatDistanceToNow(new Date(alert.timestamp), { addSuffix: true })}
-                  </p>
+        {loading ? (
+          <AlertsListSkeleton />
+        ) : (
+          <div className="space-y-4">
+            {alerts?.map((alert) => (
+              <div key={alert.id} className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  {severityIcons[alert.severity]}
+                  <div>
+                    <p className="font-semibold">{alert.title}</p>
+                    <p className="text-sm text-muted-foreground">{alert.description}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {formatDistanceToNow(alert.timestamp.toDate(), { addSuffix: true })}
+                    </p>
+                  </div>
                 </div>
+                <ResolveButton alertTitle={alert.title} />
               </div>
-              <ResolveButton alertTitle={alert.title} />
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

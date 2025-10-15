@@ -1,0 +1,143 @@
+{
+  "entities": {
+    "Task": {
+      "title": "Task",
+      "description": "Represents a task to be completed by the agent.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the task."
+        },
+        "goal": {
+          "type": "string",
+          "description": "The high-level goal of the task."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["in-progress", "completed", "failed"],
+          "description": "The current status of the task."
+        },
+        "progress": {
+          "type": "number",
+          "description": "The progress of the task, from 0 to 100."
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/entities/Step"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the task was created."
+        }
+      },
+      "required": ["id", "goal", "status", "progress", "steps", "createdAt"]
+    },
+    "Step": {
+      "title": "Step",
+      "description": "Represents a single step within a task.",
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A description of the step."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "completed", "failed"],
+          "description": "The status of the step."
+        },
+        "log": {
+          "type": "string",
+          "description": "A log message associated with the step's execution."
+        }
+      },
+      "required": ["description", "status"]
+    },
+    "Alert": {
+      "title": "Alert",
+      "description": "Represents a system alert.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the alert."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the alert."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the alert."
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["high", "medium", "low"],
+          "description": "The severity of the alert."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the alert occurred."
+        }
+      },
+      "required": ["id", "title", "description", "severity", "timestamp"]
+    },
+    "System": {
+      "title": "System",
+      "description": "Represents an IT system being monitored.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the system."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the system."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["online", "offline", "degraded"],
+          "description": "The current status of the system."
+        },
+        "cpuUsage": {
+          "type": "number",
+          "description": "Current CPU usage percentage."
+        },
+        "memoryUsage": {
+          "type": "number",
+          "description": "Current memory usage percentage."
+        }
+      },
+      "required": ["id", "name", "status", "cpuUsage", "memoryUsage"]
+    }
+  },
+  "auth": {
+    "providers": ["anonymous"]
+  },
+  "firestore": {
+    "/tasks/{taskId}": {
+      "schema": {
+        "$ref": "#/entities/Task"
+      },
+      "description": "Stores individual tasks."
+    },
+    "/alerts/{alertId}": {
+      "schema": {
+        "$ref": "#/entities/Alert"
+      },
+      "description": "Stores system alerts."
+    },
+    "/systems/{systemId}": {
+      "schema": {
+        "$ref": "#/entities/System"
+      },
+      "description": "Stores information about IT systems."
+    }
+  }
+}

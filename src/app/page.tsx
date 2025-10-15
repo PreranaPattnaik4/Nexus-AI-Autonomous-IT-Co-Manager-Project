@@ -4,12 +4,8 @@ import { GoalForm } from '@/components/dashboard/goal-form';
 import { TasksList } from '@/components/dashboard/tasks-list';
 import { MetricsCharts } from '@/components/dashboard/metrics-charts';
 import { AlertsCard } from '@/components/dashboard/alerts-card';
-import { initialAlerts, type Alert } from '@/lib/data';
 
 export default function DashboardPage() {
-  // In a real app, this would be fetched from a database
-  const alerts: Alert[] = initialAlerts;
-
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <AppSidebar />
@@ -20,7 +16,7 @@ export default function DashboardPage() {
             <GoalForm />
             <TasksList />
             <MetricsCharts />
-            <AlertsCard alerts={alerts} />
+            <AlertsCard />
           </div>
         </main>
       </div>
