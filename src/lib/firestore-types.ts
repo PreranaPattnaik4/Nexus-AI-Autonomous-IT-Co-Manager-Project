@@ -34,3 +34,10 @@ export type System = {
     cpuUsage: number;
     memoryUsage: number;
 };
+
+export type Report = {
+  id: string;
+  taskId: string;
+  report: string;
+  generatedAt: Timestamp;
+}

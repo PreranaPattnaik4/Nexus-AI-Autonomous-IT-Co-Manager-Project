@@ -115,6 +115,31 @@
         }
       },
       "required": ["id", "name", "status", "cpuUsage", "memoryUsage"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Represents a Root Cause Analysis (RCA) report for a task.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier for the report."
+        },
+        "taskId": {
+          "type": "string",
+          "description": "The ID of the task this report is for."
+        },
+        "report": {
+          "type": "string",
+          "description": "The full content of the RCA report."
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the report was generated."
+        }
+      },
+      "required": ["id", "taskId", "report", "generatedAt"]
     }
   },
   "auth": {
@@ -138,6 +163,12 @@
         "$ref": "#/entities/System"
       },
       "description": "Stores information about IT systems."
+    },
+    "/reports/{reportId}": {
+      "schema": {
+        "$ref": "#/entities/Report"
+      },
+      "description": "Stores RCA reports."
     }
   }
 }

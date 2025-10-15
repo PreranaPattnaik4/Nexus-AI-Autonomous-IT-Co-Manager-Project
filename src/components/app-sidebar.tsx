@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from './icons';
 
 const navItems = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/tasks', label: 'Tasks', icon: ListChecks },
   { href: '/reports', label: 'Reports', icon: FileText },
   { href: '/settings', label: 'Settings', icon: Settings },
