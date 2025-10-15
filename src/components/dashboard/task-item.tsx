@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { FileText, CheckCircle2, XCircle, Loader, ChevronDown, ChevronUp, Bot } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { RcaReportDialog } from './rca-report-dialog';
 import { Task } from '@/lib/firestore-types';
+import { retryTask } from '@/lib/actions';
+import { useToast } from '@/hooks/use-toast';
 
 const statusIcons = {
   'in-progress': <Loader className="h-4 w-4 animate-spin text-blue-500" />,
@@ -28,6 +30,36 @@ function StepLog({ log }: { log: string }) {
         <div className="mt-1 text-xs text-muted-foreground pl-5 border-l border-dashed border-border ml-1.5 font-code bg-muted/50 p-2 rounded-md">
             {log}
         </div>
+    );
+}
+
+function RetryButton({ taskId }: { taskId: string }) {
+    const [isPending, startTransition] = useTransition();
+    const { toast } = useToast();
+
+    const handleRetry = () => {
+        startTransition(async () => {
+            const result = await retryTask(taskId);
+            if (result.success) {
+                toast({
+                    title: 'Task Retry Initiated',
+                    description: result.message,
+                });
+            } else {
+                toast({
+                    title: 'Retry Failed',
+                    description: result.message,
+                    variant: 'destructive',
+                });
+            }
+        });
+    };
+
+    return (
+        <Button variant="outline" size="sm" onClick={handleRetry} disabled={isPending}>
+            <Bot className={cn('mr-2 h-4 w-4', isPending && 'animate-spin')} />
+            {isPending ? 'Retrying...' : 'Retry with AI'}
+        </Button>
     );
 }
 
@@ -71,12 +103,7 @@ export function TaskItem({ task }: { task: Task }) {
             </CollapsibleTrigger>
             {isFinished && <RcaReportDialog taskId={task.id} />}
           </div>
-          {task.status === 'failed' && (
-              <Button variant="outline" size="sm">
-                  <Bot className="mr-2 h-4 w-4" />
-                  Retry with AI
-              </Button>
-          )}
+          {task.status === 'failed' && <RetryButton taskId={task.id} />}
         </div>
       </div>
       <CollapsibleContent className="mt-4 space-y-3 pl-4">

@@ -11,6 +11,8 @@ import {z} from 'genkit';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getFirebaseAdminApp } from '@/lib/firebase-admin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { taskExecutionSimulation } from './task-execution-simulation';
+import { initialAlerts, initialSystems } from '@/lib/data';
 
 // Define the input schema for the multiStepTaskExecution flow
 const MultiStepTaskExecutionInputSchema = z.object({
@@ -66,6 +68,34 @@ Example Output:
 Your Task: Generate the JSON array of steps required to achieve the goal.`, 
 });
 
+async function maybePopulateInitialData(db: FirebaseFirestore.Firestore) {
+    const systemsCollection = db.collection('systems');
+    const alertsCollection = db.collection('alerts');
+
+    const systemsSnapshot = await systemsCollection.limit(1).get();
+    if (systemsSnapshot.empty) {
+        console.log('Populating initial systems data...');
+        const batch = db.batch();
+        initialSystems.forEach(system => {
+            const docRef = systemsCollection.doc();
+            batch.set(docRef, system);
+        });
+        await batch.commit();
+    }
+
+    const alertsSnapshot = await alertsCollection.limit(1).get();
+    if (alertsSnapshot.empty) {
+        console.log('Populating initial alerts data...');
+        const batch = db.batch();
+        initialAlerts.forEach(alert => {
+            const docRef = alertsCollection.doc();
+            batch.set(docRef, { ...alert, timestamp: FieldValue.serverTimestamp() });
+        });
+        await batch.commit();
+    }
+}
+
+
 // Define the Genkit flow for multi-step task execution
 const multiStepTaskExecutionFlow = ai.defineFlow(
   {
@@ -76,6 +106,8 @@ const multiStepTaskExecutionFlow = ai.defineFlow(
   async (input) => {
     getFirebaseAdminApp();
     const db = getFirestore();
+
+    await maybePopulateInitialData(db);
 
     const systemsSnapshot = await db.collection('systems').get();
     const systems = systemsSnapshot.docs.map(doc => doc.data());
@@ -100,10 +132,13 @@ const multiStepTaskExecutionFlow = ai.defineFlow(
       goal: input.goal,
       status: 'in-progress',
       progress: 0,
-      steps: output.steps.map(step => ({ ...step, status: 'pending' })),
+      steps: output.steps.map(step => ({ ...step, status: 'pending', log: '' })),
       createdAt: FieldValue.serverTimestamp(),
     };
 
     await db.collection('tasks').doc(taskId).set(newTask);
+
+    // Don't wait for the simulation to finish
+    taskExecutionSimulation({ taskId });
   }
 );
