@@ -43,7 +43,12 @@ function StatCard({
 
 export function TaskStats() {
   const firestore = useFirestore();
-  const tasksQuery = firestore ? query(collection(firestore, 'tasks')) : null;
+
+  const tasksQuery = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'tasks'));
+  }, [firestore]);
+
   const { data: tasks, loading } = useCollection<Task>(tasksQuery);
 
   const stats = useMemo(() => {

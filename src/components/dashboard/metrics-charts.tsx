@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
@@ -35,7 +36,12 @@ const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-4
 
 export function MetricsCharts() {
   const firestore = useFirestore();
-  const systemsQuery = firestore ? query(collection(firestore, 'systems')) : null;
+
+  const systemsQuery = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'systems'));
+  }, [firestore]);
+
   const { data: systems, loading } = useCollection<System>(systemsQuery);
 
   const cpuData = systems?.map(system => ({ name: system.name, usage: system.cpuUsage, time: new Date().toLocaleTimeString() })).slice(0, 7) || [];

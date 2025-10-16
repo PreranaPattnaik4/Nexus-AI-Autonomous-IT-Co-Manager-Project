@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useTransition, useMemo } from 'react';
 import { AlertTriangle, Bot, CheckCircle, Info } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -73,7 +73,12 @@ function AlertsListSkeleton() {
 
 export function AlertsCard() {
   const firestore = useFirestore();
-  const alertsQuery = firestore ? query(collection(firestore, 'alerts'), orderBy('timestamp', 'desc')) : null;
+
+  const alertsQuery = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'alerts'), orderBy('timestamp', 'desc'));
+  }, [firestore]);
+
   const { data: alerts, loading } = useCollection<Alert>(alertsQuery);
 
   return (
@@ -101,7 +106,7 @@ export function AlertsCard() {
                       <p className="font-semibold">{alert.title}</p>
                       <p className="text-sm text-muted-foreground">{alert.description}</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {formatDistanceToNow(alert.timestamp.toDate(), { addSuffix: true })}
+                        {alert.timestamp && formatDistanceToNow(alert.timestamp.toDate(), { addSuffix: true })}
                       </p>
                     </div>
                   </div>

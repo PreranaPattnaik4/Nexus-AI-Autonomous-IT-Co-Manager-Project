@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FileText } from 'lucide-react';
 import { useCollection, useFirestore } from '@/firebase';
@@ -30,7 +31,12 @@ function ReportsListSkeleton() {
 
 export default function ReportsPage() {
   const firestore = useFirestore();
-  const reportsQuery = firestore ? query(collection(firestore, 'reports'), orderBy('generatedAt', 'desc')) : null;
+  
+  const reportsQuery = useMemo(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'reports'), orderBy('generatedAt', 'desc'));
+  }, [firestore]);
+
   const { data: reports, loading } = useCollection<Report>(reportsQuery);
 
   return (
@@ -56,7 +62,7 @@ export default function ReportsPage() {
                     <div className="flex flex-col items-start text-left">
                        <p className="font-semibold">Report for Task: {report.taskId}</p>
                        <p className="text-xs text-muted-foreground mt-1">
-                          Generated on {format(report.generatedAt.toDate(), 'PPP p')}
+                          {report.generatedAt && format(report.generatedAt.toDate(), 'PPP p')}
                        </p>
                     </div>
                   </AccordionTrigger>
