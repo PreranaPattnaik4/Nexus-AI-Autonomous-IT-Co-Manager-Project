@@ -30,7 +30,7 @@ function TasksListSkeleton() {
 const pageConfig = {
   all: {
     icon: <ListChecks className="h-5 w-5" />,
-    title: 'All Tasks',
+    title: 'Recent Tasks',
     description: "An overview of all the agent's tasks.",
   },
   'in-progress': {
@@ -56,29 +56,31 @@ export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'co
   
   const tasksQuery = useMemo(() => {
     if (!firestore) return null;
-    const baseQuery = collection(firestore, 'tasks');
+    let q = query(collection(firestore, 'tasks'), orderBy('createdAt', 'desc'));
     if (statusFilter) {
-      return query(baseQuery, where('status', '==', statusFilter), orderBy('createdAt', 'desc'));
+      q = query(q, where('status', '==', statusFilter));
     }
-    return query(baseQuery, orderBy('createdAt', 'desc'));
+    return q;
   }, [firestore, statusFilter]);
 
   const { data: tasks, loading } = useCollection<Task>(tasksQuery);
-  const { icon, title, description } = pageConfig[statusFilter || 'all'];
+  const config = pageConfig[statusFilter || 'all'];
+
+  const scrollAreaHeight = statusFilter ? 'h-[calc(100vh-220px)]' : 'h-56';
 
   return (
     <Card className="col-span-1 lg:col-span-3">
       <CardHeader>
         <div className="flex items-center gap-2">
-          {icon}
-          <CardTitle>{title}</CardTitle>
+          {config.icon}
+          <CardTitle>{config.title}</CardTitle>
         </div>
         <CardDescription>
-          {description}
+          {config.description}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[calc(100vh-220px)]">
+        <ScrollArea className={scrollAreaHeight}>
           {loading ? (
              <TasksListSkeleton />
           ) : (

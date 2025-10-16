@@ -13,6 +13,7 @@ import { useCollection, useFirestore } from '@/firebase';
 import { Alert } from '@/lib/firestore-types';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '../ui/skeleton';
+import { ScrollArea } from '../ui/scroll-area';
 
 const severityIcons = {
   high: <AlertTriangle className="h-5 w-5 text-red-500" />,
@@ -82,7 +83,7 @@ export function AlertsCard() {
   const { data: alerts, loading } = useCollection<Alert>(alertsQuery);
 
   return (
-    <Card className="col-span-1 lg:col-span-2">
+    <Card className="h-full">
       <CardHeader>
         <div className="flex items-center gap-2">
           <AlertTriangle className="h-5 w-5" />
@@ -93,31 +94,33 @@ export function AlertsCard() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {loading ? (
-          <AlertsListSkeleton />
-        ) : (
-          <div className="space-y-4">
-            {alerts && alerts?.length > 0 ? (
-              alerts.map((alert) => (
-                <div key={alert.id} className="flex items-start justify-between">
-                  <div className="flex items-start gap-3">
-                    {severityIcons[alert.severity]}
-                    <div>
-                      <h3 className="text-base font-semibold">{alert.title}</h3>
-                      <p className="text-sm text-muted-foreground">{alert.description}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {alert.timestamp && formatDistanceToNow(alert.timestamp.toDate(), { addSuffix: true })}
-                      </p>
+        <ScrollArea className="h-56">
+          {loading ? (
+            <AlertsListSkeleton />
+          ) : (
+            <div className="space-y-4">
+              {alerts && alerts?.length > 0 ? (
+                alerts.map((alert) => (
+                  <div key={alert.id} className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
+                      {severityIcons[alert.severity]}
+                      <div>
+                        <h3 className="text-sm font-semibold leading-tight">{alert.title}</h3>
+                        <p className="text-xs text-muted-foreground">{alert.description}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {alert.timestamp && formatDistanceToNow(alert.timestamp.toDate(), { addSuffix: true })}
+                        </p>
+                      </div>
                     </div>
+                    <ResolveButton alertTitle={alert.title} />
                   </div>
-                  <ResolveButton alertTitle={alert.title} />
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-sm text-muted-foreground py-4">No active alerts.</p>
-            )}
-          </div>
-        )}
+                ))
+              ) : (
+                <p className="text-center text-sm text-muted-foreground py-4">No active alerts.</p>
+              )}
+            </div>
+          )}
+        </ScrollArea>
       </CardContent>
     </Card>
   );
