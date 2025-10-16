@@ -1,5 +1,4 @@
-import { System, Alert, Task, Step } from '@/lib/firestore-types';
-import { Timestamp } from 'firebase/firestore';
+import { System, Alert } from '@/lib/firestore-types';
 
 export const initialSystems: Omit<System, 'id'>[] = [
     {

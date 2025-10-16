@@ -26,7 +26,7 @@ export function RcaReportDialog({ taskId }: { taskId: string }) {
   };
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={(open) => !open && setReport('')}>
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm" onClick={handleOpen}>
           <FileText className="mr-2 h-4 w-4" />
@@ -45,7 +45,7 @@ export function RcaReportDialog({ taskId }: { taskId: string }) {
               <p className="ml-4">Generating report...</p>
             </div>
           ) : (
-            <div dangerouslySetInnerHTML={{ __html: report.replace(/\n/g, '<br />') }} />
+            <div dangerouslySetInnerHTML={{ __html: report }} />
           )}
         </div>
       </DialogContent>

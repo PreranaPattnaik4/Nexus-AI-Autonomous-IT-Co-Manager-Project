@@ -78,7 +78,7 @@ async function maybePopulateInitialData(db: FirebaseFirestore.Firestore) {
         const batch = db.batch();
         initialSystems.forEach(system => {
             const docRef = systemsCollection.doc();
-            batch.set(docRef, system);
+            batch.set(docRef, {...system, id: docRef.id});
         });
         await batch.commit();
     }
@@ -89,7 +89,7 @@ async function maybePopulateInitialData(db: FirebaseFirestore.Firestore) {
         const batch = db.batch();
         initialAlerts.forEach(alert => {
             const docRef = alertsCollection.doc();
-            batch.set(docRef, { ...alert, timestamp: new Date() });
+            batch.set(docRef, { ...alert, id: docRef.id, timestamp: new Date() });
         });
         await batch.commit();
     }

@@ -14,6 +14,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { marked } from 'marked';
 
 
 function ReportsListSkeleton() {
