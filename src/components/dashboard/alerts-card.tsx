@@ -92,21 +92,25 @@ export function AlertsCard() {
           <AlertsListSkeleton />
         ) : (
           <div className="space-y-4">
-            {alerts?.map((alert) => (
-              <div key={alert.id} className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  {severityIcons[alert.severity]}
-                  <div>
-                    <p className="font-semibold">{alert.title}</p>
-                    <p className="text-sm text-muted-foreground">{alert.description}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {formatDistanceToNow(alert.timestamp.toDate(), { addSuffix: true })}
-                    </p>
+            {alerts && alerts?.length > 0 ? (
+              alerts.map((alert) => (
+                <div key={alert.id} className="flex items-start justify-between">
+                  <div className="flex items-start gap-3">
+                    {severityIcons[alert.severity]}
+                    <div>
+                      <p className="font-semibold">{alert.title}</p>
+                      <p className="text-sm text-muted-foreground">{alert.description}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {formatDistanceToNow(alert.timestamp.toDate(), { addSuffix: true })}
+                      </p>
+                    </div>
                   </div>
+                  <ResolveButton alertTitle={alert.title} />
                 </div>
-                <ResolveButton alertTitle={alert.title} />
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-center text-sm text-muted-foreground py-4">No active alerts.</p>
+            )}
           </div>
         )}
       </CardContent>

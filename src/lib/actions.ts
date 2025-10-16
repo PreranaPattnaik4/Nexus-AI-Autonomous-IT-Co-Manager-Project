@@ -109,7 +109,8 @@ export async function resolveAlert(alertTitle: string) {
         
         console.log(`Generated resolution goal: ${goal}`);
         
-        await multiStepTaskExecution({ goal });
+        // Don't wait for this to finish, let it run in the background
+        multiStepTaskExecution({ goal });
 
         revalidatePath('/');
 

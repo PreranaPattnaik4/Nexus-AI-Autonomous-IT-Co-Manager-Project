@@ -101,7 +101,7 @@ export function TaskItem({ task }: { task: Task }) {
                 <span className="ml-2">Details</span>
               </Button>
             </CollapsibleTrigger>
-            {isFinished && <RcaReportDialog taskId={task.id} />}
+            {isFinished && task.id && <RcaReportDialog taskId={task.id} />}
           </div>
           {task.status === 'failed' && <RetryButton taskId={task.id} />}
         </div>
