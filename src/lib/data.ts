@@ -40,6 +40,11 @@ export const initialAlerts: Omit<Alert, 'id' | 'timestamp'>[] = [
         severity: 'high',
     },
     {
+        title: 'Predictive Alert: CPU Overload Risk',
+        description: 'CPU usage trend on Web Server 2 indicates potential overload in the next 2 hours.',
+        severity: 'medium',
+    },
+    {
         title: 'DB Server Slow Queries',
         description: 'Multiple slow queries detected on the main database.',
         severity: 'medium',
