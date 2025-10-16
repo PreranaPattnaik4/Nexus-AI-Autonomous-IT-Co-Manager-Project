@@ -43,3 +43,10 @@ export type Report = {
   report: string;
   generatedAt: Timestamp;
 }
+
+export type ChatMessage = {
+    id: string;
+    role: 'user' | 'model';
+    content: string;
+    createdAt: Date;
+};

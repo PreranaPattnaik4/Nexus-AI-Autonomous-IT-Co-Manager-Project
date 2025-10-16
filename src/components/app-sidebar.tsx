@@ -12,6 +12,7 @@ import {
   CheckCheck,
   XCircle,
   Loader,
+  MessageCircle,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -21,6 +22,7 @@ import { Logo } from './icons';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/chat', label: 'Chat', icon: MessageCircle },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
   { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader },
   { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck },

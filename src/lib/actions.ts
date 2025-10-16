@@ -7,7 +7,11 @@ import { proactiveIssueResolution } from '@/ai/flows/proactive-issue-resolution'
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { getFirebaseAdminApp } from '@/lib/firebase-admin';
 import { marked } from 'marked';
-import { Step } from './firestore-types';
+import { Step, ChatMessage } from './firestore-types';
+import { nanoid } from 'nanoid';
+import { experimental_streamText } from 'ai';
+import { conversationalRca } from '@/ai/flows/conversational-rca';
+import { streamText } from 'genkit/next';
 
 export interface GoalFormState {
   message: string;
@@ -160,5 +164,49 @@ export async function retryTask(taskId: string, originalGoal: string) {
     } catch (error) {
         console.error(`Error retrying task ${taskId}:`, error);
         return { success: false, message: 'Failed to initiate AI self-healing.' };
+    }
+}
+
+export async function submitChatMessage(
+  prevState: ChatMessage | null,
+  formData: FormData,
+): Promise<ChatMessage | null> {
+    const messageContent = formData.get('message') as string;
+
+    if (!messageContent) {
+        return null;
+    }
+
+    const userMessage: ChatMessage = {
+        id: nanoid(),
+        role: 'user',
+        content: messageContent,
+        createdAt: new Date(),
+    };
+
+    // For now, we are not saving the chat history to keep the demo simple.
+    // In a real app, you would save userMessage to Firestore here.
+
+    try {
+        const { answer } = await conversationalRca({ query: messageContent });
+
+        const aiMessage: ChatMessage = {
+            id: nanoid(),
+            role: 'model',
+            content: answer,
+            createdAt: new Date(),
+        };
+        // You would also save aiMessage to Firestore here.
+        return aiMessage;
+
+    } catch (error) {
+        console.error("Error in conversational RCA flow:", error);
+        const errorMessage: ChatMessage = {
+            id: nanoid(),
+            role: 'model',
+            content: "I'm sorry, something went wrong while I was thinking. Please try again.",
+            createdAt: new Date(),
+        };
+        return errorMessage;
     }
 }
