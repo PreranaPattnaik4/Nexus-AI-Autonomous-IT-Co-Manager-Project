@@ -10,10 +10,18 @@ export default function DashboardPage() {
       <div className="col-span-1 lg:col-span-5">
         <TaskStats />
       </div>
-      <GoalForm />
-      <TasksList />
-      <MetricsCharts />
-      <AlertsCard />
+      <div className="col-span-1 lg:col-span-2">
+        <GoalForm />
+      </div>
+      <div className="col-span-1 lg:col-span-3">
+        <TasksList />
+      </div>
+      <div className="col-span-1 lg:col-span-3">
+        <MetricsCharts />
+      </div>
+       <div className="col-span-1 lg:col-span-2">
+        <AlertsCard />
+      </div>
     </div>
   );
 }
