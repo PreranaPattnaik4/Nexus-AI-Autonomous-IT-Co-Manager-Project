@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Bot, Search, Play, CheckCheck, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -34,8 +35,8 @@ export function GeminiThinkingMap() {
       </CardHeader>
       <CardContent className="flex items-start justify-center pt-2">
         {thinkingSteps.map((step, index) => (
-          <>
-            <div key={step.name} className="flex flex-col items-center text-center w-24">
+          <React.Fragment key={step.name}>
+            <div className="flex flex-col items-center text-center w-24">
               <div className="flex items-center justify-center h-12 w-12 rounded-full bg-secondary text-secondary-foreground mb-2">
                 <step.icon className="h-6 w-6" />
               </div>
@@ -43,7 +44,7 @@ export function GeminiThinkingMap() {
               <p className="text-xs text-muted-foreground mt-1 hidden md:block">{step.description}</p>
             </div>
             <Connector isLast={index === thinkingSteps.length - 1} />
-          </>
+          </React.Fragment>
         ))}
       </CardContent>
     </Card>
