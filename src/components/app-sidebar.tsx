@@ -22,8 +22,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from './icons';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/chat', label: 'Chat', icon: MessageCircle },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/console', label: 'Command Console', icon: Terminal },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
   { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader },
