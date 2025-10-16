@@ -12,6 +12,7 @@ import { RcaReportDialog } from './rca-report-dialog';
 import { Task } from '@/lib/firestore-types';
 import { retryTask } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
+import { CardTitle } from '../ui/card';
 
 const statusIcons = {
   'in-progress': <Loader className="h-4 w-4 animate-spin text-blue-500" />,
@@ -72,7 +73,7 @@ export function TaskItem({ task }: { task: Task }) {
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <p className="font-medium truncate pr-4">{task.goal}</p>
+            <CardTitle className="text-base font-medium truncate pr-4">{task.goal}</CardTitle>
           <div className="flex items-center space-x-2 flex-shrink-0">
             {statusIcon}
             <Badge

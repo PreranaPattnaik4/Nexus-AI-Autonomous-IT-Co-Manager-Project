@@ -60,7 +60,7 @@ export default function ReportsPage() {
                 <AccordionItem value={report.id} key={report.id}>
                   <AccordionTrigger>
                     <div className="flex flex-col items-start text-left">
-                       <p className="font-semibold">Report for Task: {report.taskId}</p>
+                       <CardTitle className="text-base font-semibold">Report for Task: {report.taskId}</CardTitle>
                        <p className="text-xs text-muted-foreground mt-1">
                           {report.generatedAt && format(report.generatedAt.toDate(), 'PPP p')}
                        </p>
