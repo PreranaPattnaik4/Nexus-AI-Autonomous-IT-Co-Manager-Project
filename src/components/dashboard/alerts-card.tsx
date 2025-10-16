@@ -103,7 +103,7 @@ export function AlertsCard() {
                   <div className="flex items-start gap-3">
                     {severityIcons[alert.severity]}
                     <div>
-                      <CardTitle className="text-base font-semibold">{alert.title}</CardTitle>
+                      <h3 className="text-base font-semibold">{alert.title}</h3>
                       <p className="text-sm text-muted-foreground">{alert.description}</p>
                       <p className="text-xs text-muted-foreground mt-1">
                         {alert.timestamp && formatDistanceToNow(alert.timestamp.toDate(), { addSuffix: true })}

@@ -12,7 +12,6 @@ import { RcaReportDialog } from './rca-report-dialog';
 import { Task } from '@/lib/firestore-types';
 import { retryTask } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
-import { CardTitle } from '../ui/card';
 
 const statusIcons = {
   'in-progress': <Loader className="h-4 w-4 animate-spin text-blue-500" />,
@@ -28,7 +27,7 @@ const stepStatusIcons = {
 
 function StepLog({ log }: { log: string }) {
     return (
-        <div className="mt-1 text-xs text-muted-foreground pl-5 border-l border-dashed border-border ml-1.5 font-code bg-muted/50 p-2 rounded-md">
+        <div className="mt-1 text-xs text-muted-foreground pl-5 border-l border-dashed border-border ml-1.5 font-mono bg-muted/50 p-2 rounded-md">
             {log}
         </div>
     );
@@ -73,7 +72,7 @@ export function TaskItem({ task }: { task: Task }) {
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-            <CardTitle className="text-base font-medium truncate pr-4">{task.goal}</CardTitle>
+            <h3 className="text-base font-medium truncate pr-4">{task.goal}</h3>
           <div className="flex items-center space-x-2 flex-shrink-0">
             {statusIcon}
             <Badge

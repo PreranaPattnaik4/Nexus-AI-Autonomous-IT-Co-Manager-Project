@@ -87,7 +87,7 @@ export async function generateRcaReport(taskId: string): Promise<string> {
         const taskLogs = await getTaskLogs(taskId);
         const { report } = await generateRcaReportFlow({ taskLogs });
         
-        const htmlReport = marked(report);
+        const htmlReport = await marked(report);
         
         await saveReportToFirestore(taskId, htmlReport);
         revalidatePath('/reports');

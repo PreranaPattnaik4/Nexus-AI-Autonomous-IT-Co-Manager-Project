@@ -22,7 +22,7 @@ import { Logo } from './icons';
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
-  { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader, className: 'animate-spin' },
+  { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader },
   { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck },
   { href: '/tasks?status=failed', label: 'Failed', icon: XCircle },
   { href: '/reports', label: 'Reports', icon: FileText },
@@ -40,19 +40,25 @@ export function AppSidebar() {
         <h1 className="ml-2 text-xl font-bold tracking-tight">Nexus AI</h1>
       </div>
       <nav className="flex-1 px-4 py-4 space-y-2">
-        {navItems.map((item) => (
-          <Button
-            key={item.href}
-            variant={pathname === item.href ? 'secondary' : 'ghost'}
-            className="w-full justify-start"
-            asChild
-          >
-            <Link href={item.href}>
-              <item.icon className={cn("mr-2 h-4 w-4", item.className)} />
-              {item.label}
-            </Link>
-          </Button>
-        ))}
+        {navItems.map((item) => {
+          const isActive = item.href.includes('?') 
+              ? pathname + '?' + (new URLSearchParams(window.location.search)).get('status') === item.href
+              : pathname === item.href;
+          
+          return (
+            <Button
+              key={item.href}
+              variant={isActive ? 'secondary' : 'ghost'}
+              className="w-full justify-start"
+              asChild
+            >
+              <Link href={item.href}>
+                <item.icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && 'animate-spin')} />
+                {item.label}
+              </Link>
+            </Button>
+          )
+        })}
       </nav>
       <div className="mt-auto p-4 border-t">
         <Button variant="ghost" className="w-full justify-start mb-4">

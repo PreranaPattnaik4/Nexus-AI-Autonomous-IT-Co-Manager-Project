@@ -34,9 +34,9 @@ export function useCollection<T>(
         })) as T[];
         setData(data);
         setLoading(false);
+        setError(null);
       },
       (err) => {
-        console.error(err);
         setError(err);
         setLoading(false);
       }

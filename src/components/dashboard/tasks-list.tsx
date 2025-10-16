@@ -78,7 +78,7 @@ export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'co
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[75vh]">
+        <ScrollArea className="h-[calc(100vh-220px)]">
           {loading ? (
              <TasksListSkeleton />
           ) : (
