@@ -89,7 +89,7 @@ async function maybePopulateInitialData(db: FirebaseFirestore.Firestore) {
         const batch = db.batch();
         initialAlerts.forEach(alert => {
             const docRef = alertsCollection.doc();
-            batch.set(docRef, { ...alert, timestamp: FieldValue.serverTimestamp() });
+            batch.set(docRef, { ...alert, timestamp: new Date() });
         });
         await batch.commit();
     }

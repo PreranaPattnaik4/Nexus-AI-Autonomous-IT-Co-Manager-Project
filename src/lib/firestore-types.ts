@@ -8,6 +8,8 @@ export type Step = {
   description: string;
   status: 'pending' | 'completed' | 'failed';
   log?: string;
+  action: string;
+  parameters?: Record<string, any>;
 };
 
 export type Task = {
