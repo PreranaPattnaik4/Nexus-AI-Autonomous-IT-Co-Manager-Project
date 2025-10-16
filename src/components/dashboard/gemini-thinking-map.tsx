@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Bot, Search, Play, CheckCheck, FileText } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Bot } from 'lucide-react';
 import { UnderstandIcon, PlanIcon, MonitorIcon, ReportIcon } from '../icons';
 
 const thinkingSteps = [
