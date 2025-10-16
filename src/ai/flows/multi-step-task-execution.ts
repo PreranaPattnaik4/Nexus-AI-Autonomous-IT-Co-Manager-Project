@@ -1,9 +1,9 @@
 'use server';
 /**
- * @fileOverview This file defines a Genkit flow for breaking down complex IT goals into actionable steps using AI.
+ * @fileOverview This file defines the "Planner Agent" for Nexus AI.
  *
  * The flow takes a high-level IT goal as input and uses the Gemini API to generate a sequence of steps required to achieve that goal.
- * It exports the multiStepTaskExecution function, along with its input and output types.
+ * It is responsible for creating the initial plan that will be passed to the Executor Agent.
  */
 
 import {ai} from '@/ai/genkit';
@@ -35,7 +35,7 @@ export async function multiStepTaskExecution(input: MultiStepTaskExecutionInput)
   await multiStepTaskExecutionFlow(input);
 }
 
-// Define the prompt for generating the task plan
+// Define the prompt for the Planner Agent
 const taskPlanningPrompt = ai.definePrompt({
   name: 'taskPlanningPrompt',
   input: {schema: z.object({
@@ -45,7 +45,7 @@ const taskPlanningPrompt = ai.definePrompt({
     activeIntegrations: z.string().describe('A list of currently active integrations (e.g., Jira, Slack).'),
   })},
   output: {schema: MultiStepTaskExecutionOutputSchema},
-  prompt: `You are an AI agent responsible for planning how to achieve complex IT goals. Given a high-level goal, system context, available tools, and active integrations, your task is to generate a sequence of actionable steps.
+  prompt: `You are the "Planner Agent" in a multi-agent AI system. Your role is to break down a high-level goal into a sequence of actionable steps for the "Executor Agent".
 
 Goal: {{{goal}}}
 
@@ -57,11 +57,11 @@ Available Tools: {{{availableTools}}}
 Active Integrations: {{{activeIntegrations}}}
 
 Instructions:
-1.  Break down the goal into a sequence of actionable steps.
-2.  Each step should be a JSON object that specifies a human-readable 'description', a machine-readable 'action' and any necessary 'parameters'.
-3.  If an integration is active (e.g., Jira), add a step to use it where appropriate (e.g., add a "create_jira_ticket" step to log the work).
+1.  Break down the goal into a sequence of discrete, actionable steps.
+2.  Each step must be a JSON object specifying a human-readable 'description', a machine-readable 'action', and any necessary 'parameters'.
+3.  If an integration is active (e.g., Jira), add steps to use it where appropriate (e.g., add a "create_jira_ticket" step to log the work).
 4.  If an integration is not active, do not create steps for it.
-5.  Output a JSON array of sequential steps.
+5.  Your output is a JSON array of these steps, which will be sent to the Executor Agent.
 
 Example Output (with Jira active):
 [
@@ -103,7 +103,7 @@ async function maybePopulateInitialData(db: FirebaseFirestore.Firestore) {
 }
 
 
-// Define the Genkit flow for multi-step task execution
+// This is the main flow for the Planner Agent.
 const multiStepTaskExecutionFlow = ai.defineFlow(
   {
     name: 'multiStepTaskExecutionFlow',
@@ -135,7 +135,7 @@ const multiStepTaskExecutionFlow = ai.defineFlow(
     });
 
     if (!output) {
-      throw new Error('Failed to generate task plan.');
+      throw new Error('Planner Agent failed to generate a task plan.');
     }
 
     const taskId = db.collection('tasks').doc().id;
@@ -151,7 +151,8 @@ const multiStepTaskExecutionFlow = ai.defineFlow(
 
     await db.collection('tasks').doc(taskId).set(newTask);
 
-    // Don't wait for the simulation to finish
+    // Hand off the plan to the Executor Agent for simulation.
+    // We don't wait for it to finish.
     taskExecutionSimulation({ taskId });
   }
 );

@@ -4,14 +4,13 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Bot, Search, Play, CheckCheck, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { UnderstandIcon, PlanIcon } from '../icons';
+import { UnderstandIcon, PlanIcon, MonitorIcon, ReportIcon } from '../icons';
 
 const thinkingSteps = [
   { name: 'Understand', icon: UnderstandIcon, description: 'Parse the natural language goal.' },
-  { name: 'Plan', icon: PlanIcon, description: 'Break down the goal into actionable steps.' },
-  { name: 'Execute', icon: Play, description: 'Perform the steps sequentially.' },
-  { name: 'Verify', icon: CheckCheck, description: 'Confirm successful completion.' },
-  { name: 'Report', icon: FileText, description: 'Generate logs and RCA reports.' },
+  { name: 'Plan', icon: PlanIcon, description: 'Planner Agent creates a step-by-step plan.' },
+  { name: 'Execute & Monitor', icon: MonitorIcon, description: 'Executor Agent performs actions.' },
+  { name: 'Verify & Report', icon: ReportIcon, description: 'Reporter Agent analyzes results & creates RCA.' },
 ];
 
 function Connector({ isLast = false }: { isLast?: boolean }) {
@@ -29,14 +28,14 @@ export function GeminiThinkingMap() {
       <CardHeader>
         <div className="flex items-center gap-2">
             <Bot className="h-5 w-5" />
-            <CardTitle>Gemini Thinking Map</CardTitle>
+            <CardTitle>Multi-Agent Collaboration</CardTitle>
         </div>
-        <CardDescription>Visualizing how Nexus AI breaks down your goals.</CardDescription>
+        <CardDescription>Visualizing how Nexus AI agents work together to achieve your goals.</CardDescription>
       </CardHeader>
       <CardContent className="flex items-start justify-center pt-2">
         {thinkingSteps.map((step, index) => (
           <React.Fragment key={step.name}>
-            <div className="flex flex-col items-center text-center w-24">
+            <div className="flex flex-col items-center text-center w-32">
               <div className="flex items-center justify-center h-12 w-12 rounded-full bg-secondary text-secondary-foreground mb-2">
                 <step.icon className="h-6 w-6" />
               </div>
