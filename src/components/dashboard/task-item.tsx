@@ -33,16 +33,16 @@ function StepLog({ log }: { log: string }) {
     );
 }
 
-function RetryButton({ taskId }: { taskId: string }) {
+function RetryButton({ taskId, taskGoal }: { taskId: string, taskGoal: string }) {
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
 
     const handleRetry = () => {
         startTransition(async () => {
-            const result = await retryTask(taskId);
+            const result = await retryTask(taskId, taskGoal);
             if (result.success) {
                 toast({
-                    title: 'Task Retry Initiated',
+                    title: 'AI Self-Healing Initiated',
                     description: result.message,
                 });
             } else {
@@ -58,7 +58,7 @@ function RetryButton({ taskId }: { taskId: string }) {
     return (
         <Button variant="outline" size="sm" onClick={handleRetry} disabled={isPending}>
             <Bot className={cn('mr-2 h-4 w-4', isPending && 'animate-spin')} />
-            {isPending ? 'Retrying...' : 'Retry with AI'}
+            {isPending ? 'Analyzing...' : 'Retry with AI'}
         </Button>
     );
 }
@@ -103,7 +103,7 @@ export function TaskItem({ task }: { task: Task }) {
             </CollapsibleTrigger>
             {isFinished && task.id && <RcaReportDialog taskId={task.id} />}
           </div>
-          {task.status === 'failed' && <RetryButton taskId={task.id} />}
+          {task.status === 'failed' && <RetryButton taskId={task.id} taskGoal={task.goal} />}
         </div>
       </div>
       <CollapsibleContent className="mt-4 space-y-3 pl-4">

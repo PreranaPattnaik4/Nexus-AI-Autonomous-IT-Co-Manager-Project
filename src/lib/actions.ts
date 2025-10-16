@@ -4,10 +4,10 @@ import { revalidatePath } from 'next/cache';
 import { multiStepTaskExecution } from '@/ai/flows/multi-step-task-execution';
 import { generateRcaReport as generateRcaReportFlow } from '@/ai/flows/rca-report-generation';
 import { proactiveIssueResolution } from '@/ai/flows/proactive-issue-resolution';
-import { taskExecutionSimulation } from '@/ai/flows/task-execution-simulation';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { getFirebaseAdminApp } from '@/lib/firebase-admin';
 import { marked } from 'marked';
+import { Step } from './firestore-types';
 
 export interface GoalFormState {
   message: string;
@@ -122,7 +122,7 @@ export async function resolveAlert(alertTitle: string) {
     }
 }
 
-export async function retryTask(taskId: string) {
+export async function retryTask(taskId: string, originalGoal: string) {
     try {
         getFirebaseAdminApp();
         const db = getFirestore();
@@ -138,21 +138,27 @@ export async function retryTask(taskId: string) {
             return { success: false, message: 'Task data is empty.' };
         }
         
-        // Reset the task status for re-execution
-        await taskRef.update({
-            status: 'in-progress',
-            progress: 0,
-            steps: taskData.steps.map((step: any) => ({ ...step, status: 'pending', log: '' }))
-        });
+        const failureLogs = taskData.steps
+            .filter((step: Step) => step.status === 'failed')
+            .map((step: Step) => `Step "${step.description}" failed with log: ${step.log}`)
+            .join('\n');
 
-        // Start the simulation again
-        taskExecutionSimulation({ taskId });
+        const reasonedGoal = `The original goal was: "${originalGoal}". It failed. Analysis of the logs shows: ${failureLogs || 'No specific failure logs were found.'}. Now, create a new, intelligent plan to achieve the original goal, taking the previous failure into account.`;
+        
+        // This flow is non-blocking, it kicks off the simulation
+        await multiStepTaskExecution({ goal: reasonedGoal });
+
+        // Update the old task to show it has been superseded.
+        await taskRef.update({ 
+            goal: `[Superseded by Self-Healing] ${taskData.goal}`,
+            status: 'failed',
+        });
         
         revalidatePath('/');
-        return { success: true, message: `Retrying task: ${taskData.goal}` };
+        return { success: true, message: `AI is analyzing the failure and creating a new execution plan.` };
 
     } catch (error) {
         console.error(`Error retrying task ${taskId}:`, error);
-        return { success: false, message: 'Failed to retry task.' };
+        return { success: false, message: 'Failed to initiate AI self-healing.' };
     }
 }
