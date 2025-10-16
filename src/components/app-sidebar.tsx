@@ -9,6 +9,7 @@ import {
   Settings,
   CircleHelp,
   Zap,
+  CheckCheck,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -19,6 +20,7 @@ import { Logo } from './icons';
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/tasks', label: 'Tasks', icon: ListChecks },
+  { href: '/completed', label: 'Completed', icon: CheckCheck },
   { href: '/reports', label: 'Reports', icon: FileText },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/settings', label: 'Settings', icon: Settings },
