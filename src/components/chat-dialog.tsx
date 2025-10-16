@@ -112,13 +112,18 @@ export function ChatDialog() {
       <DialogTrigger asChild>
         <Button
             size="icon"
-            className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg"
+            className="fixed bottom-6 left-6 h-14 w-14 rounded-full shadow-lg"
         >
             <MessageCircle className="h-6 w-6" />
             <span className="sr-only">Open Chat</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl h-[80vh] flex flex-col">
+      <DialogContent 
+        className={cn(
+            "sm:max-w-md h-[60vh] flex flex-col fixed bottom-4 left-4 top-auto translate-x-0 translate-y-0",
+            "bg-background/30 backdrop-blur-sm"
+        )}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2"><Bot className="w-5 h-5"/> Conversational RCA</DialogTitle>
           <DialogDescription>
@@ -155,7 +160,7 @@ export function ChatDialog() {
                         ref={inputRef}
                         name="message"
                         placeholder="Ask about a past incident..."
-                        className="pr-12"
+                        className="pr-12 bg-background/80"
                         autoComplete="off"
                     />
                     <div className="absolute right-2">
