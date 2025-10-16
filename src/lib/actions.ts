@@ -9,9 +9,7 @@ import { getFirebaseAdminApp } from '@/lib/firebase-admin';
 import { marked } from 'marked';
 import { Step, ChatMessage } from './firestore-types';
 import { nanoid } from 'nanoid';
-import { experimental_streamText } from 'ai';
 import { conversationalRca } from '@/ai/flows/conversational-rca';
-import { streamText } from 'genkit/next';
 
 export interface GoalFormState {
   message: string;
