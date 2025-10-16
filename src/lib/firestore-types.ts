@@ -50,3 +50,10 @@ export type ChatMessage = {
     content: string;
     createdAt: Date;
 };
+
+export type CommandSimulationResult = {
+    id: string;
+    command: string;
+    output: string;
+    timestamp: Date;
+};

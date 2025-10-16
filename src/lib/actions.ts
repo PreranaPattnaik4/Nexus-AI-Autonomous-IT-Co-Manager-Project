@@ -7,9 +7,11 @@ import { proactiveIssueResolution } from '@/ai/flows/proactive-issue-resolution'
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 import { getFirebaseAdminApp } from '@/lib/firebase-admin';
 import { marked } from 'marked';
-import { Step, ChatMessage } from './firestore-types';
+import { Step, ChatMessage, CommandSimulationResult } from './firestore-types';
 import { nanoid } from 'nanoid';
 import { conversationalRca } from '@/ai/flows/conversational-rca';
+import { commandSimulation } from '@/ai/flows/command-simulation';
+
 
 export interface GoalFormState {
   message: string;
@@ -206,5 +208,39 @@ export async function submitChatMessage(
             createdAt: new Date(),
         };
         return errorMessage;
+    }
+}
+
+export async function submitCommand(
+    prevState: CommandSimulationResult | null,
+    formData: FormData
+): Promise<CommandSimulationResult | null> {
+    const command = formData.get('command') as string;
+
+    if (!command) {
+        return null;
+    }
+    
+    try {
+        const { output } = await commandSimulation({ command });
+        
+        const result: CommandSimulationResult = {
+            id: nanoid(),
+            command,
+            output,
+            timestamp: new Date(),
+        };
+        
+        return result;
+
+    } catch (error) {
+        console.error("Error in command simulation flow:", error);
+        const errorResult: CommandSimulationResult = {
+            id: nanoid(),
+            command,
+            output: "```shell\nError: The AI agent failed to process the command.\n```",
+            timestamp: new Date(),
+        };
+        return errorResult;
     }
 }

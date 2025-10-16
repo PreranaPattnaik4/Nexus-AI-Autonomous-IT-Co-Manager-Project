@@ -15,7 +15,7 @@
         },
         "status": {
           "type": "string",
-          "enum": ["in-progress", "completed", "failed"],
+          "enum": ["in-progress", "completed", "failed", "superseded"],
           "description": "The current status of the task."
         },
         "progress": {
@@ -166,6 +166,27 @@
         }
       },
       "required": ["id", "role", "content", "createdAt"]
+    },
+    "CommandSimulation": {
+        "title": "Command Simulation",
+        "description": "Represents a simulated command and its output.",
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "command": {
+                "type": "string"
+            },
+            "output": {
+                "type": "string"
+            },
+            "timestamp": {
+                "type": "string",
+                "format": "date-time"
+            }
+        },
+        "required": ["id", "command", "output", "timestamp"]
     }
   },
   "auth": {
