@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { FileText, CheckCircle2, XCircle, Loader, ChevronDown, ChevronUp, Bot } from 'lucide-react';
+import { FileText, CheckCircle2, XCircle, Loader, ChevronDown, ChevronUp, Bot, Recycle } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
@@ -17,6 +17,7 @@ const statusIcons = {
   'in-progress': <Loader className="h-4 w-4 animate-spin text-blue-500" />,
   completed: <CheckCircle2 className="h-4 w-4 text-green-500" />,
   failed: <XCircle className="h-4 w-4 text-red-500" />,
+  superseded: <Recycle className="h-4 w-4 text-gray-500" />,
 };
 
 const stepStatusIcons = {
@@ -81,6 +82,8 @@ export function TaskItem({ task }: { task: Task }) {
                   ? 'default'
                   : task.status === 'failed'
                   ? 'destructive'
+                  : task.status === 'superseded'
+                  ? 'outline'
                   : 'secondary'
               }
               className={cn('capitalize', task.status === 'completed' && 'bg-green-600' )}

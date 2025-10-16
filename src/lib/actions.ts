@@ -144,16 +144,16 @@ export async function retryTask(taskId: string, originalGoal: string) {
             .filter((step: Step) => step.status === 'failed')
             .map((step: Step) => `Step "${step.description}" failed with log: ${step.log}`)
             .join('\n');
-
-        const reasonedGoal = `The original goal was: "${originalGoal}". It failed. Analysis of the logs shows: ${failureLogs || 'No specific failure logs were found.'}. Now, create a new, intelligent plan to achieve the original goal, taking the previous failure into account.`;
+        
+        // This is the "Gemini Thought Trace"
+        const reasonedGoal = `[Self-Correction] The goal "${originalGoal}" failed. My analysis shows: ${failureLogs || 'No specific failure logs were found.'} I will now create a new plan to achieve the original goal, accounting for this failure.`;
         
         // This flow is non-blocking, it kicks off the simulation
         await multiStepTaskExecution({ goal: reasonedGoal });
 
         // Update the old task to show it has been superseded.
         await taskRef.update({ 
-            goal: `[Superseded by Self-Healing] ${taskData.goal}`,
-            status: 'failed',
+            status: 'superseded',
         });
         
         revalidatePath('/');

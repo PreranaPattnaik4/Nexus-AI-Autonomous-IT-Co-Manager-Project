@@ -15,7 +15,7 @@ export type Step = {
 export type Task = {
   id: string;
   goal: string;
-  status: 'in-progress' | 'completed' | 'failed';
+  status: 'in-progress' | 'completed' | 'failed' | 'superseded';
   progress: number;
   steps: Step[];
   createdAt: Timestamp;
