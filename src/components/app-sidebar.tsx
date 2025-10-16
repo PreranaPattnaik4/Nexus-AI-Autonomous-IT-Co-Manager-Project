@@ -30,12 +30,38 @@ const navItems = [
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
-export function AppSidebar() {
+// This sub-component safely uses the client-side hooks
+function NavItems() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const status = searchParams.get('status');
   const currentPath = status ? `${pathname}?status=${status}` : pathname;
 
+  return (
+    <>
+      {navItems.map((item) => {
+        const isActive = item.href === currentPath;
+        
+        return (
+          <Button
+            key={item.href}
+            variant={isActive ? 'secondary' : 'ghost'}
+            className="w-full justify-start"
+            asChild
+          >
+            <Link href={item.href}>
+              <item.icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && 'animate-spin')} />
+              {item.label}
+            </Link>
+          </Button>
+        )
+      })}
+    </>
+  );
+}
+
+
+export function AppSidebar() {
   return (
     <aside className="h-screen w-64 flex-shrink-0 flex flex-col bg-card border-r">
       <div className="flex items-center justify-center h-16 border-b">
@@ -43,23 +69,7 @@ export function AppSidebar() {
         <h1 className="ml-2 text-xl font-bold tracking-tight">Nexus AI</h1>
       </div>
       <nav className="flex-1 px-4 py-4 space-y-2">
-        {navItems.map((item) => {
-          const isActive = item.href === currentPath;
-          
-          return (
-            <Button
-              key={item.href}
-              variant={isActive ? 'secondary' : 'ghost'}
-              className="w-full justify-start"
-              asChild
-            >
-              <Link href={item.href}>
-                <item.icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && 'animate-spin')} />
-                {item.label}
-              </Link>
-            </Button>
-          )
-        })}
+        <NavItems />
       </nav>
       <div className="mt-auto p-4 border-t">
         <Button variant="ghost" className="w-full justify-start mb-4">
