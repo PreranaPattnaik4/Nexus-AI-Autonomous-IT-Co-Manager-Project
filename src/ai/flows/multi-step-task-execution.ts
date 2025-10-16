@@ -42,9 +42,10 @@ const taskPlanningPrompt = ai.definePrompt({
     goal: MultiStepTaskExecutionInputSchema.shape.goal,
     systemContext: z.string().describe('The current state of the relevant IT systems (fetched from Firestore).'),
     availableTools: z.string().describe('A list of available tools/actions the agent can perform (e.g., patch_server, create_jira_ticket, send_slack_alert, reboot_vm).'),
+    activeIntegrations: z.string().describe('A list of currently active integrations (e.g., Jira, Slack).'),
   })},
   output: {schema: MultiStepTaskExecutionOutputSchema},
-  prompt: `You are an AI agent responsible for planning how to achieve complex IT goals. Given a high-level goal, system context, and a set of available tools, your task is to generate a sequence of actionable steps to achieve the goal.
+  prompt: `You are an AI agent responsible for planning how to achieve complex IT goals. Given a high-level goal, system context, available tools, and active integrations, your task is to generate a sequence of actionable steps.
 
 Goal: {{{goal}}}
 
@@ -53,16 +54,22 @@ System Context:
 
 Available Tools: {{{availableTools}}}
 
+Active Integrations: {{{activeIntegrations}}}
+
 Instructions:
 1.  Break down the goal into a sequence of actionable steps.
 2.  Each step should be a JSON object that specifies a human-readable 'description', a machine-readable 'action' and any necessary 'parameters'.
-3.  Output a JSON array of sequential steps.
+3.  If an integration is active (e.g., Jira), add a step to use it where appropriate (e.g., add a "create_jira_ticket" step to log the work).
+4.  If an integration is not active, do not create steps for it.
+5.  Output a JSON array of sequential steps.
 
-Example Output:
+Example Output (with Jira active):
 [
+  {"description": "Create Jira ticket to track server patching", "action": "create_jira_ticket", "parameters": {"title": "Patch Production Servers"}},
   {"description": "List all production web servers", "action": "list_servers"},
   {"description": "Apply security patch to each server", "action": "apply_patch", "parameters": {"target": "all_web_servers"}},
-  {"description": "Verify patch installation", "action": "verify_patch", "parameters": {"target": "all_web_servers"}}
+  {"description": "Verify patch installation", "action": "verify_patch", "parameters": {"target": "all_web_servers"}},
+  {"description": "Update Jira ticket with completion status", "action": "update_jira_ticket", "parameters": {"status": "Done"}}
 ]
 
 Your Task: Generate the JSON array of steps required to achieve the goal.`, 
@@ -113,12 +120,18 @@ const multiStepTaskExecutionFlow = ai.defineFlow(
     const systems = systemsSnapshot.docs.map(doc => doc.data());
     const systemContext = JSON.stringify(systems, null, 2);
 
-    const availableTools = ['patch_server', 'create_jira_ticket', 'send_slack_alert', 'reboot_vm', 'list_servers'];
+    const availableTools = ['patch_server', 'create_jira_ticket', 'send_slack_alert', 'reboot_vm', 'list_servers', 'update_jira_ticket'];
+    
+    // For demo purposes, we'll hardcode the active integrations based on the UI.
+    // In a real app, this would be fetched from a configuration store.
+    const activeIntegrations = ['Jira', 'Monitoring API'];
+
 
     const {output} = await taskPlanningPrompt({
       goal: input.goal,
       systemContext: systemContext,
       availableTools: availableTools.join(', '),
+      activeIntegrations: activeIntegrations.join(', '),
     });
 
     if (!output) {
