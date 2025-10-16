@@ -66,10 +66,10 @@ export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'co
   const { data: tasks, loading } = useCollection<Task>(tasksQuery);
   const config = pageConfig[statusFilter || 'all'];
 
-  const scrollAreaHeight = statusFilter ? 'h-[calc(100vh-220px)]' : 'h-56';
+  const scrollAreaHeight = statusFilter ? 'h-[calc(100vh-220px)]' : 'h-80';
 
   return (
-    <Card className="col-span-1 lg:col-span-3">
+    <Card className="col-span-1 lg:col-span-2">
       <CardHeader>
         <div className="flex items-center gap-2">
           {config.icon}

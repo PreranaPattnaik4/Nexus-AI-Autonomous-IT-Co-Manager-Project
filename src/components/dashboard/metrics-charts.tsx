@@ -75,7 +75,7 @@ export function MetricsCharts() {
   }, [systems]);
 
   return (
-    <div className="col-span-1 lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <Card>
         <CardHeader>
           <CardTitle>CPU Usage</CardTitle>
