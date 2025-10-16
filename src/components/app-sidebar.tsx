@@ -33,6 +33,8 @@ const navItems = [
 export function AppSidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const status = searchParams.get('status');
+  const currentPath = status ? `${pathname}?status=${status}` : pathname;
 
   return (
     <aside className="h-screen w-64 flex-shrink-0 flex flex-col bg-card border-r">
@@ -42,8 +44,6 @@ export function AppSidebar() {
       </div>
       <nav className="flex-1 px-4 py-4 space-y-2">
         {navItems.map((item) => {
-          const status = searchParams.get('status');
-          const currentPath = status ? `${pathname}?status=${status}` : pathname;
           const isActive = item.href === currentPath;
           
           return (
