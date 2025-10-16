@@ -7,7 +7,7 @@ import { AppHeader } from '@/components/app-header';
 import { AppFooter } from '@/components/app-footer';
 import { Inter, Source_Code_Pro } from 'next/font/google';
 import { cn } from '@/lib/utils';
-import { ChatDialog } from '@/components/chat-dialog';
+import ChatDialogClient from '@/components/chat-dialog-client';
 
 const fontSans = Inter({
   subsets: ['latin'],
@@ -46,7 +46,7 @@ export default function RootLayout({
               <AppHeader />
               <main className="flex-1 p-4 sm:p-6 lg:p-8 relative">
                 {children}
-                <ChatDialog />
+                <ChatDialogClient />
               </main>
               <AppFooter />
             </div>
