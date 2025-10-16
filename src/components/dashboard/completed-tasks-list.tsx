@@ -1,65 +1,8 @@
 'use client';
 
-import { CheckCheck } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useCollection } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
-import { TaskItem } from './task-item';
-import { Task } from '@/lib/firestore-types';
-import { Skeleton } from '@/components/ui/skeleton';
-
-function TasksListSkeleton() {
-  return (
-    <div className="space-y-6 pr-6">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="space-y-2">
-          <Skeleton className="h-5 w-3/4" />
-          <div className="flex items-center gap-4">
-            <Skeleton className="h-2 flex-1" />
-            <Skeleton className="h-4 w-10" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
+import { redirect } from 'next/navigation';
 
 export function CompletedTasksList() {
-  const firestore = useFirestore();
-  const tasksQuery = firestore ? query(collection(firestore, 'tasks'), where('status', '==', 'completed'), orderBy('createdAt', 'desc')) : null;
-  const { data: tasks, loading } = useCollection<Task>(tasksQuery);
-
-  return (
-    <Card className="col-span-1 lg:col-span-3">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <CheckCheck className="h-5 w-5" />
-          <CardTitle>Completed Tasks</CardTitle>
-        </div>
-        <CardDescription>
-          A history of all tasks successfully completed by the agent.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[75vh]">
-          {loading ? (
-             <TasksListSkeleton />
-          ) : (
-            <div className="space-y-6 pr-6">
-              {tasks && tasks.length > 0 ? (
-                tasks.map((task) => (
-                  <TaskItem key={task.id} task={task} />
-                ))
-              ) : (
-                <p className="text-muted-foreground text-center py-8">No completed tasks yet.</p>
-              )}
-            </div>
-          )}
-        </ScrollArea>
-      </CardContent>
-    </Card>
-  );
+  redirect('/tasks?status=completed');
+  return null;
 }

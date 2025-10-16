@@ -1,5 +1,5 @@
-import { CompletedTasksList } from "@/components/dashboard/completed-tasks-list";
+import { redirect } from 'next/navigation';
 
-export default function TasksPage() {
-    return <CompletedTasksList />;
+export default function CompletedPage() {
+  redirect('/tasks?status=completed');
 }

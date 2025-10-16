@@ -10,6 +10,8 @@ import {
   CircleHelp,
   Zap,
   CheckCheck,
+  XCircle,
+  Loader,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -19,8 +21,10 @@ import { Logo } from './icons';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/tasks', label: 'Tasks', icon: ListChecks },
-  { href: '/completed', label: 'Completed', icon: CheckCheck },
+  { href: '/tasks', label: 'All Tasks', icon: ListChecks },
+  { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader, className: 'animate-spin' },
+  { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck },
+  { href: '/tasks?status=failed', label: 'Failed', icon: XCircle },
   { href: '/reports', label: 'Reports', icon: FileText },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/settings', label: 'Settings', icon: Settings },
@@ -44,7 +48,7 @@ export function AppSidebar() {
             asChild
           >
             <Link href={item.href}>
-              <item.icon className="mr-2 h-4 w-4" />
+              <item.icon className={cn("mr-2 h-4 w-4", item.className)} />
               {item.label}
             </Link>
           </Button>
