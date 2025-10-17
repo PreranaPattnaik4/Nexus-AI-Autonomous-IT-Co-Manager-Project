@@ -2,134 +2,143 @@
  * @fileoverview Firestore Security Rules for the application.
  *
  * Core Philosophy:
- * This ruleset prioritizes authorization independence and enforces a role-based access control model for key collections.
- * User data is strictly controlled, and other collections (tasks, systems, alerts, reports) rely on denormalized role information within the documents themselves for authorization.
+ * This ruleset prioritizes authorization independence and query performance.
+ * It employs a combination of owner-only access for user data and role-based access for tasks, systems, alerts, and reports.
  *
  * Data Structure:
- * - /users/{userId}: Stores individual user account information, accessible only to the user themselves.
- * - /tasks/{taskId}: Stores task data. Access control is determined by roles denormalized within the document.
- * - /systems/{systemId}: Stores system data. Access control is determined by roles denormalized within the document.
- * - /alerts/{alertId}: Stores alert data. Access control is determined by roles denormalized within the document.
- * - /reports/{reportId}: Stores report data. Access control is determined by roles denormalized within the document.
+ * - User data is stored under /users/{userId}, ensuring private data remains secure.
+ * - Tasks, systems, alerts, and reports are top-level collections to allow for efficient querying and management.
  *
  * Key Security Decisions:
- * - Strict user-ownership model for /users/{userId}.
- * - Role-based access control for tasks, systems, alerts, and reports. The specific roles and their meanings are application-defined and must be enforced when writing data to these collections.
- * - All collections that require authorization have explicit `allow` and `deny` rules for all five permissions.
- * - `list` permission on `/alerts` was missing, this ruleset now denies `list` by default, since the data model doesn't specify public readability.
+ * - Users can only access their own user data.
+ * - Listing all users is disallowed.
+ * - Tasks, systems, alerts, and reports require role-based authorization (implementation TBD, but owner-only for now) and all documents must have an `ownerId` field.
  *
  * Denormalization for Authorization:
- * The rules assume that the `Task`, `System`, `Alert` and `Report` documents all contain sufficient information (e.g., a `members` map with role assignments or an `ownerId` field) to make authorization decisions without needing to read other documents.
- * This avoids costly and potentially impossible `get()` calls in the security rules.
- *
- * Structural Segregation:
- * The structure segregates user-specific data (/users/{userId}) from shared or public data (tasks, systems, alerts, reports). This allows for more efficient querying and clearer security rules.
+ * - Documents in the `/tasks`, `/systems`, `/alerts`, and `/reports` collections must have an `ownerId` field to enable owner-only write access.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Enforces strict user-ownership for user accounts.
+     * @description Enforces owner-only access to user account data.
      * @path /users/{userId}
-     * @allow (create) User can create their own account if the userId matches their auth UID.
-     * @allow (get, update, delete) User can only access and modify their own account.
-     * @deny (create) User cannot create an account with a different userId.
-     * @deny (get, update, delete) User cannot access or modify another user's account.
+     * @allow (create) - User with UID 'user_abc' can create their own account document at /users/user_abc if the document id matches their UID.
+     * @allow (get, update, delete) - User with UID 'user_abc' can read, update, and delete their own account document at /users/user_abc.
+     * @deny (create) - User with UID 'user_abc' cannot create an account document for another user at /users/user_xyz.
+     * @deny (get, update, delete) - User with UID 'user_abc' cannot read, update, or delete another user's account document at /users/user_xyz.
      * @principle Enforces document ownership for all operations.
      */
     match /users/{userId} {
       function isOwner(userId) {
-        return request.auth != null && request.auth.uid == userId;
+        return request.auth.uid == userId;
+      }
+      function isSignedIn() {
+        return request.auth != null;
       }
 
-      allow get: if isOwner(userId);
-      allow list: if false; // Listing users is not permitted
-
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isOwner(userId) && resource.data.id == userId; // Enforce immutability of the userId on update
-      allow delete: if isOwner(userId) && resource != null;
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if false; // No listing of all users
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isSignedIn() && isOwner(userId);
+      allow delete: if isSignedIn() && isOwner(userId);
     }
 
     /**
-     * @description Controls access to task documents based on roles.
+     * @description Controls access to task documents.  Currently enforces owner-only access.
      * @path /tasks/{taskId}
-     * @allow (get, list) Public read access to tasks is permitted.
-     * @allow (create, update, delete) Only authorized users can create, update, or delete tasks.
-     * @deny (create) Unauthorized users cannot create tasks.
-     * @deny (update) Unauthorized users cannot update tasks.
-     * @deny (delete) Unauthorized users cannot delete tasks.
-     * @principle Enforces role-based access control for writes.
+     * @allow (get, list) - Any signed-in user can read any task.
+     * @allow (create) - User with UID 'user_abc' can create a task if request.resource.data.ownerId == request.auth.uid.
+     * @allow (update, delete) - User with UID 'user_abc' can update/delete a task if they are the owner (resource.data.ownerId == request.auth.uid).
+     * @deny (create) - User with UID 'user_abc' cannot create a task with an ownerId that does not match their own UID.
+     * @deny (update, delete) - User with UID 'user_abc' cannot update/delete a task they don't own.
+     * @principle Enforces owner-only writes.
      */
     match /tasks/{taskId} {
-      allow get: if true;
-      allow list: if true;
+      function isOwner(ownerId) {
+        return request.auth.uid == ownerId;
+      }
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-      // CRITICAL: Write operations MUST NEVER use `if true;`. This is a major security vulnerability.
-      allow create: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
     }
 
     /**
-     * @description Controls access to system documents based on roles.
+     * @description Controls access to system documents. Currently enforces owner-only access.
      * @path /systems/{systemId}
-     * @allow (get, list) Public read access to systems is permitted.
-     * @allow (create, update, delete) Only authorized users can create, update, or delete systems.
-     * @deny (create) Unauthorized users cannot create systems.
-     * @deny (update) Unauthorized users cannot update systems.
-     * @deny (delete) Unauthorized users cannot delete systems.
-     * @principle Enforces role-based access control for writes.
+     * @allow (get, list) - Any signed-in user can read any system.
+     * @allow (create) - User with UID 'user_abc' can create a system if request.resource.data.ownerId == request.auth.uid.
+     * @allow (update, delete) - User with UID 'user_abc' can update/delete a system if they are the owner (resource.data.ownerId == request.auth.uid).
+     * @deny (create) - User with UID 'user_abc' cannot create a system with an ownerId that does not match their own UID.
+     * @deny (update, delete) - User with UID 'user_abc' cannot update/delete a system they don't own.
+     * @principle Enforces owner-only writes.
      */
     match /systems/{systemId} {
-      allow get: if true;
-      allow list: if true;
+      function isOwner(ownerId) {
+        return request.auth.uid == ownerId;
+      }
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-      // CRITICAL: Write operations MUST NEVER use `if true;`. This is a major security vulnerability.
-      allow create: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
     }
 
     /**
-     * @description Controls access to alert documents based on roles.
+     * @description Controls access to alert documents. Currently enforces owner-only access.
      * @path /alerts/{alertId}
-     * @allow (get) Public read access to alerts is permitted.
-     * @deny (list) Listing alerts is not permitted.
-     * @allow (create, update, delete) Only authorized users can create, update, or delete alerts.
-     * @deny (create) Unauthorized users cannot create alerts.
-     * @deny (update) Unauthorized users cannot update alerts.
-     * @deny (delete) Unauthorized users cannot delete alerts.
-     * @principle Enforces role-based access control for writes.
+     * @allow (get, list) - Any signed-in user can read any alert.
+     * @allow (create) - User with UID 'user_abc' can create an alert if request.resource.data.ownerId == request.auth.uid.
+     * @allow (update, delete) - User with UID 'user_abc' can update/delete an alert if they are the owner (resource.data.ownerId == request.auth.uid).
+     * @deny (create) - User with UID 'user_abc' cannot create an alert with an ownerId that does not match their own UID.
+     * @deny (update, delete) - User with UID 'user_abc' cannot update/delete an alert they don't own.
+     * @principle Enforces owner-only writes.
      */
     match /alerts/{alertId} {
-      allow get: if true;
-      allow list: if false;
+      function isOwner(ownerId) {
+        return request.auth.uid == ownerId;
+      }
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-      // CRITICAL: Write operations MUST NEVER use `if true;`. This is a major security vulnerability.
-      allow create: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
     }
 
     /**
-     * @description Controls access to report documents based on roles.
+     * @description Controls access to report documents.  Currently enforces owner-only access.
      * @path /reports/{reportId}
-     * @allow (get, list) Public read access to reports is permitted.
-     * @allow (create, update, delete) Only authorized users can create, update, or delete reports.
-     * @deny (create) Unauthorized users cannot create reports.
-     * @deny (update) Unauthorized users cannot update reports.
-     * @deny (delete) Unauthorized users cannot delete reports.
-     * @principle Enforces role-based access control for writes.
+     * @allow (get, list) - Any signed-in user can read any report.
+     * @allow (create) - User with UID 'user_abc' can create a report if request.resource.data.ownerId == request.auth.uid.
+     * @allow (update, delete) - User with UID 'user_abc' can update/delete a report if they are the owner (resource.data.ownerId == request.auth.uid).
+     * @deny (create) - User with UID 'user_abc' cannot create a report with an ownerId that does not match their own UID.
+     * @deny (update, delete) - User with UID 'user_abc' cannot update/delete a report they don't own.
+     * @principle Enforces owner-only writes.
      */
     match /reports/{reportId} {
-      allow get: if true;
-      allow list: if true;
+      function isOwner(ownerId) {
+        return request.auth.uid == ownerId;
+      }
+      function isSignedIn() {
+        return request.auth != null;
+      }
 
-      // CRITICAL: Write operations MUST NEVER use `if true;`. This is a major security vulnerability.
-      allow create: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
-      allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
     }
   }
 }
