@@ -75,7 +75,7 @@ export function GoalForm() {
               </p>
             )}
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-start">
             <SubmitButton />
           </div>
         </form>
