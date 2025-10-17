@@ -112,7 +112,7 @@ export function ChatDialog() {
       <DialogTrigger asChild>
         <Button
             size="icon"
-            className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg"
+            className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg mr-4"
         >
             <MessageCircle className="h-6 w-6" />
             <span className="sr-only">Open Chat</span>
