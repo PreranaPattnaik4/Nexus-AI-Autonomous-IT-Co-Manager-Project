@@ -112,14 +112,15 @@ export default function ChatPage() {
       <header className='mb-4'>
         <Card>
             <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Bot className="w-5 h-5"/> Conversational RCA</CardTitle>
-                <CardDescription>Ask me anything about past incidents or RCA reports.</CardDescription>
+                <CardTitle className="flex items-center gap-2"><Bot className="w-5 h-5"/> System Health Assistant</CardTitle>
+                <CardDescription>Ask me anything about system health, tasks, alerts, or past incidents.</CardDescription>
             </CardHeader>
              {messages.length === 0 && (
                  <CardContent>
                     <p className="text-sm text-muted-foreground">Examples:</p>
                     <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-accent-foreground/80">
-                        <li>What went wrong with the DB server last week?</li>
+                        <li>How many tasks are in progress?</li>
+                        <li>What is the status of the DB server?</li>
                         <li>Give me a summary of the report for task {'<task-id>'}.</li>
                         <li>Why did the worker VM go offline?</li>
                     </ul>
@@ -147,7 +148,7 @@ export default function ChatPage() {
                 <Input
                     ref={inputRef}
                     name="message"
-                    placeholder="Ask about a past incident..."
+                    placeholder="Ask about system health..."
                     className="pr-12"
                     autoComplete="off"
                 />
