@@ -11,6 +11,7 @@ import { Step, ChatMessage, CommandSimulationResult } from './firestore-types';
 import { nanoid } from 'nanoid';
 import { conversationalRca } from '@/ai/flows/conversational-rca';
 import { commandSimulation } from '@/ai/flows/command-simulation';
+import { getAuth } from 'firebase-admin/auth';
 
 
 export interface GoalFormState {
@@ -243,4 +244,31 @@ export async function submitCommand(
         };
         return errorResult;
     }
+}
+
+export async function signOut() {
+  // This is a placeholder. The actual sign-out logic is client-side.
+  // We need a server action to trigger revalidation.
+  revalidatePath('/');
+}
+
+export async function signInWithGoogle() {
+  // Placeholder for triggering client-side logic
+  // The actual sign-in happens on the client, this action helps with state.
+  revalidatePath('/');
+}
+
+export async function createSessionCookie(idToken: string) {
+  const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
+  const sessionCookie = await getAuth().createSessionCookie(idToken, { expiresIn });
+  return sessionCookie;
+}
+
+export async function verifySessionCookie(sessionCookie: string) {
+  try {
+    const decodedClaims = await getAuth().verifySessionCookie(sessionCookie, true);
+    return decodedClaims;
+  } catch (error) {
+    return null;
+  }
 }

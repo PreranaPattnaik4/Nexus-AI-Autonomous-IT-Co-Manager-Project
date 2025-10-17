@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from './icons';
+import { useUser } from '@/firebase';
 
 const navItems = [
   { href: '/chat', label: 'Chat', icon: MessageCircle },
@@ -66,6 +67,8 @@ function NavItems() {
 
 
 export function AppSidebar() {
+  const { user } = useUser();
+
   return (
     <aside className="h-screen w-64 flex-shrink-0 flex flex-col bg-card border-r">
       <div className="flex items-center justify-center h-16 border-b">
@@ -81,14 +84,28 @@ export function AppSidebar() {
           Help & Support
         </Button>
         <div className="flex items-center">
-          <Avatar className="h-9 w-9">
-            <AvatarImage src="https://picsum.photos/seed/user/40/40" alt="User" data-ai-hint="person avatar" />
-            <AvatarFallback>IT</AvatarFallback>
-          </Avatar>
-          <div className="ml-3">
-            <p className="text-sm font-medium">IT Manager</p>
-            <p className="text-xs text-muted-foreground">manager@example.com</p>
-          </div>
+           {user ? (
+            <>
+                <Avatar className="h-9 w-9">
+                    <AvatarImage src={user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`} alt={user.displayName || 'User'} />
+                    <AvatarFallback>{user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}</AvatarFallback>
+                </Avatar>
+                <div className="ml-3">
+                    <p className="text-sm font-medium">{user.displayName || 'Nexus User'}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
+            </>
+           ) : (
+            <>
+                <Avatar className="h-9 w-9">
+                    <AvatarFallback>??</AvatarFallback>
+                </Avatar>
+                <div className="ml-3">
+                    <p className="text-sm font-medium">Guest</p>
+                    <p className="text-xs text-muted-foreground">Not signed in</p>
+                </div>
+            </>
+           )}
         </div>
       </div>
     </aside>
