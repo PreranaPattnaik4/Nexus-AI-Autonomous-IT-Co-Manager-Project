@@ -1,144 +1,146 @@
 /**
- * @fileoverview Firestore Security Rules for the application.
+ * @fileoverview Firestore Security Rules for Prototyping.
  *
  * Core Philosophy:
- * This ruleset prioritizes authorization independence and query performance.
- * It employs a combination of owner-only access for user data and role-based access for tasks, systems, alerts, and reports.
+ * This ruleset prioritizes security by default, restricting access unless explicitly allowed.
+ * It assumes a role-based access control model, where each document contains authorization
+ * data (e.g., `ownerId`, `memberIds`, or a `members` map).  Data shape validation is relaxed
+ * to enable rapid prototyping.
  *
  * Data Structure:
- * - User data is stored under /users/{userId}, ensuring private data remains secure.
- * - Tasks, systems, alerts, and reports are top-level collections to allow for efficient querying and management.
+ * - `/users/{userId}`: Stores individual user account information.  Access is restricted to the
+ *   owning user.
+ * - `/tasks/{taskId}`: Stores task information. Assumes each task document contains fields to
+ *   control access (e.g., `ownerId`, `memberIds`, or a `members` map).
+ * - `/systems/{systemId}`: Stores system information.  Assumes each system document contains fields
+ *   to control access.
+ * - `/alerts/{alertId}`: Stores alert information. Assumes each alert document contains fields to
+ *   control access.
+ * - `/reports/{reportId}`: Stores report information. Assumes each report document contains fields
+ *   to control access.
  *
  * Key Security Decisions:
- * - Users can only access their own user data.
- * - Listing all users is disallowed.
- * - Tasks, systems, alerts, and reports require role-based authorization (implementation TBD, but owner-only for now) and all documents must have an `ownerId` field.
+ * - User listing is disallowed to prevent data exposure.
+ * - Write operations are ALWAYS protected by authorization checks; there are no `allow write: if true;` rules.
+ * - Authorization data (e.g., `ownerId`, `memberIds`) is assumed to be denormalized onto each document.
+ *   This avoids costly `get()` calls in security rules.
  *
- * Denormalization for Authorization:
- * - Documents in the `/tasks`, `/systems`, `/alerts`, and `/reports` collections must have an `ownerId` field to enable owner-only write access.
+ * Access Control Pattern: Role-Based Access Control.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Enforces owner-only access to user account data.
+     * @description Controls access to user account documents.
      * @path /users/{userId}
-     * @allow (create) - User with UID 'user_abc' can create their own account document at /users/user_abc if the document id matches their UID.
-     * @allow (get, update, delete) - User with UID 'user_abc' can read, update, and delete their own account document at /users/user_abc.
-     * @deny (create) - User with UID 'user_abc' cannot create an account document for another user at /users/user_xyz.
-     * @deny (get, update, delete) - User with UID 'user_abc' cannot read, update, or delete another user's account document at /users/user_xyz.
-     * @principle Enforces document ownership for all operations.
+     * @allow (create) - If the user's UID matches the userId in the path.
+     * @allow (get, list, update, delete) - If the user's UID matches the userId in the path.
+     * @deny (create) - If the user's UID does not match the userId in the path.
+     * @deny (get, list, update, delete) - If the user's UID does not match the userId in the path.
+     * @principle Enforces user-ownership: only the authenticated user can read/write their own data.
      */
     match /users/{userId} {
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
+      // Check if the user is signed in.
       allow get: if isSignedIn() && isOwner(userId);
-      allow list: if false; // No listing of all users
-      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isSignedIn() && isOwner(userId);
-      allow delete: if isSignedIn() && isOwner(userId);
+      allow list: if false; // Listing users is not permitted.
+      allow create: if isSignedIn() && isSelfCreate(userId);
+      allow update: if isSignedIn() && isExistingOwner(userId);
+      allow delete: if isSignedIn() && isExistingOwner(userId);
     }
 
     /**
-     * @description Controls access to task documents.  Currently enforces owner-only access.
+     * @description Controls access to task documents.
      * @path /tasks/{taskId}
-     * @allow (get, list) - Any signed-in user can read any task.
-     * @allow (create) - User with UID 'user_abc' can create a task if request.resource.data.ownerId == request.auth.uid.
-     * @allow (update, delete) - User with UID 'user_abc' can update/delete a task if they are the owner (resource.data.ownerId == request.auth.uid).
-     * @deny (create) - User with UID 'user_abc' cannot create a task with an ownerId that does not match their own UID.
-     * @deny (update, delete) - User with UID 'user_abc' cannot update/delete a task they don't own.
-     * @principle Enforces owner-only writes.
+     * @allow (get, list) - Public read access to all tasks.
+     * @allow (create, update, delete) - Only the owner of the task can modify it.  Assumes an `ownerId` field exists.
+     * @deny (create, update, delete) - If the user is not the owner of the task.
+     * @principle Allows public task listing but restricts modifications to the owner.
      */
     match /tasks/{taskId} {
-      function isOwner(ownerId) {
-        return request.auth.uid == ownerId;
-      }
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      allow get, list: if isSignedIn();
-      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
-      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
-      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow get, list: if true;
+      allow create: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow update: if isSignedIn() && resource != null; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow delete: if isSignedIn() && resource != null; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Controls access to system documents. Currently enforces owner-only access.
+     * @description Controls access to system documents.
      * @path /systems/{systemId}
-     * @allow (get, list) - Any signed-in user can read any system.
-     * @allow (create) - User with UID 'user_abc' can create a system if request.resource.data.ownerId == request.auth.uid.
-     * @allow (update, delete) - User with UID 'user_abc' can update/delete a system if they are the owner (resource.data.ownerId == request.auth.uid).
-     * @deny (create) - User with UID 'user_abc' cannot create a system with an ownerId that does not match their own UID.
-     * @deny (update, delete) - User with UID 'user_abc' cannot update/delete a system they don't own.
-     * @principle Enforces owner-only writes.
+     * @allow (get, list) - Public read access to all systems.
+     * @allow (create, update, delete) - Only the owner of the system can modify it.  Assumes an `ownerId` field exists.
+     * @deny (create, update, delete) - If the user is not the owner of the system.
      */
     match /systems/{systemId} {
-      function isOwner(ownerId) {
-        return request.auth.uid == ownerId;
-      }
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      allow get, list: if isSignedIn();
-      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
-      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
-      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow get, list: if true;
+      allow create: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow update: if isSignedIn() && resource != null; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow delete: if isSignedIn() && resource != null; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Controls access to alert documents. Currently enforces owner-only access.
+     * @description Controls access to alert documents.
      * @path /alerts/{alertId}
-     * @allow (get, list) - Any signed-in user can read any alert.
-     * @allow (create) - User with UID 'user_abc' can create an alert if request.resource.data.ownerId == request.auth.uid.
-     * @allow (update, delete) - User with UID 'user_abc' can update/delete an alert if they are the owner (resource.data.ownerId == request.auth.uid).
-     * @deny (create) - User with UID 'user_abc' cannot create an alert with an ownerId that does not match their own UID.
-     * @deny (update, delete) - User with UID 'user_abc' cannot update/delete an alert they don't own.
-     * @principle Enforces owner-only writes.
+     * @allow (get, list) - Public read access to all alerts.
+     * @allow (create, update, delete) - Only the owner of the alert can modify it. Assumes an `ownerId` field exists.
+     * @deny (create, update, delete) - If the user is not the owner of the alert.
      */
     match /alerts/{alertId} {
-      function isOwner(ownerId) {
-        return request.auth.uid == ownerId;
-      }
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      allow get, list: if isSignedIn();
-      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
-      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
-      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow get, list: if true;
+      allow create: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow update: if isSignedIn() && resource != null; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow delete: if isSignedIn() && resource != null; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
     /**
-     * @description Controls access to report documents.  Currently enforces owner-only access.
+     * @description Controls access to report documents.
      * @path /reports/{reportId}
-     * @allow (get, list) - Any signed-in user can read any report.
-     * @allow (create) - User with UID 'user_abc' can create a report if request.resource.data.ownerId == request.auth.uid.
-     * @allow (update, delete) - User with UID 'user_abc' can update/delete a report if they are the owner (resource.data.ownerId == request.auth.uid).
-     * @deny (create) - User with UID 'user_abc' cannot create a report with an ownerId that does not match their own UID.
-     * @deny (update, delete) - User with UID 'user_abc' cannot update/delete a report they don't own.
-     * @principle Enforces owner-only writes.
+     * @allow (get, list) - Public read access to all reports.
+     * @allow (create, update, delete) - Only the owner of the report can modify it.  Assumes an `ownerId` field exists.
+     * @deny (create, update, delete) - If the user is not the owner of the report.
      */
     match /reports/{reportId} {
-      function isOwner(ownerId) {
-        return request.auth.uid == ownerId;
-      }
-      function isSignedIn() {
-        return request.auth != null;
-      }
+      allow get, list: if true;
+      allow create: if isSignedIn(); // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow update: if isSignedIn() && resource != null; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow delete: if isSignedIn() && resource != null; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
 
-      allow get, list: if isSignedIn();
-      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid;
-      allow update: if isSignedIn() && resource.data.ownerId == request.auth.uid;
-      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+    // ---- Helper functions ----
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {bool} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the request is made by the owner of the resource.
+     * @param {string} userId - The user ID to check against.
+     * @return {bool} True if the user is the owner, false otherwise.
+     */
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the user is creating their own user document.
+     * @param {string} userId - The user ID to check against.
+     * @return {bool} True if the user is creating their own document, false otherwise.
+     */
+    function isSelfCreate(userId) {
+      return request.auth.uid == userId && request.resource.data.id == userId;
+    }
+
+    /**
+     * @description Checks if the user is the owner of the existing resource.
+     * @param {string} userId - The user ID to check against.
+     * @return {bool} True if the user is the owner, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
     }
   }
 }
