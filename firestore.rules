@@ -1,26 +1,124 @@
-rules_version = '2';
+/**
+ * @fileoverview Firestore Security Rules for the application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a user-ownership model for user profiles and role-based access control for all other resources.
+ * Only authenticated users can access their own profiles.  Access to tasks, systems, alerts, and reports are role-based and should be managed by the backend by including role information on those documents.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user account information. Access is restricted to the user themselves.
+ * - /tasks/{taskId}: Stores task information. Access control is role-based; role information should be denormalized onto each task document.
+ * - /systems/{systemId}: Stores system information. Access control is role-based; role information should be denormalized onto each system document.
+ * - /alerts/{alertId}: Stores alert information. Access control is role-based; role information should be denormalized onto each alert document.
+ * - /reports/{reportId}: Stores report information. Access control is role-based; role information should be denormalized onto each report document.
+ *
+ * Key Security Decisions:
+ * - Users can only read and write their own user profile data.
+ * - Listing of users is disallowed to prevent data exposure.
+ * - Tasks, systems, alerts, and reports are role-based.  For this prototyping phase, all authenticated users can read and write.
+ * - Schema validation is relaxed during this prototyping phase to allow rapid iteration.
+ */
 
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper functions
-    function isSignedIn() {
-      return request.auth != null;
+    /**
+     * @description Manages user account information. Only the authenticated user can access their own profile.
+     * @path /users/{userId}
+     * @allow (create) If the authenticated user's UID matches the userId parameter.
+     * @allow (get, update, delete) If the authenticated user's UID matches the userId parameter and the document exists.
+     * @deny (create) If the authenticated user's UID does not match the userId parameter.
+     * @deny (get, update, delete) If the authenticated user's UID does not match the userId parameter, or if the document does not exist.
+     * @deny (list) Listing users is not permitted.
+     * @principle Enforces strict user-ownership for profile data.
+     */
+    match /users/{userId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && existsAfter(/databases/$(database)/documents/users/$(userId));
+      }
+
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(userId);
+      allow update: if isSignedIn() && isExistingOwner(userId);
+      allow delete: if isSignedIn() && isExistingOwner(userId);
     }
 
-    // TASKS
+    /**
+     * @description Manages task information. Authorization is based on the user's role, which should be managed by the backend and included in the task document.
+     * @path /tasks/{taskId}
+     * @allow (get, list) All authenticated users can read tasks.
+     * @allow (create, update, delete) All authenticated users can create, update, and delete tasks. Role-based authorization should be implemented in the future.
+     * @deny (create, update, delete) If the user is not authenticated.
+     * @principle Role-based access control for task management.
+     */
     match /tasks/{taskId} {
-      allow read, write: if isSignedIn();
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn(); // TODO: Add role-based authorization.
     }
 
-    // ALERTS
-    match /alerts/{alertId} {
-      allow read, write: if isSignedIn();
-    }
-
-    // SYSTEMS
+    /**
+     * @description Manages system information. Authorization is based on the user's role, which should be managed by the backend and included in the system document.
+     * @path /systems/{systemId}
+     * @allow (get, list) All authenticated users can read system information.
+     * @allow (create, update, delete) All authenticated users can create, update, and delete system information. Role-based authorization should be implemented in the future.
+     * @deny (create, update, delete) If the user is not authenticated.
+     * @principle Role-based access control for system management.
+     */
     match /systems/{systemId} {
-      allow read: if isSignedIn();
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn(); // TODO: Add role-based authorization.
+    }
+
+    /**
+     * @description Manages alert information. Authorization is based on the user's role, which should be managed by the backend and included in the alert document.
+     * @path /alerts/{alertId}
+     * @allow (get, list) All authenticated users can read alerts.
+     * @allow (create, update, delete) All authenticated users can create, update, and delete alerts. Role-based authorization should be implemented in the future.
+     * @deny (create, update, delete) If the user is not authenticated.
+     * @principle Role-based access control for alert management.
+     */
+    match /alerts/{alertId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn(); // TODO: Add role-based authorization.
+    }
+
+    /**
+     * @description Manages report information. Authorization is based on the user's role, which should be managed by the backend and included in the report document.
+     * @path /reports/{reportId}
+     * @allow (get, list) All authenticated users can read reports.
+     * @allow (create, update, delete) All authenticated users can create, update, and delete reports. Role-based authorization should be implemented in the future.
+     * @deny (create, update, delete) If the user is not authenticated.
+     * @principle Role-based access control for report management.
+     */
+    match /reports/{reportId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isSignedIn(); // TODO: Add role-based authorization.
     }
   }
 }

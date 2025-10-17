@@ -1,227 +1,127 @@
 {
   "entities": {
-    "Task": {
-      "title": "Task",
-      "description": "Represents a task to be completed by the agent.",
+    "UserAccount": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserAccount",
       "type": "object",
+      "description": "Stores user account information, excluding authentication credentials.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "The unique identifier for the task."
+          "description": "Unique identifier for the user account. (PK)"
         },
-        "goal": {
+        "email": {
           "type": "string",
-          "description": "The high-level goal of the task."
+          "description": "User's email address.",
+          "format": "email"
         },
-        "status": {
+        "displayName": {
           "type": "string",
-          "enum": ["in-progress", "completed", "failed", "superseded"],
-          "description": "The current status of the task."
+          "description": "User's display name."
         },
-        "progress": {
-          "type": "number",
-          "description": "The progress of the task, from 0 to 100."
-        },
-        "steps": {
-          "type": "array",
-          "items": {
-            "$ref": "#/entities/Step"
-          }
-        },
-        "createdAt": {
+        "creationTimestamp": {
           "type": "string",
-          "format": "date-time",
-          "description": "The timestamp when the task was created."
+          "description": "Timestamp indicating when the user account was created.",
+          "format": "date-time"
         }
       },
-      "required": ["id", "goal", "status", "progress", "steps", "createdAt"]
-    },
-    "Step": {
-      "title": "Step",
-      "description": "Represents a single step within a task.",
-      "type": "object",
-      "properties": {
-        "description": {
-          "type": "string",
-          "description": "A description of the step."
-        },
-        "status": {
-          "type": "string",
-          "enum": ["pending", "completed", "failed"],
-          "description": "The status of the step."
-        },
-        "log": {
-          "type": "string",
-          "description": "A log message associated with the step's execution."
-        }
-      },
-      "required": ["description", "status"]
-    },
-    "Alert": {
-      "title": "Alert",
-      "description": "Represents a system alert.",
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "The unique identifier for the alert."
-        },
-        "title": {
-          "type": "string",
-          "description": "The title of the alert."
-        },
-        "description": {
-          "type": "string",
-          "description": "A description of the alert."
-        },
-        "severity": {
-          "type": "string",
-          "enum": ["high", "medium", "low"],
-          "description": "The severity of the alert."
-        },
-        "timestamp": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The timestamp when the alert occurred."
-        }
-      },
-      "required": ["id", "title", "description", "severity", "timestamp"]
-    },
-    "System": {
-      "title": "System",
-      "description": "Represents an IT system being monitored.",
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "The unique identifier for the system."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the system."
-        },
-        "status": {
-          "type": "string",
-          "enum": ["online", "offline", "degraded"],
-          "description": "The current status of the system."
-        },
-        "cpuUsage": {
-          "type": "number",
-          "description": "Current CPU usage percentage."
-        },
-        "memoryUsage": {
-          "type": "number",
-          "description": "Current memory usage percentage."
-        }
-      },
-      "required": ["id", "name", "status", "cpuUsage", "memoryUsage"]
-    },
-    "Report": {
-      "title": "Report",
-      "description": "Represents a Root Cause Analysis (RCA) report for a task.",
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "The unique identifier for the report."
-        },
-        "taskId": {
-          "type": "string",
-          "description": "The ID of the task this report is for."
-        },
-        "report": {
-          "type": "string",
-          "description": "The full content of the RCA report."
-        },
-        "generatedAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The timestamp when the report was generated."
-        }
-      },
-      "required": ["id", "taskId", "report", "generatedAt"]
-    },
-    "ChatMessage": {
-      "title": "Chat Message",
-      "description": "Represents a single message in a chat conversation.",
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "The unique identifier for the message."
-        },
-        "role": {
-          "type": "string",
-          "enum": ["user", "model"],
-          "description": "The role of the message sender."
-        },
-        "content": {
-          "type": "string",
-          "description": "The content of the message."
-        },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The timestamp when the message was created."
-        }
-      },
-      "required": ["id", "role", "content", "createdAt"]
-    },
-    "CommandSimulation": {
-        "title": "Command Simulation",
-        "description": "Represents a simulated command and its output.",
-        "type": "object",
-        "properties": {
-            "id": {
-                "type": "string"
-            },
-            "command": {
-                "type": "string"
-            },
-            "output": {
-                "type": "string"
-            },
-            "timestamp": {
-                "type": "string",
-                "format": "date-time"
-            }
-        },
-        "required": ["id", "command", "output", "timestamp"]
+      "required": [
+        "id",
+        "email",
+        "displayName",
+        "creationTimestamp"
+      ]
     }
   },
   "auth": {
-    "providers": ["anonymous"]
+    "providers": [
+      "password",
+      "anonymous"
+    ]
   },
   "firestore": {
-    "/tasks/{taskId}": {
-      "schema": {
-        "$ref": "#/entities/Task"
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserAccount",
+          "schema": {
+            "$ref": "#/backend/entities/UserAccount"
+          },
+          "description": "Stores user account information. The userId parameter corresponds to the Firebase Auth UID. Includes denormalized user data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user, corresponding to their Firebase Auth UID."
+            }
+          ]
+        }
       },
-      "description": "Stores individual tasks."
-    },
-    "/alerts/{alertId}": {
-      "schema": {
-        "$ref": "#/entities/Alert"
+      {
+        "path": "/tasks/{taskId}",
+        "definition": {
+          "entityName": "Task",
+          "schema": {
+            "$ref": "#/backend/entities/Task"
+          },
+          "description": "Stores task information for the agent.  Authorization is based on the user's role, which should be managed by the backend and included in the task document. Includes denormalized user data.",
+          "params": [
+            {
+              "name": "taskId",
+              "description": "The unique identifier for the task."
+            }
+          ]
+        }
       },
-      "description": "Stores system alerts."
-    },
-    "/systems/{systemId}": {
-      "schema": {
-        "$ref": "#/entities/System"
+      {
+        "path": "/systems/{systemId}",
+        "definition": {
+          "entityName": "System",
+          "schema": {
+            "$ref": "#/backend/entities/System"
+          },
+          "description": "Stores system information.  Authorization is based on the user's role, which should be managed by the backend and included in the system document. Includes denormalized user data.",
+          "params": [
+            {
+              "name": "systemId",
+              "description": "The unique identifier for the system."
+            }
+          ]
+        }
       },
-      "description": "Stores information about IT systems."
-    },
-    "/reports/{reportId}": {
-      "schema": {
-        "$ref": "#/entities/Report"
+      {
+        "path": "/alerts/{alertId}",
+        "definition": {
+          "entityName": "Alert",
+          "schema": {
+            "$ref": "#/backend/entities/Alert"
+          },
+          "description": "Stores alert information. Authorization is based on the user's role, which should be managed by the backend and included in the alert document. Includes denormalized user data.",
+          "params": [
+            {
+              "name": "alertId",
+              "description": "The unique identifier for the alert."
+            }
+          ]
+        }
       },
-      "description": "Stores RCA reports."
-    },
-    "/chats/{chatId}/messages/{messageId}": {
-      "schema": {
-        "$ref": "#/entities/ChatMessage"
-      },
-      "description": "Stores messages for a chat session."
-    }
+      {
+        "path": "/reports/{reportId}",
+        "definition": {
+          "entityName": "Report",
+          "schema": {
+            "$ref": "#/backend/entities/Report"
+          },
+          "description": "Stores report information. Authorization is based on the user's role, which should be managed by the backend and included in the report document. Includes denormalized user data.",
+          "params": [
+            {
+              "name": "reportId",
+              "description": "The unique identifier for the report."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "This Firestore structure prioritizes authorization independence and QAPs. User data is stored under `/users/{userId}`, ensuring private data remains secure. Tasks, systems, alerts, and reports are top-level collections to allow for efficient querying and management. Authorization independence is achieved because security rules can be applied to each of the collections without needing to read parent documents."
   }
 }
