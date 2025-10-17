@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { FileText } from 'lucide-react';
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { Report } from '@/lib/firestore-types';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -33,12 +33,12 @@ function ReportsListSkeleton() {
 export default function ReportsPage() {
   const firestore = useFirestore();
   
-  const reportsQuery = useMemo(() => {
+  const reportsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'reports'), orderBy('generatedAt', 'desc'));
   }, [firestore]);
 
-  const { data: reports, loading } = useCollection<Report>(reportsQuery);
+  const { data: reports, isLoading: loading } = useCollection<Report>(reportsQuery);
 
   return (
     <Card>

@@ -3,7 +3,7 @@
 import { ListChecks, CheckCheck, XCircle, Loader } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useCollection } from '@/firebase';
+import { useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import { TaskItem } from './task-item';
@@ -54,7 +54,7 @@ const pageConfig = {
 export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'completed' | 'failed' }) {
   const firestore = useFirestore();
   
-  const tasksQuery = useMemo(() => {
+  const tasksQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     let q = query(collection(firestore, 'tasks'), orderBy('createdAt', 'desc'));
     if (statusFilter) {
@@ -63,7 +63,7 @@ export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'co
     return q;
   }, [firestore, statusFilter]);
 
-  const { data: tasks, loading } = useCollection<Task>(tasksQuery);
+  const { data: tasks, isLoading: loading } = useCollection<Task>(tasksQuery);
   const config = pageConfig[statusFilter || 'all'];
 
   const scrollAreaHeight = statusFilter ? 'h-[calc(100vh-220px)]' : 'h-80';

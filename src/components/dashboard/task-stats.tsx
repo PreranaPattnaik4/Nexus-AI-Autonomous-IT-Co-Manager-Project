@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemoFirebase } from '@/firebase/provider';
 import Link from 'next/link';
 import { ListChecks, Loader, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,7 @@ import { useCollection, useFirestore } from '@/firebase';
 import { Task } from '@/lib/firestore-types';
 import { collection, query } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useMemo } from 'react';
 
 function StatCard({
   title,
@@ -44,12 +45,12 @@ function StatCard({
 export function TaskStats() {
   const firestore = useFirestore();
 
-  const tasksQuery = useMemo(() => {
+  const tasksQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'tasks'));
   }, [firestore]);
 
-  const { data: tasks, loading } = useCollection<Task>(tasksQuery);
+  const { data: tasks, isLoading: loading } = useCollection<Task>(tasksQuery);
 
   const stats = useMemo(() => {
     if (!tasks) {

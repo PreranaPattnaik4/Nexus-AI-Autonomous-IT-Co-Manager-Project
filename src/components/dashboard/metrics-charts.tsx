@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { System } from '@/lib/firestore-types';
 import { collection, query } from 'firebase/firestore';
 import { Skeleton } from '../ui/skeleton';
@@ -42,12 +42,12 @@ function ChartSkeleton() {
 export function MetricsCharts() {
   const firestore = useFirestore();
 
-  const systemsQuery = useMemo(() => {
+  const systemsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'systems'));
   }, [firestore]);
 
-  const { data: systems, loading } = useCollection<System>(systemsQuery);
+  const { data: systems, isLoading: loading } = useCollection<System>(systemsQuery);
 
   const { cpuData, memoryData, networkData } = useMemo(() => {
     const now = new Date();

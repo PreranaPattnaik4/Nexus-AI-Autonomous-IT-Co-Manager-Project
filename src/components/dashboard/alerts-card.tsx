@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { resolveAlert } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { useCollection, useFirestore } from '@/firebase';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { Alert } from '@/lib/firestore-types';
 import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '../ui/skeleton';
@@ -75,12 +75,12 @@ function AlertsListSkeleton() {
 export function AlertsCard() {
   const firestore = useFirestore();
 
-  const alertsQuery = useMemo(() => {
+  const alertsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(collection(firestore, 'alerts'), orderBy('timestamp', 'desc'));
   }, [firestore]);
 
-  const { data: alerts, loading } = useCollection<Alert>(alertsQuery);
+  const { data: alerts, isLoading: loading } = useCollection<Alert>(alertsQuery);
 
   return (
     <Card className="h-full">
