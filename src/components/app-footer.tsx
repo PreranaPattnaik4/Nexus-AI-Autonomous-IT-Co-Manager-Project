@@ -13,12 +13,14 @@ import { Logo } from './icons';
 import AboutPage from '@/app/about/page';
 import ContactPage from '@/app/contact/page';
 import FaqPage from '@/app/faq/page';
+import { Github, Linkedin, Twitter } from 'lucide-react';
+import Link from 'next/link';
 
 export function AppFooter() {
   return (
     <footer className="border-t bg-background text-card-foreground">
       <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-2">
               <Logo className="h-8 w-8 text-primary" />
@@ -71,6 +73,23 @@ export function AppFooter() {
               This project was built for the SuperHack 2025 (Google Cloud +
               Firebase AI Challenge) to demonstrate the power of agentic AI.
             </p>
+          </div>
+           <div>
+            <h3 className="font-semibold mb-4">Follow Us</h3>
+            <div className="flex space-x-4">
+              <Link href="#" className="text-muted-foreground hover:text-primary">
+                <Twitter className="h-5 w-5" />
+                <span className="sr-only">Twitter</span>
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary">
+                <Linkedin className="h-5 w-5" />
+                 <span className="sr-only">LinkedIn</span>
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary">
+                <Github className="h-5 w-5" />
+                 <span className="sr-only">GitHub</span>
+              </Link>
+            </div>
           </div>
         </div>
         <div className="mt-8 border-t pt-4 text-center text-xs text-muted-foreground">
