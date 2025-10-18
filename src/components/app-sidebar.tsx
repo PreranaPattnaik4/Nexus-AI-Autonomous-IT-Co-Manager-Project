@@ -6,7 +6,6 @@ import { Suspense } from 'react';
 import {
   LayoutDashboard,
   ListChecks,
-  FileText,
   Settings,
   CircleHelp,
   Zap,
@@ -15,6 +14,7 @@ import {
   Loader,
   MessageCircle,
   Terminal,
+  History,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -29,9 +29,7 @@ const navItems = [
   { href: '/console', label: 'Command Console', icon: Terminal },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
   { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader },
-  { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck },
-  { href: '/tasks?status=failed', label: 'Failed', icon: XCircle },
-  { href: '/reports', label: 'Reports', icon: FileText },
+  { href: '/history', label: 'History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];

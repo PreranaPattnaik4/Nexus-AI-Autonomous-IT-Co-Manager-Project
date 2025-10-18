@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function CompletedPage() {
-  redirect('/tasks?status=completed');
+  redirect('/history?tab=completed');
 }
