@@ -1,17 +1,38 @@
 'use client';
 
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Zap } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
-const integrations = [
+const initialIntegrations = [
   { name: 'Jira', description: 'Task & ticket management', connected: true },
   { name: 'Slack', description: 'Communication bridge', connected: false },
   { name: 'Monitoring API', description: 'System metrics data source', connected: true },
 ];
 
 export default function IntegrationsPage() {
+  const [integrations, setIntegrations] = useState(initialIntegrations);
+  const { toast } = useToast();
+
+  const handleToggle = (integrationName: string) => {
+    setIntegrations(prevIntegrations =>
+      prevIntegrations.map(integration => {
+        if (integration.name === integrationName) {
+          const newState = !integration.connected;
+          toast({
+            title: `Integration ${newState ? 'Connected' : 'Disconnected'}`,
+            description: `${integration.name} has been successfully ${newState ? 'connected' : 'disconnected'}.`,
+          });
+          return { ...integration, connected: newState };
+        }
+        return integration;
+      })
+    );
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -32,10 +53,18 @@ export default function IntegrationsPage() {
             </div>
             <div className="flex items-center gap-4">
               <span className={`text-xs font-semibold ${integration.connected ? 'text-green-400' : 'text-yellow-400'}`}>
-                {integration.connected ? 'Connected' : 'Pending'}
+                {integration.connected ? 'Connected' : 'Disconnected'}
               </span>
-              <Switch checked={integration.connected} />
-              <Button variant="outline" size="sm">
+              <Switch
+                checked={integration.connected}
+                onCheckedChange={() => handleToggle(integration.name)}
+                aria-label={`Toggle ${integration.name} integration`}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleToggle(integration.name)}
+              >
                 {integration.connected ? 'Disconnect' : 'Connect'}
               </Button>
             </div>
