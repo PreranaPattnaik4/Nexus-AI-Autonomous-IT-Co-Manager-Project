@@ -10,15 +10,9 @@ import { GeminiThinkingMap } from '@/components/dashboard/gemini-thinking-map';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Lightbulb, BookOpen, Bot, ArrowRight } from 'lucide-react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { UnderstandIcon, PlanIcon, MonitorIcon, ReportIcon } from '@/components/icons';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from 'react';
-import { featureGuideCards, examplePrompts, thinkingSteps } from '@/lib/data-help';
+import { featureGuideCards, examplePromptCategories, thinkingSteps } from '@/lib/data-help';
 
 function Connector({ isLast = false }: { isLast?: boolean }) {
   if (isLast) return null;
@@ -122,20 +116,24 @@ function HelpContent() {
             </CardDescription>
         </CardHeader>
         <CardContent>
-            <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="item-1">
-                    <AccordionTrigger>View Example Prompts</AccordionTrigger>
-                    <AccordionContent>
+            <Tabs defaultValue={examplePromptCategories[0].category} className="w-full">
+                <TabsList className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4 h-auto">
+                    {examplePromptCategories.map((cat) => (
+                        <TabsTrigger key={cat.category} value={cat.category} className="whitespace-normal">{cat.category}</TabsTrigger>
+                    ))}
+                </TabsList>
+                {examplePromptCategories.map((cat) => (
+                    <TabsContent key={cat.category} value={cat.category} className="mt-4">
                         <ul className="list-disc space-y-2 pl-5 font-mono text-sm text-accent-foreground/90">
-                            {examplePrompts.map((prompt, index) => (
+                            {cat.prompts.map((prompt, index) => (
                                 <li key={index}>
                                     <p>{prompt}</p>
                                 </li>
                             ))}
                         </ul>
-                    </AccordionContent>
-                </AccordionItem>
-            </Accordion>
+                    </TabsContent>
+                ))}
+            </Tabs>
         </CardContent>
       </Card>
     </div>
