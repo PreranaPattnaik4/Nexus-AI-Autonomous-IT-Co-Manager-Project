@@ -16,7 +16,7 @@ import FaqPage from '@/app/faq/page';
 
 export function AppFooter() {
   return (
-    <footer className="border-t bg-card text-card-foreground">
+    <footer className="border-t bg-background text-card-foreground">
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
