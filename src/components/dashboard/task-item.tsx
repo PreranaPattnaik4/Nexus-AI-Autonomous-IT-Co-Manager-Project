@@ -1,7 +1,9 @@
+
 'use client';
 
 import { useState, useTransition } from 'react';
 import { FileText, CheckCircle2, XCircle, Loader, ChevronDown, ChevronUp, Bot, Recycle } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
@@ -87,6 +89,9 @@ export function TaskItem({ task }: { task: Task }) {
             <Progress value={task.progress} className="h-2 flex-1" />
             <span className="text-xs font-medium text-muted-foreground w-10 text-right">{task.progress}%</span>
         </div>
+         <p className="text-xs text-muted-foreground">
+            Created {formatDistanceToNow(new Date(task.createdAt), { addSuffix: true })}
+        </p>
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center gap-2">
             <CollapsibleTrigger asChild>
