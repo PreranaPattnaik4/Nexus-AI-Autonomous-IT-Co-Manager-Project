@@ -168,11 +168,11 @@ export default function DashboardPage({
       </div>
 
       <div className="col-span-1 lg:col-span-5">
-        <AlertsCard />
+        <TasksList statusFilter={status} />
       </div>
 
       <div className="col-span-1 lg:col-span-5">
-        <TasksList statusFilter={status} />
+        <AlertsCard />
       </div>
 
       <div className="col-span-1 lg:col-span-5">
