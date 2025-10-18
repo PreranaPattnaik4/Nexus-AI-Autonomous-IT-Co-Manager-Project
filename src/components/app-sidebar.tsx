@@ -125,7 +125,7 @@ export function AppSidebar() {
         <Link href="/" className='flex items-center gap-2'>
             <Logo className="h-6 w-6 text-blue-900 dark:text-blue-400" />
             <div>
-              <h1 className="text-lg font-bold tracking-tight">Nexus AI</h1>
+              <h1 className="text-lg font-bold tracking-tight text-blue-900 dark:text-blue-400">Nexus AI</h1>
               <p className="text-xs text-muted-foreground">Autonomous IT Co-Manager</p>
             </div>
         </Link>
