@@ -6,7 +6,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { TaskItem } from './task-item';
 import { Task } from '@/lib/firestore-types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 function TasksListSkeleton() {
   return (
@@ -108,37 +109,23 @@ const allStaticTasks: Task[] = [
             { description: 'Force restart from hypervisor', action: 'force_restart', status: 'pending' },
         ]
     },
+    {
+        id: 'task-6',
+        goal: 'Deploy web app',
+        status: 'superseded',
+        progress: 100,
+        createdAt: new Date(Date.now() - 172800000), // 2 days ago
+        steps: [
+             { description: 'Run build script', action: 'run_build', status: 'completed' },
+             { description: 'Deploy to staging', action: 'deploy_staging', status: 'completed' },
+        ]
+    }
 ];
 
 
-export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'completed' | 'failed' }) {
-
-  const loading = false;
-  
-  const tasks = useMemo(() => {
-    if (!statusFilter) {
-      return allStaticTasks;
-    }
-    return allStaticTasks.filter(task => task.status === statusFilter);
-  }, [statusFilter]);
-
-  const config = pageConfig[statusFilter || 'all'];
-
-  const scrollAreaHeight = statusFilter ? 'h-[calc(100vh-220px)]' : 'h-80';
-
-  return (
-    <Card className="col-span-1 lg:col-span-2">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          {config.icon}
-          <CardTitle>{config.title}</CardTitle>
-        </div>
-        <CardDescription>
-          {config.description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className={scrollAreaHeight}>
+function TaskListView({ tasks, loading, heightClass }: { tasks: Task[] | null, loading: boolean, heightClass: string }) {
+    return (
+        <ScrollArea className={heightClass}>
           {loading ? (
              <TasksListSkeleton />
           ) : (
@@ -153,6 +140,73 @@ export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'co
             </div>
           )}
         </ScrollArea>
+    );
+}
+
+
+export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'completed' | 'failed' }) {
+
+  const loading = false;
+  
+  const tasks = useMemo(() => {
+    if (!statusFilter) {
+      return allStaticTasks;
+    }
+    return allStaticTasks.filter(task => task.status === statusFilter);
+  }, [statusFilter]);
+  
+  const [currentTab, setCurrentTab] = useState('all');
+
+  const filteredTasks = useMemo(() => {
+    if (currentTab === 'all') return allStaticTasks;
+    return allStaticTasks.filter(task => task.status === currentTab);
+  }, [currentTab]);
+
+
+  const config = pageConfig[statusFilter || 'all'];
+
+  const scrollAreaHeight = statusFilter ? 'h-[calc(100vh-220px)]' : 'h-80';
+
+  if (statusFilter) {
+    return (
+        <Card className="col-span-1 lg:col-span-2">
+            <CardHeader>
+                <div className="flex items-center gap-2">
+                {config.icon}
+                <CardTitle>{config.title}</CardTitle>
+                </div>
+                <CardDescription>
+                {config.description}
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <TaskListView tasks={tasks} loading={loading} heightClass={scrollAreaHeight} />
+            </CardContent>
+        </Card>
+    )
+  }
+
+  return (
+    <Card className="col-span-1 lg:col-span-2">
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          {config.icon}
+          <CardTitle>{config.title}</CardTitle>
+        </div>
+        <CardDescription>
+          {config.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Tabs defaultValue="all" onValueChange={setCurrentTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="in-progress">In Progress</TabsTrigger>
+            <TabsTrigger value="completed">Completed</TabsTrigger>
+            <TabsTrigger value="failed">Failed</TabsTrigger>
+          </TabsList>
+            <TaskListView tasks={filteredTasks} loading={loading} heightClass={scrollAreaHeight} />
+        </Tabs>
       </CardContent>
     </Card>
   );
