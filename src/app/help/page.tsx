@@ -1,7 +1,9 @@
 
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { CircleHelp, Lightbulb, ShieldCheck } from 'lucide-react';
+import { CircleHelp, Lightbulb, ShieldCheck, AlertTriangle, Phone } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function HelpPage() {
   return (
@@ -16,6 +18,49 @@ export default function HelpPage() {
             Instructions, tips, and policies for using Nexus AI.
           </CardDescription>
         </CardHeader>
+      </Card>
+
+      <Card className="border-destructive">
+        <CardHeader>
+            <div className='flex items-center gap-2 text-destructive'>
+                <AlertTriangle className="h-5 w-5" />
+                <CardTitle>Important Advisory on AI Usage</CardTitle>
+            </div>
+             <CardDescription className="!text-destructive/90">
+                <p className="font-bold">Nexus AI is an assistive tool. Always verify outputs and consult human experts before making professional, financial or safety-critical decisions.</p>
+            </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm">
+             <ul className="list-disc space-y-2 pl-5">
+                <li>
+                    <strong>The AI can make mistakes.</strong> It can provide incomplete or incorrect information. Always verify important outputs before acting on them.
+                </li>
+                <li>
+                    <strong>Do not rely on the AI for critical decisions.</strong> Do not make professional, legal, medical, financial, or safety-critical decisions based solely on its results. Use it to inform your work, then validate with qualified human experts.
+                </li>
+                 <li>
+                    <strong>Check twice before acting.</strong> Before acting on a suggestion that affects money, strategy, or infrastructure, double-check the data, test in a safe environment, and consult a domain expert.
+                </li>
+                 <li>
+                    <strong>You are responsible.</strong> The user and their organization are responsible for decisions taken based on AI output. We recommend legal review and internal approval processes for critical actions.
+                </li>
+                 <li>
+                     <strong>Report issues.</strong> If you suspect an error or harmful suggestion, <Link href="/contact" className="text-primary hover:underline">report it here.</Link> We review feedback to improve our systems.
+                </li>
+            </ul>
+             <div className="mt-6 rounded-lg border border-dashed p-4 text-center">
+                <div className="flex items-center justify-center gap-2">
+                    <Phone className="h-5 w-5 text-muted-foreground" />
+                    <h4 className="font-semibold">Need Expert Help?</h4>
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                    For critical issues, you can escalate to a human reviewer.
+                </p>
+                <Button variant="outline" size="sm" className="mt-3" asChild>
+                    <Link href="/contact">Contact Support</Link>
+                </Button>
+            </div>
+        </CardContent>
       </Card>
 
       <Card>
