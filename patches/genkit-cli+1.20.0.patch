@@ -1,13 +1,17 @@
 diff --git a/node_modules/genkit-cli/lib/commands/start.js b/node_modules/genkit-cli/lib/commands/start.js
-index b8667c8585973b573e04e9c733671f69666f7f6f..d57929d0d3d526e0b741544f331ed86ff8c64263 100644
+index 92d86a4..a96f131 100644
 --- a/node_modules/genkit-cli/lib/commands/start.js
 +++ b/node_modules/genkit-cli/lib/commands/start.js
-@@ -107,6 +107,7 @@
-         `Running ${GENKIT_ENV} server at http://${resolvedAddress}:${port}...`,
-         false);
-     const child = (0, child_process_1.spawn)('node', [
-+        '--enable-source-maps',
-         '--conditions=genkit',
-         '--watch',
-         '--inspect',
+@@ -53,7 +53,10 @@
+         shutdown();
+         process.exit(0);
+     });
+-    const (await Promise.resolve().then(() => __importStar(require('node:http')))).createServer(requestListener).listen(options.port);
++    const http = (await Promise.resolve().then(() => __importStar(require('node:http'))));
++    const server = http.createServer(requestListener);
++    await new Promise((resolve) => server.listen(options.port, resolve));
++
+     console.log(`Your Genkit flows are available at http://localhost:${options.port}`);
+     if (options.watch) {
+         console.log('Watching for changes in the current directory...');
 
