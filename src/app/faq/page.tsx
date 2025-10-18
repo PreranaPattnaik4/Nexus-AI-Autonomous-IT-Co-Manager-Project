@@ -9,6 +9,10 @@ const faqData = [
     answer: "Nexus AI is a proactive, agentic AI solution for IT management. It goes beyond simple automation by understanding high-level goals, planning multi-step tasks, and autonomously executing them to manage your IT infrastructure."
   },
   {
+    question: "Who can use Nexus AI?",
+    answer: "Nexus AI is designed for IT managers, DevOps engineers, and system administrators who are responsible for managing, monitoring, and maintaining infrastructure. It acts as an intelligent co-manager to help automate complex workflows and resolve issues proactively."
+  },
+  {
     question: "How do I give a goal to the AI?",
     answer: "On the dashboard, use the 'Goal-Based Task Management' form. Type your objective in natural language, like 'Ensure all production servers are patched,' and the AI will create an actionable plan."
   },
