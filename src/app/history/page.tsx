@@ -54,6 +54,46 @@ function ReportsList() {
             progress: 100,
             createdAt: subDays(new Date(), 9),
             steps: []
+        },
+        {
+            id: 'task-11',
+            goal: 'Rotate SSL certificates on all public-facing services',
+            status: 'completed',
+            progress: 100,
+            createdAt: subDays(new Date(), 12),
+            steps: []
+        },
+        {
+            id: 'task-12',
+            goal: 'Test disaster recovery plan',
+            status: 'completed',
+            progress: 100,
+            createdAt: subDays(new Date(), 15),
+            steps: []
+        },
+        {
+            id: 'task-13',
+            goal: 'Decommission old web-server-03',
+            status: 'completed',
+            progress: 100,
+            createdAt: subDays(new Date(), 21),
+            steps: []
+        },
+        {
+            id: 'task-14',
+            goal: 'Update dependencies for the user-service monolith',
+            status: 'failed',
+            progress: 30,
+            createdAt: subDays(new Date(), 25),
+            steps: []
+        },
+        {
+            id: 'task-15',
+            goal: 'Run monthly cost-analysis report',
+            status: 'completed',
+            progress: 100,
+            createdAt: subDays(new Date(), 29),
+            steps: []
         }
     ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
@@ -114,7 +154,7 @@ export default function HistoryPage() {
           <CardTitle>Task & Report History</CardTitle>
         </div>
         <CardDescription>
-          Review past activities, including completed tasks, failures, and a 10-day task log.
+          Review past activities, including completed tasks, failures, and a 30-day task log.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -130,7 +170,7 @@ export default function HistoryPage() {
             </TabsTrigger>
             <TabsTrigger value="log">
                 <BookOpen className="mr-2 h-4 w-4" />
-                10-Day Task Log
+                30-Day Task Log
             </TabsTrigger>
           </TabsList>
           
