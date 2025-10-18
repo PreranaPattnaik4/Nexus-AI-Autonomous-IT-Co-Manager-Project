@@ -187,8 +187,8 @@ export function ChatDialog() {
           <div className='flex items-center gap-2'>
             <Logo className="h-6 w-6 text-blue-900 dark:text-blue-900" />
             <div>
-              <h1 className="text-lg font-bold tracking-tight text-blue-900 dark:text-blue-900">Nexus AI</h1>
-              <DialogDescription>AUTONOMOUS IT CO-MANAGER with agentic Ai power</DialogDescription>
+              <DialogTitle className="text-lg font-bold tracking-tight text-blue-900 dark:text-blue-900">Nexus AI</DialogTitle>
+              <DialogDescription>Autonomous IT Co-Manager with Agentic AI Power</DialogDescription>
             </div>
           </div>
         </DialogHeader>
