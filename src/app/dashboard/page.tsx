@@ -172,11 +172,11 @@ export default function DashboardPage({
       </div>
 
       <div className="col-span-1 lg:col-span-5">
-        <AlertsCard />
+        <MetricsCharts />
       </div>
 
       <div className="col-span-1 lg:col-span-5">
-        <MetricsCharts />
+        <AlertsCard />
       </div>
       
       <div className="col-span-1 lg:col-span-5">
