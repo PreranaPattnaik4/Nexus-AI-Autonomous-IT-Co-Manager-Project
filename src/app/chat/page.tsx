@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { nanoid } from 'nanoid';
-import { User, Bot, CornerDownLeft, Loader } from 'lucide-react';
+import { User, Bot, CornerDownLeft, Loader, Mic, MicOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,8 @@ import type { ChatMessage } from '@/lib/firestore-types';
 import { cn } from '@/lib/utils';
 import { marked } from 'marked';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useToast } from '@/hooks/use-toast';
+
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -62,15 +64,79 @@ export default function ChatPage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const { toast } = useToast();
+
+  const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onstart = () => {
+        setIsRecording(true);
+      };
+      
+      recognitionRef.current.onend = () => {
+        setIsRecording(false);
+      };
+
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInputValue(transcript);
+        // Automatically submit the form with the transcript
+        if(formRef.current) {
+            const formData = new FormData(formRef.current);
+            formData.set('message', transcript);
+            handleFormAction(formData);
+        }
+      };
+      
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error', event.error);
+        setIsRecording(false);
+        toast({
+            variant: 'destructive',
+            title: 'Voice Recognition Error',
+            description: `An error occurred: ${event.error}. Please try again.`
+        })
+      };
+
+    } else {
+        console.warn('Speech recognition not supported in this browser.');
+    }
+  }, [toast]);
+
+  const handleMicClick = () => {
+    if (!recognitionRef.current) {
+        toast({
+            variant: 'destructive',
+            title: 'Unsupported Feature',
+            description: 'Your browser does not support voice recognition.'
+        });
+        return;
+    }
+
+    if (isRecording) {
+      recognitionRef.current.stop();
+    } else {
+      recognitionRef.current.start();
+    }
+  };
+
 
   const [state, formAction] = useActionState(submitChatMessage, null);
 
   useEffect(() => {
     if (state?.id && state?.role === 'user') {
-      setMessages(prev => [...prev, state]);
+      // This is handled optimistically
     } else if (state?.id && state?.role === 'model') {
        setMessages(prev => {
-        // Check if the last message has the same role. If so, update it.
         const lastMsg = prev[prev.length - 1];
         if (lastMsg.role === 'model') {
             return [...prev.slice(0, -1), state];
@@ -104,6 +170,7 @@ export default function ChatPage() {
 
     formAction(formData);
     formRef.current?.reset();
+    setInputValue(''); // Reset our controlled input state
     inputRef.current?.focus();
   }
 
@@ -148,10 +215,18 @@ export default function ChatPage() {
                 <Input
                     ref={inputRef}
                     name="message"
-                    placeholder="Ask about system health..."
-                    className="pr-12"
+                    placeholder={isRecording ? "Listening..." : "Ask about system health..."}
+                    className="pr-24"
                     autoComplete="off"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
                 />
+                <div className="absolute right-12">
+                   <Button type="button" size="icon" variant="ghost" onClick={handleMicClick}>
+                        {isRecording ? <MicOff className="h-4 w-4 text-red-500" /> : <Mic className="h-4 w-4" />}
+                        <span className="sr-only">{isRecording ? 'Stop recording' : 'Start recording'}</span>
+                    </Button>
+                </div>
                 <div className="absolute right-2">
                     <SubmitButton />
                 </div>
