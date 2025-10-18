@@ -1,6 +1,6 @@
-
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,22 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Settings } from 'lucide-react';
 
 export default function SettingsPage() {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    const isDark = document.documentElement.classList.contains('dark');
+    setIsDarkMode(isDark);
+  }, []);
+
+  const handleThemeChange = (checked: boolean) => {
+    setIsDarkMode(checked);
+    if (checked) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
   return (
     <div className="space-y-6">
        <Card>
@@ -61,7 +77,7 @@ export default function SettingsPage() {
         <CardContent>
           <div className="flex items-center justify-between">
             <Label htmlFor="dark-mode">Dark Mode</Label>
-            <Switch id="dark-mode" defaultChecked={true} />
+            <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={handleThemeChange} />
           </div>
         </CardContent>
       </Card>
