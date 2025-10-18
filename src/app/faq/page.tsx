@@ -1,4 +1,5 @@
 
+
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { HelpCircle } from 'lucide-react';
@@ -23,6 +24,10 @@ const faqData = [
   {
     question: "What happens when a task fails?",
     answer: "If a task fails, you can use the 'Retry with AI' button. The AI will analyze the failure logs, formulate a new, corrected plan, and re-initiate the task in a self-healing loop."
+  },
+  {
+    question: "How does Nexus AI align with responsible AI practices?",
+    answer: "Nexus AI is designed as a safe, educational demonstration. All operations are fully simulated and do not affect real-world systems. This 'simulation-first' approach ensures that you can explore the power of agentic AI for IT management without any risk, adhering to principles of safety and transparency."
   }
 ];
 
@@ -55,3 +60,5 @@ export default function FaqPage() {
     </div>
   );
 }
+
+    

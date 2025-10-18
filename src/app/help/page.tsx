@@ -1,4 +1,5 @@
 
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { CircleHelp, Lightbulb, ShieldCheck } from 'lucide-react';
 
@@ -89,9 +90,14 @@ export default function HelpPage() {
                 <li>
                     <strong>Educational Use:</strong> This tool is intended to showcase the capabilities of agentic AI for IT management. Use it to understand how such a system can automate and reason through complex tasks.
                 </li>
+                 <li>
+                    <strong>Responsible AI:</strong> The simulation-only nature of this tool is a core part of its design, ensuring a safe environment for exploring AI capabilities without real-world risk.
+                </li>
             </ul>
         </CardContent>
       </Card>
     </div>
   );
 }
+
+    
