@@ -29,9 +29,9 @@ const navItems = [
   { href: '/console', label: 'Command Console', icon: Terminal },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
   { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader },
-  { href: '/history?tab=completed', label: 'Completed', icon: CheckCheck },
+  { href: '/completed', label: 'Completed', icon: CheckCheck },
   { href: '/history?tab=failed', label: 'Failed', icon: XCircle },
-  { href: '/history?tab=reports', label: 'RCA Reports', icon: FileText },
+  { href: '/reports', label: 'RCA Reports', icon: FileText },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
@@ -43,8 +43,12 @@ function NavItems() {
   const status = searchParams.get('status');
 
   let currentPath = pathname;
-  if (tab) {
-    currentPath = `${pathname}?tab=${tab}`;
+  if (pathname === '/history') {
+    if(tab) {
+        if(tab === 'completed') currentPath = '/completed';
+        if(tab === 'failed') currentPath = '/history?tab=failed';
+        if(tab === 'reports') currentPath = '/reports';
+    }
   } else if (status) {
     currentPath = `${pathname}?status=${status}`;
   }
