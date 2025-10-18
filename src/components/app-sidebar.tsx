@@ -34,7 +34,6 @@ const navItems = [
   { href: '/reports', label: 'Reports', icon: FileText },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/settings', label: 'Settings', icon: Settings },
-  { href: '/help', label: 'Help', icon: CircleHelp },
 ];
 
 function NavItems() {
@@ -90,10 +89,10 @@ export function AppSidebar() {
       </nav>
       <div className="mt-auto p-4 border-t">
         <Button variant="ghost" className="w-full justify-start mb-4" asChild>
-          <Link href="/help">
-            <CircleHelp className="mr-2 h-4 w-4" />
-            Help & Support
-          </Link>
+           <a href="https://github.com/PreranaPattnaik4/Nexus-AI-Autonomous-IT-Co-Manager#readme" target="_blank" rel="noopener noreferrer">
+              <CircleHelp className="mr-2 h-4 w-4" />
+              Help & Support
+            </a>
         </Button>
         <div className="flex items-center">
             <Avatar className="h-9 w-9">
