@@ -1,4 +1,5 @@
 
+
 import Link from 'next/link';
 import { GoalForm } from '@/components/dashboard/goal-form';
 import { TasksList } from '@/components/dashboard/tasks-list';
@@ -10,10 +11,11 @@ import { AiInsightsCard } from '@/components/dashboard/ai-insights-card';
 import { GeminiThinkingMap } from '@/components/dashboard/gemini-thinking-map';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Lightbulb, BookOpen, Bot, ArrowRight } from 'lucide-react';
+import { Lightbulb, BookOpen, Bot, ArrowRight, LifeBuoy, Info } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from 'react';
 import { featureGuideCards, examplePromptCategories, thinkingSteps } from '@/lib/data-help';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 function Connector({ isLast = false }: { isLast?: boolean }) {
   if (isLast) return null;
@@ -22,6 +24,50 @@ function Connector({ isLast = false }: { isLast?: boolean }) {
       <div className="w-full h-px bg-border -mx-2"></div>
     </div>
   );
+}
+
+const faqData = [
+  {
+    question: "What is Nexus AI?",
+    answer: "Nexus AI is a proactive, agentic AI solution for IT management. It goes beyond simple automation by understanding high-level goals, planning multi-step tasks, and autonomously executing them to manage your IT infrastructure."
+  },
+  {
+    question: "How do I give a goal to the AI?",
+    answer: "On the dashboard, use the 'Goal-Based Task Management' form. Type your objective in natural language, like 'Ensure all production servers are patched,' and the AI will create an actionable plan."
+  },
+  {
+    question: "Is this tool running real commands on my systems?",
+    answer: "No. For this demo, all actions are simulated. Nexus AI shows you the commands it *would* run, but no actual changes are made to any of your infrastructure, ensuring a safe environment for exploration."
+  },
+  {
+    question: "What happens when a task fails?",
+    answer: "If a task fails, you can use the 'Retry with AI' button. The AI will analyze the failure logs, formulate a new, corrected plan, and re-initiate the task in a self-healing loop."
+  }
+];
+
+function FaqSection() {
+  return (
+    <Card>
+      <CardHeader>
+        <div className='flex items-center gap-2'>
+          <LifeBuoy className="h-5 w-5" />
+          <CardTitle>Frequently Asked Questions</CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Accordion type="single" collapsible className="w-full">
+          {faqData.map((faq, index) => (
+            <AccordionItem value={`item-${index}`} key={index}>
+              <AccordionTrigger>{faq.question}</AccordionTrigger>
+              <AccordionContent>
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </CardContent>
+    </Card>
+  )
 }
 
 function HelpContent() {
@@ -180,9 +226,15 @@ export default function DashboardPage({
         <AlertsCard />
       </div>
       
+       <div className="col-span-1 lg:col-span-5">
+        <FaqSection />
+      </div>
+
       <div className="col-span-1 lg:col-span-5">
         <HelpContent />
       </div>
     </div>
   );
 }
+
+    
