@@ -88,9 +88,14 @@ function NavItemsSkeleton() {
 export function AppSidebar() {
   return (
     <aside className="h-screen w-64 flex-shrink-0 flex flex-col bg-card border-r">
-      <div className="flex items-center justify-center h-16 border-b">
-        <Logo className="h-6 w-6 text-primary" />
-        <h1 className="ml-2 text-xl font-bold tracking-tight">Nexus AI</h1>
+      <div className="flex items-center justify-center h-20 border-b px-4">
+        <Link href="/" className='flex items-center gap-2'>
+            <Logo className="h-8 w-8 text-primary" />
+            <div>
+                <h1 className="text-xl font-bold tracking-tight">Nexus AI</h1>
+                <p className="text-[0.6rem] text-muted-foreground font-semibold tracking-wider">AUTONOMOUS IT CO-MANAGER</p>
+            </div>
+        </Link>
       </div>
       <nav className="flex-1 px-4 py-4 space-y-1">
         <Suspense fallback={<NavItemsSkeleton />}>
