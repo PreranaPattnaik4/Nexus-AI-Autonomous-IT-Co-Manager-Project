@@ -1,19 +1,18 @@
 'use client';
 
-import { useTransition, useMemo } from 'react';
+import { useTransition } from 'react';
 import { AlertTriangle, Bot, CheckCircle, Info } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { resolveAlert } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { Alert } from '@/lib/firestore-types';
-import { collection, query, orderBy } from 'firebase/firestore';
 import { Skeleton } from '../ui/skeleton';
 import { ScrollArea } from '../ui/scroll-area';
+import { initialAlerts } from '@/lib/data';
+
 
 const severityIcons = {
   high: <AlertTriangle className="h-5 w-5 text-red-500" />,
@@ -26,21 +25,13 @@ function ResolveButton({ alertTitle }: { alertTitle: string }) {
   const { toast } = useToast();
 
   const handleClick = () => {
-    startTransition(async () => {
-      const result = await resolveAlert(alertTitle);
-      if (result.success) {
-        toast({
-          title: 'Action Initiated',
-          description: result.message,
-          action: <CheckCircle className="h-5 w-5 text-green-500" />,
-        });
-      } else {
-        toast({
-          title: 'Action Failed',
-          description: result.message,
-          variant: 'destructive',
-        });
-      }
+    startTransition(() => {
+      // This is a mock function now.
+      toast({
+        title: 'Action Initiated (Mock)',
+        description: `Creating a new task to resolve: ${alertTitle}`,
+        action: <CheckCircle className="h-5 w-5 text-green-500" />,
+      });
     });
   };
 
@@ -73,14 +64,8 @@ function AlertsListSkeleton() {
 }
 
 export function AlertsCard() {
-  const firestore = useFirestore();
-
-  const alertsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'alerts'), orderBy('timestamp', 'desc'));
-  }, [firestore]);
-
-  const { data: alerts, isLoading: loading } = useCollection<Alert>(alertsQuery);
+  const alerts = initialAlerts.map((a, i) => ({ ...a, id: `alert-${i}`, timestamp: new Date(Date.now() - i * 60000 * 15) }));
+  const loading = false;
 
   return (
     <Card className="h-full">
@@ -108,7 +93,7 @@ export function AlertsCard() {
                         <h3 className="text-sm font-semibold leading-tight">{alert.title}</h3>
                         <p className="text-xs text-muted-foreground">{alert.description}</p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {alert.timestamp && formatDistanceToNow(alert.timestamp.toDate(), { addSuffix: true })}
+                          {alert.timestamp && formatDistanceToNow(alert.timestamp, { addSuffix: true })}
                         </p>
                       </div>
                     </div>

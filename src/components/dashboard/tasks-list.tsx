@@ -3,9 +3,6 @@
 import { ListChecks, CheckCheck, XCircle, Loader } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
-import { useFirestore } from '@/firebase';
 import { TaskItem } from './task-item';
 import { Task } from '@/lib/firestore-types';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -50,20 +47,81 @@ const pageConfig = {
   },
 };
 
+const allStaticTasks: Task[] = [
+    {
+        id: 'task-1',
+        goal: 'Ensure all production servers are patched',
+        status: 'in-progress',
+        progress: 40,
+        createdAt: new Date(),
+        steps: [
+            { description: 'Create Jira ticket', action: 'create_jira_ticket', status: 'completed', log: 'Ticket NEX-123 created.' },
+            { description: 'List all production servers', action: 'list_servers', status: 'completed', log: 'Found 2 servers.' },
+            { description: 'Apply security patch to web-server-01', action: 'apply_patch', status: 'in-progress' },
+            { description: 'Apply security patch to web-server-02', action: 'apply_patch', status: 'pending' },
+            { description: 'Verify patch installation', action: 'verify_patch', status: 'pending' },
+        ]
+    },
+    {
+        id: 'task-2',
+        goal: 'Onboard new developer to the project-x repository',
+        status: 'completed',
+        progress: 100,
+        createdAt: new Date(Date.now() - 3600000), // 1 hour ago
+        steps: [
+            { description: 'Grant repository access', action: 'grant_access', status: 'completed', log: 'Access granted.' },
+            { description: 'Send welcome email', action: 'send_email', status: 'completed', log: 'Email sent.' },
+        ]
+    },
+    {
+        id: 'task-3',
+        goal: 'Diagnose and fix high CPU on cache server',
+        status: 'completed',
+        progress: 100,
+        createdAt: new Date(Date.now() - 7200000), // 2 hours ago
+        steps: [
+            { description: 'Analyze server metrics', action: 'analyze_metrics', status: 'completed' },
+            { description: 'Clear expired cache keys', action: 'clear_cache', status: 'completed', log: 'Cleared 5,234 keys.' },
+        ]
+    },
+    {
+        id: 'task-4',
+        goal: 'Reboot staging database server',
+        status: 'failed',
+        progress: 50,
+        createdAt: new Date(Date.now() - 86400000), // 1 day ago
+        steps: [
+            { description: 'Notify team on Slack', action: 'send_slack', status: 'completed', log: 'Notification sent to #ops-channel.' },
+            { description: 'Initiate reboot command', action: 'reboot_vm', status: 'failed', log: 'Connection timed out. Server unreachable.' },
+            { description: 'Verify server status', action: 'verify_status', status: 'pending' },
+        ]
+    },
+    {
+        id: 'task-5',
+        goal: '[Self-Correction] The goal "Reboot staging database server" failed.',
+        status: 'in-progress',
+        progress: 25,
+        createdAt: new Date(),
+        steps: [
+            { description: 'Create high-priority Jira ticket', action: 'create_jira_ticket', status: 'completed', log: 'Ticket NEX-124 created.' },
+            { description: 'Attempt to connect via recovery console', action: 'connect_recovery', status: 'in-progress' },
+            { description: 'Force restart from hypervisor', action: 'force_restart', status: 'pending' },
+        ]
+    },
+];
+
 
 export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'completed' | 'failed' }) {
-  const firestore = useFirestore();
-  
-  const tasksQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    let q = query(collection(firestore, 'tasks'), orderBy('createdAt', 'desc'));
-    if (statusFilter) {
-      q = query(q, where('status', '==', statusFilter));
-    }
-    return q;
-  }, [firestore, statusFilter]);
 
-  const { data: tasks, isLoading: loading } = useCollection<Task>(tasksQuery);
+  const loading = false;
+  
+  const tasks = useMemo(() => {
+    if (!statusFilter) {
+      return allStaticTasks;
+    }
+    return allStaticTasks.filter(task => task.status === statusFilter);
+  }, [statusFilter]);
+
   const config = pageConfig[statusFilter || 'all'];
 
   const scrollAreaHeight = statusFilter ? 'h-[calc(100vh-220px)]' : 'h-80';

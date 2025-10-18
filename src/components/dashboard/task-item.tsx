@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { RcaReportDialog } from './rca-report-dialog';
 import { Task } from '@/lib/firestore-types';
-import { retryTask } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 
 const statusIcons = {
@@ -39,20 +38,12 @@ function RetryButton({ taskId, taskGoal }: { taskId: string, taskGoal: string })
     const { toast } = useToast();
 
     const handleRetry = () => {
-        startTransition(async () => {
-            const result = await retryTask(taskId, taskGoal);
-            if (result.success) {
-                toast({
-                    title: 'AI Self-Healing Initiated',
-                    description: result.message,
-                });
-            } else {
-                toast({
-                    title: 'Retry Failed',
-                    description: result.message,
-                    variant: 'destructive',
-                });
-            }
+        startTransition(() => {
+            // Mock function
+            toast({
+                title: 'AI Self-Healing Initiated (Mock)',
+                description: `AI is analyzing the failure for task '${taskId}' and creating a new plan.`,
+            });
         });
     };
 

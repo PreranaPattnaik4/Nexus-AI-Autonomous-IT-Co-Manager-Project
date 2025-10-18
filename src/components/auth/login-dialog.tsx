@@ -13,8 +13,6 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@/firebase';
-import { initiateEmailSignUp, initiateEmailSignIn } from '@/firebase/non-blocking-login';
 import { useToast } from '@/hooks/use-toast';
 
 export function LoginDialog() {
@@ -22,29 +20,19 @@ export function LoginDialog() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const auth = useAuth();
   const { toast } = useToast();
 
   const handleAuthAction = async (action: 'signin' | 'signup') => {
     setLoading(true);
-    try {
-      if (action === 'signup') {
-        initiateEmailSignUp(auth, email, password);
-        toast({ title: 'Signup initiated', description: 'Please check your email to verify your account.' });
-      } else {
-        initiateEmailSignIn(auth, email, password);
-        toast({ title: 'Sign in initiated' });
-      }
-      setOpen(false);
-    } catch (error: any) {
+    // This is a mock function now.
+    setTimeout(() => {
       toast({
-        title: 'Authentication Failed',
-        description: error.message,
-        variant: 'destructive',
+        title: `${action === 'signin' ? 'Sign In' : 'Sign Up'} Succeeded (Mock)`,
+        description: 'This is a static frontend. No actual authentication occurred.',
       });
-    } finally {
       setLoading(false);
-    }
+      setOpen(false);
+    }, 1000);
   };
 
   return (
@@ -55,7 +43,7 @@ export function LoginDialog() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Welcome to Nexus AI</DialogTitle>
-          <DialogDescription>Sign in or create an account to continue.</DialogDescription>
+          <DialogDescription>Sign in or create an account to continue. (This is a mock dialog)</DialogDescription>
         </DialogHeader>
         <Tabs defaultValue="signin">
           <TabsList className="grid w-full grid-cols-2">

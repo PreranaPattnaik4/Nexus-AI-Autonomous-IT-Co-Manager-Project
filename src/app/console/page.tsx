@@ -1,20 +1,16 @@
-
 'use client';
 
-import { useState, useRef, useEffect, useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ChevronRight, Loader, Terminal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { submitCommand } from '@/lib/actions';
 import type { CommandSimulationResult } from '@/lib/firestore-types';
-import { cn } from '@/lib/utils';
 import { marked } from 'marked';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { nanoid } from 'nanoid';
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+function SubmitButton({ pending }: { pending: boolean }) {
   return (
     <Button type="submit" size="icon" variant="secondary" disabled={pending}>
       {pending ? <Loader className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
@@ -24,7 +20,6 @@ function SubmitButton() {
 }
 
 function CommandEntry({ result }: { result: CommandSimulationResult }) {
-  // Extract content from markdown code block
   const rawOutput = result.output.replace(/```shell\n|```/g, '');
 
   return (
@@ -47,14 +42,7 @@ export default function ConsolePage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [history, setHistory] = useState<CommandSimulationResult[]>([]);
-
-  const [state, formAction] = useActionState(submitCommand, null);
-
-  useEffect(() => {
-    if (state?.id) {
-      setHistory(prev => [...prev, state]);
-    }
-  }, [state]);
+  const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -65,15 +53,34 @@ export default function ConsolePage() {
     }
   }, [history]);
 
-
-  const handleFormAction = (formData: FormData) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
     const command = formData.get('command') as string;
     if(!command.trim()) return;
+    
+    setIsPending(true);
 
-    formAction(formData);
-    formRef.current?.reset();
-    inputRef.current?.focus();
-  }
+    const commandEntry: CommandSimulationResult = {
+      id: nanoid(),
+      command,
+      output: '',
+      timestamp: new Date(),
+    };
+
+    setHistory(prev => [...prev, commandEntry]);
+    
+    setTimeout(() => {
+      const simulatedOutput = `\`\`\`shell\n> Simulating output for: ${command}\n> This is a static response. In a real application, the AI would generate a realistic output.\n> For example, for 'ls -la', it might show file listings.\n\`\`\``;
+
+      setHistory(prev => prev.map(h => 
+        h.id === commandEntry.id ? { ...h, output: simulatedOutput } : h
+      ));
+      setIsPending(false);
+      formRef.current?.reset();
+      inputRef.current?.focus();
+    }, 1000);
+  };
 
   return (
     <Card className="h-[calc(100vh-10rem)] flex flex-col font-mono">
@@ -83,7 +90,7 @@ export default function ConsolePage() {
           <CardTitle>Demo Command Console</CardTitle>
         </div>
         <CardDescription className='font-sans'>
-          Interact with the AI assistant. Enter a command and see the simulated output.
+          Interact with a simulated AI assistant. Enter a command and see the static output.
         </CardDescription>
       </CardHeader>
       
@@ -110,7 +117,7 @@ export default function ConsolePage() {
         <div className="border-t pt-4 mt-4">
             <form
                 ref={formRef}
-                action={handleFormAction}
+                onSubmit={handleSubmit}
                 className="relative flex w-full items-center gap-2"
             >
                 <ChevronRight className="h-5 w-5 text-green-400 absolute left-2" />
@@ -120,9 +127,10 @@ export default function ConsolePage() {
                     placeholder="Enter a command..."
                     className="pl-8 pr-12 bg-background/80 font-mono text-sm"
                     autoComplete="off"
+                    disabled={isPending}
                 />
                 <div className="absolute right-2">
-                    <SubmitButton />
+                    <SubmitButton pending={isPending} />
                 </div>
             </form>
         </div>

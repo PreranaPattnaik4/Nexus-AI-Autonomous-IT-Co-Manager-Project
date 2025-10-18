@@ -20,7 +20,6 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from './icons';
-import { useUser } from '@/firebase';
 
 const navItems = [
   { href: '/chat', label: 'Chat', icon: MessageCircle },
@@ -35,7 +34,6 @@ const navItems = [
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
-// This sub-component safely uses the client-side hooks
 function NavItems() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -67,7 +65,11 @@ function NavItems() {
 
 
 export function AppSidebar() {
-  const { user } = useUser();
+  const user = {
+    displayName: 'IT Manager',
+    email: 'manager@example.com',
+    photoURL: 'https://picsum.photos/seed/user/40/40'
+  };
 
   return (
     <aside className="h-screen w-64 flex-shrink-0 flex flex-col bg-card border-r">
@@ -87,11 +89,11 @@ export function AppSidebar() {
            {user ? (
             <>
                 <Avatar className="h-9 w-9">
-                    <AvatarImage src={user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`} alt={user.displayName || 'User'} />
-                    <AvatarFallback>{user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}</AvatarFallback>
+                    <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
+                    <AvatarFallback>{user.displayName?.charAt(0) || 'U'}</AvatarFallback>
                 </Avatar>
                 <div className="ml-3">
-                    <p className="text-sm font-medium">{user.displayName || 'Nexus User'}</p>
+                    <p className="text-sm font-medium">{user.displayName}</p>
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
             </>

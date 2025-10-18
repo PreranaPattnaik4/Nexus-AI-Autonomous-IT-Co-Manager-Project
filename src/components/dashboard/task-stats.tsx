@@ -1,14 +1,9 @@
 'use client';
 
-import { useMemoFirebase } from '@/firebase/provider';
 import Link from 'next/link';
-import { ListChecks, Loader, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+import { ListChecks, Loader, CheckCircle2, XCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useCollection, useFirestore } from '@/firebase';
-import { Task } from '@/lib/firestore-types';
-import { collection, query } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useMemo } from 'react';
 
 function StatCard({
   title,
@@ -43,26 +38,14 @@ function StatCard({
 }
 
 export function TaskStats() {
-  const firestore = useFirestore();
 
-  const tasksQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'tasks'));
-  }, [firestore]);
-
-  const { data: tasks, isLoading: loading } = useCollection<Task>(tasksQuery);
-
-  const stats = useMemo(() => {
-    if (!tasks) {
-      return { total: 0, inProgress: 0, completed: 0, failed: 0 };
-    }
-    return {
-      total: tasks.length,
-      inProgress: tasks.filter((t) => t.status === 'in-progress').length,
-      completed: tasks.filter((t) => t.status === 'completed').length,
-      failed: tasks.filter((t) => t.status === 'failed').length,
-    };
-  }, [tasks]);
+  const loading = false;
+  const stats = {
+    total: 8,
+    inProgress: 2,
+    completed: 4,
+    failed: 1,
+  };
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

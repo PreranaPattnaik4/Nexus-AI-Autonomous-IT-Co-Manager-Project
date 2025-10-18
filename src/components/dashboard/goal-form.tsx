@@ -1,7 +1,6 @@
 'use client';
 
-import { useActionState, useEffect, useRef } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useState, useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -9,11 +8,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { submitGoal, type GoalFormState } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+function SubmitButton({ pending }: { pending: boolean }) {
   return (
     <Button type="submit" disabled={pending}>
       {pending ? 'Generating...' : 'Create Task'}
@@ -22,32 +19,38 @@ function SubmitButton() {
   );
 }
 
-const initialState: GoalFormState = {
-  message: '',
-};
-
 export function GoalForm() {
-  const [state, formAction] = useActionState(submitGoal, initialState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (state.message.includes('Successfully')) {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const goal = formData.get('goal') as string;
+
+    if (!goal || goal.trim().length < 10) {
+      setError('Goal must be at least 10 characters long.');
+      return;
+    }
+    setError(null);
+    setPending(true);
+
+    // Simulate backend call
+    setTimeout(() => {
       toast({
-        title: 'Success',
-        description: state.message,
+        title: 'Success (Mock)',
+        description: 'Successfully created task. Agent is starting execution...',
       });
       formRef.current?.reset();
-      router.refresh(); // Re-fetch server data and re-render
-    } else if (state.message) {
-      toast({
-        title: 'Error',
-        description: state.message,
-        variant: 'destructive',
-      });
-    }
-  }, [state, toast, router]);
+      setPending(false);
+      // In a real app, you might want to add the task to a local state
+      // For this demo, we'll just refresh to show it's a static view
+      router.refresh(); 
+    }, 1500);
+  };
 
   return (
     <Card className="col-span-1 lg:col-span-2">
@@ -58,7 +61,7 @@ export function GoalForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form ref={formRef} action={formAction} className="space-y-4">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="goal">Your Goal</Label>
             <Textarea
@@ -69,14 +72,14 @@ export function GoalForm() {
               required
               className="font-code"
             />
-            {state.errors?.goal && (
+            {error && (
               <p className="text-sm font-medium text-destructive">
-                {state.errors.goal.join(', ')}
+                {error}
               </p>
             )}
           </div>
           <div className="flex justify-start">
-            <SubmitButton />
+            <SubmitButton pending={pending} />
           </div>
         </form>
       </CardContent>

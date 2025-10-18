@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Bell, LogOut } from 'lucide-react';
+import { Search, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -12,17 +12,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useUser } from '@/firebase';
 import { LoginDialog } from './auth/login-dialog';
-import { getAuth } from 'firebase/auth';
 
 export function AppHeader() {
-  const { user, isUserLoading } = useUser();
-  const auth = getAuth();
 
-  const handleSignOut = () => {
-    auth.signOut();
+  const user = {
+    displayName: 'IT Manager',
+    email: 'manager@example.com',
+    photoURL: 'https://picsum.photos/seed/user/40/40'
   };
+  const isUserLoading = false;
 
   return (
     <header className="flex h-16 items-center border-b bg-card px-6">
@@ -45,7 +44,7 @@ export function AppHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
-                  <AvatarImage src={user.photoURL || `https://picsum.photos/seed/${user.uid}/40/40`} alt={user.displayName || 'User'} data-ai-hint="person avatar" />
+                  <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'User'} data-ai-hint="person avatar" />
                   <AvatarFallback>{user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}</AvatarFallback>
                 </Avatar>
               </Button>
@@ -63,8 +62,7 @@ export function AppHeader() {
               <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut}>
-                <LogOut className="mr-2 h-4 w-4" />
+              <DropdownMenuItem>
                 <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -1,22 +1,20 @@
 'use client';
 
-import { useState, useRef, useEffect, useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useState, useRef, useEffect } from 'react';
 import { nanoid } from 'nanoid';
-import { Bot, CornerDownLeft, Loader, MessageCircle, Mic, MicOff, User, X } from 'lucide-react';
+import { Bot, CornerDownLeft, Loader, MessageCircle, Mic, MicOff, User } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { submitChatMessage } from '@/lib/actions';
 import type { ChatMessage } from '@/lib/firestore-types';
 import { cn } from '@/lib/utils';
 import { marked } from 'marked';
 import { ScrollArea } from './ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+
+function SubmitButton({ pending }: { pending: boolean }) {
   return (
     <Button type="submit" size="icon" disabled={pending}>
       {pending ? <Loader className="h-4 w-4 animate-spin" /> : <CornerDownLeft className="h-4 w-4" />}
@@ -62,55 +60,53 @@ export function ChatDialog() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isRecording, setIsRecording] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const { toast } = useToast();
 
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
+    if (typeof window !== 'undefined') {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognitionRef.current = new SpeechRecognition();
+            recognitionRef.current.continuous = false;
+            recognitionRef.current.interimResults = false;
+            recognitionRef.current.lang = 'en-US';
 
-      recognitionRef.current.onstart = () => {
-        setIsRecording(true);
-      };
-      
-      recognitionRef.current.onend = () => {
-        setIsRecording(false);
-      };
+            recognitionRef.current.onstart = () => {
+                setIsRecording(true);
+            };
+            
+            recognitionRef.current.onend = () => {
+                setIsRecording(false);
+            };
 
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setInputValue(transcript);
-        // Automatically submit the form with the transcript
-        if(formRef.current) {
-            const formData = new FormData(formRef.current);
-            formData.set('message', transcript);
-            handleFormAction(formData);
+            recognitionRef.current.onresult = (event: any) => {
+                const transcript = event.results[0][0].transcript;
+                setInputValue(transcript);
+                formRef.current?.requestSubmit();
+            };
+            
+            recognitionRef.current.onerror = (event: any) => {
+                console.error('Speech recognition error', event.error);
+                setIsRecording(false);
+                toast({
+                    variant: 'destructive',
+                    title: 'Voice Recognition Error',
+                    description: `An error occurred: ${event.error}. Please try again.`
+                })
+            };
+
+        } else {
+            console.warn('Speech recognition not supported in this browser.');
         }
-      };
-      
-      recognitionRef.current.onerror = (event: any) => {
-        console.error('Speech recognition error', event.error);
-        setIsRecording(false);
-        toast({
-            variant: 'destructive',
-            title: 'Voice Recognition Error',
-            description: `An error occurred: ${event.error}. Please try again.`
-        })
-      };
-
-    } else {
-        console.warn('Speech recognition not supported in this browser.');
     }
   }, [toast]);
+
 
   const handleMicClick = () => {
     if (!recognitionRef.current) {
@@ -130,25 +126,6 @@ export function ChatDialog() {
   };
 
 
-  const [state, formAction] = useActionState(submitChatMessage, null);
-
-  useEffect(() => {
-     if (state?.message) {
-      setMessages(prev => {
-        const lastMsg = prev[prev.length - 1];
-        if (lastMsg.role === 'model' && state.message.role === 'model') {
-            return [...prev.slice(0, -1), state.message];
-        }
-        return [...prev, state.message];
-      });
-
-      if (state.audio && audioRef.current) {
-        audioRef.current.src = state.audio;
-        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-      }
-    }
-  }, [state]);
-
   useEffect(() => {
     if (scrollAreaRef.current) {
         const scrollContainer = scrollAreaRef.current.querySelector('div:first-child') as HTMLDivElement;
@@ -159,8 +136,9 @@ export function ChatDialog() {
   }, [messages]);
 
 
-  const handleFormAction = (formData: FormData) => {
-    const messageContent = formData.get('message') as string;
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const messageContent = inputValue;
     if(!messageContent.trim()) return;
 
     const userMessage: ChatMessage = {
@@ -170,10 +148,21 @@ export function ChatDialog() {
         createdAt: new Date(),
     };
     setMessages(prev => [...prev, userMessage]);
+    setIsPending(true);
 
-    formAction(formData);
-    formRef.current?.reset();
-    setInputValue(''); // Reset our controlled input state
+    // Simulate AI response
+    setTimeout(() => {
+        const aiMessage: ChatMessage = {
+            id: nanoid(),
+            role: 'model',
+            content: `This is a static response for: "${messageContent}". In a real application, this would be a dynamic answer from the AI. For example, the root cause for the DB server issue was a corrupted index.`,
+            createdAt: new Date(),
+        };
+        setMessages(prev => [...prev, aiMessage]);
+        setIsPending(false);
+    }, 1500);
+
+    setInputValue(''); 
     inputRef.current?.focus();
   }
   
@@ -209,7 +198,7 @@ export function ChatDialog() {
                             <p className="text-sm text-muted-foreground">Examples:</p>
                             <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-left text-accent-foreground/80">
                                 <li>What went wrong with the DB server last week?</li>
-                                <li>Give me a summary of the report for task {'<task-id>'}.</li>
+                                <li>Give me a summary of a recent report.</li>
                                 <li>Why did the worker VM go offline?</li>
                             </ul>
                         </div>
@@ -217,13 +206,23 @@ export function ChatDialog() {
                     {messages.map((msg) => (
                         <Message key={msg.id} msg={msg} />
                     ))}
+                    {isPending && (
+                        <div className="flex items-start gap-4">
+                            <Avatar className="h-9 w-9 border">
+                                <AvatarFallback>AI</AvatarFallback>
+                            </Avatar>
+                            <div className="max-w-md rounded-lg p-3 bg-muted">
+                                <Loader className="h-5 w-5 animate-spin" />
+                            </div>
+                        </div>
+                    )}
                 </div>
             </ScrollArea>
 
             <div className="border-t pt-4">
                 <form
                     ref={formRef}
-                    action={handleFormAction}
+                    onSubmit={handleSubmit}
                     className="relative flex w-full items-center gap-2"
                 >
                     <Input
@@ -234,6 +233,7 @@ export function ChatDialog() {
                         autoComplete="off"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
+                        disabled={isPending}
                     />
                     <div className="absolute right-12">
                         <Button type="button" size="icon" variant="ghost" onClick={handleMicClick}>
@@ -242,10 +242,9 @@ export function ChatDialog() {
                         </Button>
                     </div>
                     <div className="absolute right-2">
-                        <SubmitButton />
+                        <SubmitButton pending={isPending} />
                     </div>
                 </form>
-                 <audio ref={audioRef} className="hidden" />
             </div>
         </div>
       </DialogContent>

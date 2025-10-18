@@ -4,10 +4,9 @@ import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, PieChart, Pie, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { System } from '@/lib/firestore-types';
-import { collection, query } from 'firebase/firestore';
 import { Skeleton } from '../ui/skeleton';
+import { initialSystems } from '@/lib/data';
 
 const cpuChartConfig = {
   usage: {
@@ -40,14 +39,9 @@ function ChartSkeleton() {
 }
 
 export function MetricsCharts() {
-  const firestore = useFirestore();
 
-  const systemsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return query(collection(firestore, 'systems'));
-  }, [firestore]);
-
-  const { data: systems, isLoading: loading } = useCollection<System>(systemsQuery);
+  const systems: System[] = initialSystems.map((s, i) => ({...s, id: `system-${i}`}));
+  const loading = false;
 
   const { cpuData, memoryData, networkData } = useMemo(() => {
     const now = new Date();
