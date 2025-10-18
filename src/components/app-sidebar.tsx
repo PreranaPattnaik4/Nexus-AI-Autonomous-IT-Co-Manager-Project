@@ -14,7 +14,7 @@ import {
   Loader,
   MessageCircle,
   Terminal,
-  History,
+  FileText,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -29,7 +29,9 @@ const navItems = [
   { href: '/console', label: 'Command Console', icon: Terminal },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
   { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader },
-  { href: '/history', label: 'History', icon: History },
+  { href: '/history?tab=completed', label: 'Completed', icon: CheckCheck },
+  { href: '/history?tab=failed', label: 'Failed', icon: XCircle },
+  { href: '/history?tab=reports', label: 'RCA Reports', icon: FileText },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
@@ -37,8 +39,16 @@ const navItems = [
 function NavItems() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const tab = searchParams.get('tab');
   const status = searchParams.get('status');
-  const currentPath = status ? `${pathname}?status=${status}` : pathname;
+
+  let currentPath = pathname;
+  if (tab) {
+    currentPath = `${pathname}?tab=${tab}`;
+  } else if (status) {
+    currentPath = `${pathname}?status=${status}`;
+  }
+
 
   return (
     <>
