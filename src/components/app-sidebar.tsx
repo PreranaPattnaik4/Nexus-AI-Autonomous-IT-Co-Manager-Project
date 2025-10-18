@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -47,14 +48,39 @@ function NavItems() {
   if (status) {
     currentPath = `${pathname}?status=${status}`;
   } else if (tab) {
-    currentPath = `${pathname}?tab=${tab}`;
+    // Special handling for history page tabs
+    if (pathname === '/history') {
+      const defaultValue = 'completed';
+      currentPath = `/history?tab=${tab || defaultValue}`;
+      if (tab === 'completed') {
+        const completedTaskPath = '/tasks?status=completed';
+        if(currentPath === completedTaskPath) {
+            currentPath = completedTaskPath;
+        }
+      }
+    }
   }
 
 
   return (
     <>
       {navItems.map((item) => {
-        const isActive = item.href === currentPath;
+        let isActive = item.href === currentPath;
+
+        // Ensure parent 'Tasks' is not active when a sub-filter is
+        if (item.href === '/tasks' && status) {
+          isActive = false;
+        }
+
+        // A special check for the "Completed" link in the sidebar to also match the history tab
+        if (item.href.includes('status=completed') && currentPath.includes('tab=completed')) {
+            isActive = true;
+        }
+        
+        if (item.href.includes('status=failed') && currentPath.includes('tab=failed')) {
+            isActive = true;
+        }
+
         const Icon = item.icon;
 
         return (
@@ -93,7 +119,7 @@ export function AppSidebar() {
             <Logo className="h-8 w-8 text-primary" />
             <div>
                 <h1 className="text-xl font-bold tracking-tight">Nexus AI</h1>
-                <p className="text-[0.6rem] text-muted-foreground font-semibold tracking-wider">AUTONOMOUS IT CO-MANAGER</p>
+                <p className="text-[0.6rem] text-muted-foreground font-semibold tracking-wider">AUTONOMOUS IT CO-MANAGER with agentic Ai power</p>
             </div>
         </Link>
       </div>
