@@ -29,17 +29,6 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-       <Card>
-        <CardHeader>
-            <div className="flex items-center gap-2">
-                <Settings className="h-5 w-5" />
-                <CardTitle>Settings</CardTitle>
-            </div>
-            <CardDescription>
-                Manage your account, theme, and application settings.
-            </CardDescription>
-        </CardHeader>
-      </Card>
       <Card>
         <CardHeader>
           <CardTitle>Profile</CardTitle>
@@ -68,7 +57,17 @@ export default function SettingsPage() {
           </div>
         </CardContent>
       </Card>
-
+       <Card>
+        <CardHeader>
+            <div className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                <CardTitle>Settings</CardTitle>
+            </div>
+            <CardDescription>
+                Manage your account, theme, and application settings.
+            </CardDescription>
+        </CardHeader>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>Theme</CardTitle>
