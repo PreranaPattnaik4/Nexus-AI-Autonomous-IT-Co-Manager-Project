@@ -16,6 +16,7 @@ import {
   Loader,
   CheckCheck,
   XCircle,
+  AlertTriangle,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -32,6 +33,7 @@ const navItems = [
   { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader, isTaskItem: true },
   { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck, isTaskItem: true },
   { href: '/tasks?status=failed', label: 'Failed', icon: XCircle, isTaskItem: true },
+  { href: '/dashboard#alerts', label: 'Active Alerts', icon: AlertTriangle },
   { href: '/history', label: 'History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/settings', label: 'Settings', icon: Settings },

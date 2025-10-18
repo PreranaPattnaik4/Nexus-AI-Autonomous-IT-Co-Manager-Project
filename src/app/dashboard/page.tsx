@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { GoalForm } from '@/components/dashboard/goal-form';
 import { TasksList } from '@/components/dashboard/tasks-list';
@@ -175,7 +176,7 @@ export default function DashboardPage({
         <MetricsCharts />
       </div>
 
-      <div className="col-span-1 lg:col-span-5">
+      <div id="alerts" className="col-span-1 lg:col-span-5">
         <AlertsCard />
       </div>
       
