@@ -17,25 +17,29 @@ export const examplePrompts = [
     "Deploy the latest version of the web application to the staging environment."
 ];
 
-export const featureGuide = [
+export const featureGuideCards = [
     {
         title: "Command Console",
         icon: Terminal,
-        content: "The Command Console provides a simulated terminal environment where you can test the AI's knowledge of shell commands. Type any standard command (e.g., `kubectl get pods`, `ls -la`, `docker ps`) and the AI will generate a realistic, static output. It's a safe and powerful tool for demonstrations and training."
+        description: "Test the AI's knowledge of shell commands in a simulated terminal environment.",
+        href: "/console"
     },
     {
         title: "Task Views",
         icon: ListChecks,
-        content: "The sidebar provides several filtered views for tasks: **All Tasks** shows every task created. **In Progress** shows what the agent is currently working on. **Completed** lists all successfully finished tasks. **Failed** shows tasks that encountered an error, allowing you to trigger the 'Retry with AI' self-healing flow."
+        description: "Filter and view tasks by their status: in-progress, completed, or failed.",
+        href: "/tasks"
     },
     {
-        title: "Reports",
+        title: "Report History",
         icon: FileText,
-        content: "The Reports page contains a full history of all AI-generated Root Cause Analysis (RCA) reports. For any task that is completed or has failed, you can view a detailed analysis created by Gemini, which breaks down the summary, timeline, and resolution steps."
+        description: "Review detailed, AI-generated Root Cause Analysis (RCA) reports for past tasks.",
+        href: "/history"
     },
     {
         title: "Integrations",
         icon: Zap,
-        content: "The Integrations page shows the connection status of third-party tools like Jira and Slack. In this demo, these are static examples, but in a real-world scenario, this is where you would manage your connections to enable features like automated ticketing and notifications."
+        description: "Manage connections to third-party services like Jira and Slack.",
+        href: "/integrations"
     }
 ];

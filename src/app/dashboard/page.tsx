@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { GoalForm } from '@/components/dashboard/goal-form';
 import { TasksList } from '@/components/dashboard/tasks-list';
 import { MetricsCharts } from '@/components/dashboard/metrics-charts';
@@ -7,7 +8,8 @@ import { SystemHealthSummary } from '@/components/dashboard/system-health-summar
 import { AiInsightsCard } from '@/components/dashboard/ai-insights-card';
 import { GeminiThinkingMap } from '@/components/dashboard/gemini-thinking-map';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Lightbulb, BookOpen, Bot } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Lightbulb, BookOpen, Bot, ArrowRight } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -16,7 +18,7 @@ import {
 } from "@/components/ui/accordion";
 import { UnderstandIcon, PlanIcon, MonitorIcon, ReportIcon } from '@/components/icons';
 import React from 'react';
-import { featureGuide, examplePrompts, thinkingSteps } from '@/lib/data-help';
+import { featureGuideCards, examplePrompts, thinkingSteps } from '@/lib/data-help';
 
 function Connector({ isLast = false }: { isLast?: boolean }) {
   if (isLast) return null;
@@ -56,6 +58,32 @@ function HelpContent() {
 
       <Card>
         <CardHeader>
+          <CardTitle>Feature Guide</CardTitle>
+          <CardDescription>Learn about the key sections of the application.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {featureGuideCards.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <Card key={index} className="flex flex-col text-center items-center p-6 hover:shadow-lg transition-shadow duration-300">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-secondary text-secondary-foreground mb-4">
+                        <Icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="font-semibold mb-2">{feature.title}</h3>
+                    <p className="text-xs text-muted-foreground mb-4 flex-1">{feature.description}</p>
+                     <Button variant="outline" size="sm" asChild>
+                        <Link href={feature.href}>
+                            Explore <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                    </Button>
+                </Card>
+              );
+            })}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
             <div className='flex items-center gap-2'>
                 <BookOpen className="h-5 w-5" />
                 <CardTitle>How to Use Nexus AI</CardTitle>
@@ -82,34 +110,6 @@ function HelpContent() {
             </ol>
         </CardContent>
       </Card>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Feature Guide</CardTitle>
-          <CardDescription>Learn about the key sections of the application.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Accordion type="single" collapsible className="w-full">
-            {featureGuide.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <AccordionItem value={`item-${index}`} key={index}>
-                  <AccordionTrigger>
-                    <div className="flex items-center gap-3">
-                      <Icon className="h-4 w-4" />
-                      <span className='font-semibold'>{feature.title}</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pl-9 text-muted-foreground">
-                    {feature.content}
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
-        </CardContent>
-      </Card>
-
 
        <Card>
         <CardHeader>
