@@ -17,11 +17,11 @@ import {
   CheckCheck,
   XCircle,
   AlertTriangle,
+  User,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Logo } from './icons';
 import { Skeleton } from './ui/skeleton';
 
@@ -36,7 +36,7 @@ const navItems = [
   { href: '/dashboard#alerts', label: 'Active Alerts', icon: AlertTriangle },
   { href: '/history', label: 'History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/profile', label: 'Profile & Settings', icon: User },
 ];
 
 function NavItems() {
@@ -72,6 +72,11 @@ function NavItems() {
         // Ensure parent 'Tasks' is not active when a sub-filter is
         if (item.href === '/tasks' && status) {
           isActive = false;
+        }
+        
+        // Handle settings link being active on profile page
+        if (item.href === '/profile' && pathname === '/settings') {
+          isActive = true;
         }
 
         // A special check for the "Completed" link in the sidebar to also match the history tab
