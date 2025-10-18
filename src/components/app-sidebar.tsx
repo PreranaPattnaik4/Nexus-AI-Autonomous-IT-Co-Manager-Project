@@ -9,12 +9,9 @@ import {
   Settings,
   CircleHelp,
   Zap,
-  CheckCheck,
-  XCircle,
-  Loader,
   MessageCircle,
   Terminal,
-  FileText,
+  History,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -28,10 +25,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/console', label: 'Command Console', icon: Terminal },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
-  { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader },
-  { href: '/completed', label: 'Completed', icon: CheckCheck },
-  { href: '/history?tab=failed', label: 'Failed', icon: XCircle },
-  { href: '/reports', label: 'RCA Reports', icon: FileText },
+  { href: '/history', label: 'History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
@@ -40,24 +34,17 @@ function NavItems() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
-  const status = searchParams.get('status');
 
   let currentPath = pathname;
-  if (pathname === '/history') {
-    if(tab) {
-        if(tab === 'completed') currentPath = '/completed';
-        if(tab === 'failed') currentPath = '/history?tab=failed';
-        if(tab === 'reports') currentPath = '/reports';
-    }
-  } else if (status) {
-    currentPath = `${pathname}?status=${status}`;
+  if (pathname === '/history' && tab) {
+      currentPath = `/history?tab=${tab}`;
   }
 
 
   return (
     <>
       {navItems.map((item) => {
-        const isActive = item.href === currentPath;
+        const isActive = item.href === currentPath || (item.href === '/tasks' && pathname.startsWith('/tasks') && !searchParams.get('status'));
         
         return (
           <Button
@@ -67,7 +54,7 @@ function NavItems() {
             asChild
           >
             <Link href={item.href}>
-              <item.icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && 'animate-spin')} />
+              <item.icon className={cn("mr-2 h-4 w-4")} />
               {item.label}
             </Link>
           </Button>
