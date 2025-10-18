@@ -1,0 +1,13 @@
+diff --git a/node_modules/genkit-cli/lib/commands/start.js b/node_modules/genkit-cli/lib/commands/start.js
+index b8667c8585973b573e04e9c733671f69666f7f6f..d57929d0d3d526e0b741544f331ed86ff8c64263 100644
+--- a/node_modules/genkit-cli/lib/commands/start.js
++++ b/node_modules/genkit-cli/lib/commands/start.js
+@@ -107,6 +107,7 @@
+         `Running ${GENKIT_ENV} server at http://${resolvedAddress}:${port}...`,
+         false);
+     const child = (0, child_process_1.spawn)('node', [
++        '--enable-source-maps',
+         '--conditions=genkit',
+         '--watch',
+         '--inspect',
+
