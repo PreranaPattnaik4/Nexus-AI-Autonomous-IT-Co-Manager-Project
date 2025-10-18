@@ -89,10 +89,10 @@ export function AppSidebar() {
       </nav>
       <div className="mt-auto p-4 border-t">
         <Button variant="ghost" className="w-full justify-start mb-4" asChild>
-           <a href="https://github.com/PreranaPattnaik4/Nexus-AI-Autonomous-IT-Co-Manager#readme" target="_blank" rel="noopener noreferrer">
+           <Link href="/help">
               <CircleHelp className="mr-2 h-4 w-4" />
               Help & Support
-            </a>
+            </Link>
         </Button>
         <div className="flex items-center">
             <Avatar className="h-9 w-9">
