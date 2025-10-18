@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { marked } from 'marked';
 import { ScrollArea } from './ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
+import { Logo } from './icons';
 
 
 function SubmitButton({ pending }: { pending: boolean }) {
@@ -183,7 +184,7 @@ export function ChatDialog() {
         )}
       >
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2"><Bot className="w-5 h-5"/> Conversational RCA</DialogTitle>
+          <DialogTitle className="flex items-center gap-2"><Logo className="w-5 h-5 text-primary"/> Conversational RCA</DialogTitle>
           <DialogDescription>
             Ask me anything about past incidents or RCA reports.
           </DialogDescription>
