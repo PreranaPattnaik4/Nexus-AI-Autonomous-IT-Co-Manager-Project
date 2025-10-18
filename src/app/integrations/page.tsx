@@ -60,13 +60,6 @@ export default function IntegrationsPage() {
                 onCheckedChange={() => handleToggle(integration.name)}
                 aria-label={`Toggle ${integration.name} integration`}
               />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleToggle(integration.name)}
-              >
-                {integration.connected ? 'Disconnect' : 'Connect'}
-              </Button>
             </div>
           </div>
         ))}
