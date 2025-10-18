@@ -1,13 +1,32 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Lightbulb, BookOpen, CircleHelp } from 'lucide-react';
+import { Lightbulb, BookOpen, CircleHelp, Bot } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
+import { UnderstandIcon, PlanIcon, MonitorIcon, ReportIcon } from '@/components/icons';
+import React from 'react';
+
+
+const thinkingSteps = [
+  { name: '1. Submit Goal', icon: UnderstandIcon, description: 'Manager provides a high-level objective.' },
+  { name: '2. AI Creates Plan', icon: PlanIcon, description: 'Nexus AI breaks the goal into technical steps.' },
+  { name: '3. Autonomous Execution', icon: MonitorIcon, description: 'AI agents execute the plan, monitored by the manager.' },
+  { name: '4. Review & Analyze', icon: ReportIcon, description: 'Manager reviews the outcome and AI-generated RCA report.' },
+];
+
+function Connector({ isLast = false }: { isLast?: boolean }) {
+  if (isLast) return null;
+  return (
+    <div className="flex-1 flex items-center justify-center">
+      <div className="w-full h-px bg-border -mx-2"></div>
+    </div>
+  );
+}
 
 const examplePrompts = [
     "Ensure all production servers are patched to the latest security standards.",
@@ -33,6 +52,30 @@ export default function HelpPage() {
         </CardHeader>
       </Card>
       
+      <Card>
+        <CardHeader>
+            <div className='flex items-center gap-2'>
+                <Bot className="h-5 w-5" />
+                <CardTitle>The IT Manager's Workflow Pipeline</CardTitle>
+            </div>
+            <CardDescription>From goal to resolution, here’s how Nexus AI automates your tasks.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-start justify-center pt-2">
+            {thinkingSteps.map((step, index) => (
+            <React.Fragment key={step.name}>
+                <div className="flex flex-col items-center text-center w-36">
+                <div className="flex items-center justify-center h-12 w-12 rounded-full bg-secondary text-secondary-foreground mb-2">
+                    <step.icon className="h-6 w-6" />
+                </div>
+                <p className="text-xs font-semibold">{step.name}</p>
+                <p className="text-xs text-muted-foreground mt-1 hidden md:block">{step.description}</p>
+                </div>
+                <Connector isLast={index === thinkingSteps.length - 1} />
+            </React.Fragment>
+            ))}
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
             <div className='flex items-center gap-2'>
