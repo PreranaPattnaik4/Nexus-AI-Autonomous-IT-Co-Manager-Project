@@ -1,19 +1,18 @@
 # Nexus AI – Autonomous IT Co-Manager
 
-Nexus AI is an intelligent, agentic platform designed to transform IT operations. It acts as an autonomous co-manager for IT professionals, capable of managing tasks, diagnosing failures, and optimizing system performance with minimal human intervention.
+Nexus is a proactive Agentic AI solution for IT management that redefines IT operations by moving beyond simple automation to create a truly autonomous, intelligent partner. Unlike traditional IT automation tools that only follow predefined rules, Nexus can understand high-level goals and independently plan, execute, and adapt its actions to achieve them. It acts as an intelligent "project manager" for your IT infrastructure, handling everything from routine tasks to complex, multi-step problem-solving.
 
 This project was built for the SuperHack 2025 (Google Cloud + Firebase AI Challenge).
 
-## 🚀 Key Features
+## 🚀 The Nexus Advantage: Key Features
 
-*   **Goal-Based Task Management**: Submit high-level goals in natural language (e.g., "Ensure all production servers are patched"), and Nexus AI's Planner Agent breaks them down into actionable, multi-step tasks.
-*   **Autonomous Execution & Simulation**: The Executor Agent simulates the execution of tasks, with real-time progress updates reflected in the UI.
-*   **Proactive Alert Resolution**: Nexus AI doesn't just display alerts; it uses its "Resolve with AI" capability to autonomously create and execute a plan to fix the issue.
-*   **AI-Powered Self-Healing**: When a task fails, the "Retry with AI" feature allows the system to analyze the failure logs, formulate a corrected plan, and re-initiate the task.
-*   **Automated RCA Reporting**: The Reporter Agent analyzes execution logs to generate detailed, human-readable Root Cause Analysis (RCA) reports in Markdown.
-*   **Conversational System Health Assistant**: A chat interface with **voice input** and **spoken audio responses (Text-to-Speech)** that allows users to ask questions about system health, tasks, alerts, and RCA reports.
-*   **Dynamic Dashboard**: A real-time overview of system health, task statistics, active alerts, and AI-generated weekly insights.
-*   **Secure Authentication**: Full user authentication system powered by Firebase, supporting both email/password and Google Sign-In.
+*   **Real-time Dashboard**: A central web application for IT managers to oversee the agent's actions, view performance metrics, and set high-level goals.
+*   **Goal-Based Task Management**: Users can give the agent natural language goals (e.g., "Ensure all systems are patched to the latest security standards").
+*   **Multi-step Task Execution**: The agent can break down a single goal into multiple, sequential tasks and execute them across different systems.
+*   **Proactive Issue Resolution**: Identifies and fixes problems autonomously without waiting for a human to create a ticket or send a command.
+*   **Conversational AI with Voice**: Allows for quick, natural-language interaction with the agent through a chat interface that supports both voice input (Speech-to-Text) and spoken audio responses (Text-to-Speech).
+*   **Automated Root Cause Analysis**: Generates detailed reports explaining its reasoning and the steps it took to solve a problem.
+*   **Third-Party Integrations**: Seamlessly connects with existing IT tools like Jira for ticketing, Slack for communication, and various monitoring systems.
 
 ## 🛠️ Technology Stack
 
