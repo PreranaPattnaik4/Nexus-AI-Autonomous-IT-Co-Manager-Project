@@ -144,7 +144,7 @@ function TaskListView({ tasks, loading, heightClass }: { tasks: Task[] | null, l
 }
 
 
-export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'completed' | 'failed' }) {
+export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'completed' | 'failed' | undefined }) {
 
   const loading = false;
   
@@ -155,10 +155,10 @@ export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'co
     return allStaticTasks.filter(task => task.status === statusFilter);
   }, [statusFilter]);
   
-  const [currentTab, setCurrentTab] = useState('all');
+  const [currentTab, setCurrentTab] = useState(statusFilter || 'all');
 
   const filteredTasks = useMemo(() => {
-    if (currentTab === 'all') return allStaticTasks;
+    if (currentTab === 'all') return allStaticTasks.filter(t => t.status !== 'superseded');
     return allStaticTasks.filter(task => task.status === currentTab);
   }, [currentTab]);
 
@@ -167,8 +167,9 @@ export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'co
 
   const scrollAreaHeight = statusFilter ? 'h-[calc(100vh-220px)]' : 'h-80';
 
-  if (statusFilter) {
-    return (
+  if (statusFilter && !['in-progress', 'completed', 'failed'].includes(statusFilter)) {
+      // On the main /tasks page, handle filter
+     return (
         <Card className="col-span-1 lg:col-span-2">
             <CardHeader>
                 <div className="flex items-center gap-2">
@@ -190,15 +191,15 @@ export function TasksList({ statusFilter }: { statusFilter?: 'in-progress' | 'co
     <Card className="col-span-1 lg:col-span-2">
       <CardHeader>
         <div className="flex items-center gap-2">
-          {config.icon}
-          <CardTitle>{config.title}</CardTitle>
+          {pageConfig['all'].icon}
+          <CardTitle>{pageConfig['all'].title}</CardTitle>
         </div>
         <CardDescription>
-          {config.description}
+          {pageConfig['all'].description}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="all" onValueChange={setCurrentTab} className="w-full">
+        <Tabs defaultValue={currentTab} onValueChange={setCurrentTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-4">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="in-progress">In Progress</TabsTrigger>

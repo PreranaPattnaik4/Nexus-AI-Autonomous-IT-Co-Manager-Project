@@ -143,7 +143,12 @@ function HelpContent() {
 }
 
 
-export default function DashboardPage() {
+export default function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  const status = searchParams?.status as 'in-progress' | 'completed' | 'failed' | undefined;
   return (
     <div className="grid gap-6 grid-cols-1 lg:grid-cols-5">
       <div className="col-span-1 lg:col-span-5">
@@ -169,7 +174,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="col-span-1 lg:col-span-5">
-        <TasksList />
+        <TasksList statusFilter={status} />
       </div>
 
       <div className="col-span-1 lg:col-span-5">
