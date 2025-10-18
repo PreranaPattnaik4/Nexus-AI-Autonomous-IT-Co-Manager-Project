@@ -18,7 +18,7 @@ Nexus AI addresses these challenges by providing:
 *   **Real-Time Awareness**: A centralized dashboard offers an immediate overview of system health, active tasks, and critical alerts, powered by real-time data synchronization with Firestore.
 *   **Proactive Self-Healing**: Instead of just flagging issues, Nexus AI autonomously initiates resolution workflows. The "Resolve with AI" and "Retry with AI" features use Gemini to create and execute new plans to fix problems as they happen.
 *   **Intelligent RCA Generation**: When incidents occur, Gemini analyzes execution logs to automatically generate human-readable RCA reports, saving engineers hours of manual investigation.
-*   **Human-AI Collaboration**: Through a natural language chat interface (with voice input) and goal-based task input, IT managers can collaborate with Nexus AI as if it were a highly skilled team member.
+*   **Human-AI Collaboration**: Through a natural language chat interface with both **voice input (Speech-to-Text)** and **spoken responses (Text-to-Speech)**, IT managers can collaborate with Nexus AI as if it were a highly skilled team member.
 
 ### 3️⃣ Technical Architecture
 
@@ -26,7 +26,7 @@ Nexus AI is built on a modern, serverless, and AI-native stack, designed for rea
 
 *   **Frontend**: Next.js (App Router with Server Components), TypeScript, Tailwind CSS for styling, and ShadCN for UI components. The UI is fully responsive and features a professional dark theme.
 *   **Backend**: Firebase (for Authentication and real-time data), with Next.js Server Actions handling all backend logic, eliminating the need for separate cloud functions for most operations.
-*   **AI Layer**: Google's Gemini Pro API, orchestrated through Genkit flows. This manages goal decomposition, RCA generation, and conversational intelligence.
+*   **AI Layer**: Google's Gemini Pro API, orchestrated through Genkit flows. This manages goal decomposition, RCA generation, conversational intelligence, and Text-to-Speech (TTS).
 *   **Authentication**: Firebase Authentication with support for Email/Password and Google Sign-In, providing secure access and user management.
 
 **Core Agentic Flow**:
@@ -48,7 +48,7 @@ Nexus AI is built on a modern, serverless, and AI-native stack, designed for rea
 [Firestore Database (Tasks, Alerts, Reports, Systems, Users)]
 ```
 
-### 4️⃣ Implemented Features (Milestones 1–8)
+### 4️⃣ Implemented Features (Milestones 1–9)
 
 | Milestone | Feature                     | Description                                          | Status      |
 |-----------|-----------------------------|------------------------------------------------------|-------------|
@@ -61,13 +61,14 @@ Nexus AI is built on a modern, serverless, and AI-native stack, designed for rea
 | 6         | Command Console             | Simulated terminal for executing IT commands with AI output. | ✅ Complete |
 | 7         | System Health & AI Insights | Dynamic charts and a weekly Gemini-generated insight card. | ✅ Complete |
 | 8         | Authentication & UI Polish  | Added full user authentication and refined UI/UX.      | ✅ Complete |
+| 9         | Conversational AI Speech    | Assistant features voice input and spoken audio responses (TTS). | ✅ Complete |
 
 
 ### 5️⃣ Unique Intelligent Capabilities
 
 *   **Self-Healing Retry Flow**: When a task fails, Gemini analyzes the failure logs, formulates a new, corrected goal, and re-initiates the task—a complete autonomous recovery loop.
 *   **Proactive Resolution**: Nexus AI doesn't just show alerts; it suggests and initiates resolutions, turning alerts into automated actions.
-*   **Conversational System Health Assistant**: Users can chat with an AI assistant that has full context on tasks, alerts, systems, and past RCA reports, allowing for natural language queries (via text or voice) about the entire IT environment.
+*   **Conversational System Health Assistant**: Users can chat with an AI assistant that has full context on tasks, alerts, systems, and past RCA reports. It accepts **voice input** and provides **spoken audio responses**, creating a true co-pilot experience.
 *   **Simulated Command Execution**: The Command Console uses Gemini to provide realistic, simulated outputs for any given shell command, creating a powerful and safe training/demo tool.
 *   **AI Insights Card**: Gemini provides a weekly summary of optimizations and system performance improvements, demonstrating its value over time.
 
@@ -76,7 +77,7 @@ Nexus AI is built on a modern, serverless, and AI-native stack, designed for rea
 *   **Dashboard**: The central hub displaying task statistics, system health score, the AI Insights card, and active alerts. The layout is optimized for a clear, at-a-glance overview.
 *   **Tasks Views**: Filterable lists for "All Tasks," "In Progress," "Completed," and "Failed," allowing for focused task management.
 *   **Reports**: An accordion view of all generated RCA reports, stored durably in Firestore.
-*   **Chat**: A dedicated page for the System Health Assistant, featuring voice input for hands-free interaction.
+*   **Chat**: A dedicated page for the System Health Assistant, featuring voice input and spoken audio output for hands-free interaction.
 *   **Command Console**: A simulated IT terminal for demonstrating the AI's command execution knowledge.
 *   **Integrations**: A page to manage connections with third-party services like Jira and Slack.
 *   **Settings**: A page for managing user profiles and application themes.
@@ -86,7 +87,8 @@ Each UI element is designed with Nexus AI’s dark theme, using gold and cyan ac
 
 ### 7️⃣ System Capabilities
 
-*   **Gemini-Powered Reasoning**: Core logic for goal breakdown, step generation, and RCA is handled by Gemini Pro.
+*   **Gemini-Powered Reasoning**: Core logic for goal breakdown, step generation, RCA, and conversation is handled by Gemini Pro.
+*   **Text-to-Speech (TTS)**: The Gemini TTS model is used to convert the AI assistant's text responses into natural-sounding speech, enhancing the conversational experience.
 *   **Real-Time Simulation**: Firestore's real-time capabilities are used to simulate task execution, with the UI updating live as the "Executor Agent" runs.
 *   **Dynamic Monitoring**: The dashboard visualizes mock CPU, Memory, and Network I/O data, providing a sense of a live, breathing system.
 *   **Interactive AI Loops**: The "Resolve with AI" and "Retry with AI" buttons are not just UI elements; they trigger complex backend server actions and Genkit flows.
@@ -104,7 +106,7 @@ This section highlights what I, Gemini, developed autonomously as your AI co-dev
 *   **UI/UX Enhancements & Proactive Suggestions**:
     *   **Autonomous Page Creation & UI Polish**: I designed and built the **Integrations**, **Settings**, **Command Console**, and **Chat** pages from scratch, including placeholder layouts with pre-styled ShadCN components. I also implemented a full authentication system with a login dialog and Google Sign-In.
     *   **Proactive "Retry with AI" Feature**: After implementing the initial task failure state, I suggested adding a "Retry with AI" feature to enhance the system's self-healing capabilities. I then autonomously implemented the UI button and the corresponding `retryTask` server action.
-    *   **Voice-to-Text Input**: To improve accessibility and user experience, I proactively added a voice input (mic) option to both the chat page and the chat popup, using the browser's Web Speech API.
+    *   **Voice-to-Text & Text-to-Speech**: To improve accessibility and user experience, I proactively added a voice input (mic) option to the chat interfaces using the Web Speech API. I then enhanced this by adding **Text-to-Speech (TTS)**, allowing the AI to speak its responses aloud, creating a more engaging conversational experience.
     *   **Layout and UX Refinements**: I autonomously reordered the main navigation to place "Chat" in a more prominent position. I also refined the dashboard layout multiple times based on user feedback to improve visual flow and component sizing.
 
 *   **Backend Reasoning and Data Simulation**:
@@ -121,7 +123,7 @@ This section highlights what I, Gemini, developed autonomously as your AI co-dev
 5.  An alert, such as *"High CPU on Cache Server"*, appears on the dashboard. The user clicks **"Resolve with AI."**
 6.  Gemini autonomously creates and starts a new task to diagnose and fix the CPU issue.
 7.  Another task fails. The user clicks **"Retry with AI."** Gemini analyzes the failure log, creates a corrected plan, and supersedes the failed task.
-8.  The user opens the **System Health Assistant**, clicks the mic icon, and asks, "How many tasks are failing?" and gets a real-time answer.
+8.  The user opens the **System Health Assistant**, clicks the mic icon, and asks, "How many tasks are failing?" The assistant provides a real-time **spoken answer**.
 9.  Once a task is complete, the user can view a detailed, AI-generated RCA report. The dashboard updates with the latest task stats and a new weekly **AI Insight**.
 
 ### 🔟 Technology Stack Table
@@ -130,7 +132,7 @@ This section highlights what I, Gemini, developed autonomously as your AI co-dev
 |------------|-----------------------------------------------------------|
 | **Frontend**   | Next.js, TypeScript, Tailwind CSS, ShadCN UI, Recharts    |
 | **Backend**    | Next.js Server Actions, Firebase Authentication           |
-| **AI Layer**   | Gemini Pro API + Genkit                                   |
+| **AI Layer**   | Gemini Pro API + Genkit (including TTS models)            |
 | **Data**       | Firestore (Real-time Collections)                         |
 | **Hosting**    | Firebase App Hosting                                      |
 | **Design**     | Dark theme with muted blue, gold, and cyan accents        |
