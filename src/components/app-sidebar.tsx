@@ -123,7 +123,7 @@ export function AppSidebar() {
     <aside className="h-screen w-64 flex-shrink-0 flex flex-col bg-card border-r">
       <div className="flex items-center justify-center h-20 border-b px-4">
         <Link href="/" className='flex items-center gap-2'>
-            <Logo className="h-8 w-8 text-primary" />
+            <Logo className="h-6 w-6 text-blue-900 dark:text-blue-400" />
             <div>
               <h1 className="text-lg font-bold tracking-tight">Nexus AI</h1>
               <p className="text-xs text-muted-foreground">Autonomous IT Co-Manager</p>
