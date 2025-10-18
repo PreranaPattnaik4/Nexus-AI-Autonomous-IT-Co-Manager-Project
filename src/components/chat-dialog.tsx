@@ -188,7 +188,7 @@ export function ChatDialog() {
             <Logo className="h-6 w-6 text-blue-900 dark:text-blue-900" />
             <div>
               <h1 className="text-lg font-bold tracking-tight text-blue-900 dark:text-blue-900">Nexus AI</h1>
-              <DialogDescription>Conversational RCA</DialogDescription>
+              <DialogDescription>AUTONOMOUS IT CO-MANAGER with agentic Ai power</DialogDescription>
             </div>
           </div>
         </DialogHeader>
