@@ -3,7 +3,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { HelpCircle, Phone } from 'lucide-react';
+import { HelpCircle, Phone, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
 const faqData = [
@@ -62,6 +62,10 @@ const faqData = [
   {
     question: "Who is responsible if an AI suggestion causes harm?",
     answer: "The user and their organization are ultimately responsible for any actions or decisions taken based on AI-generated output. We strongly recommend implementing internal review and approval processes for any critical actions suggested by the AI."
+  },
+  {
+    question: "Is Nexus AI fully deployed and production-ready?",
+    answer: "Nexus AI is currently in its development stage. We are continuously improving its performance, reliability, and decision-making capabilities. Stay connected — we are coming soon with fully powered Agentic AI solutions that will take autonomous IT management to the next level."
   }
 ];
 
@@ -100,6 +104,12 @@ export default function FaqPage() {
                     <Button variant="outline" size="sm" className="mt-3" asChild>
                         <Link href="/contact">Contact Support</Link>
                     </Button>
+                </div>
+                <div className="mt-6 border-t pt-4 text-center text-xs text-muted-foreground">
+                    <div className="flex items-center justify-center gap-2 font-semibold">
+                        <AlertTriangle className="h-4 w-4" />
+                        <p>Nexus AI is still evolving. Stay tuned for updates as we expand Agentic AI-powered capabilities and release new enterprise features.</p>
+                    </div>
                 </div>
             </CardContent>
         </Card>
