@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import {
   LayoutDashboard,
   ListChecks,
@@ -18,8 +19,9 @@ import {
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Logo } from './icons';
+import { Skeleton } from './ui/skeleton';
 
 const navItems = [
   { href: '/chat', label: 'Chat', icon: MessageCircle },
@@ -63,14 +65,17 @@ function NavItems() {
   );
 }
 
+function NavItemsSkeleton() {
+    return (
+        <>
+            {navItems.map((item) => (
+                <Skeleton key={item.href} className="h-10 w-full" />
+            ))}
+        </>
+    )
+}
 
 export function AppSidebar() {
-  const user = {
-    displayName: 'IT Manager',
-    email: 'manager@example.com',
-    photoURL: 'https://picsum.photos/seed/user/40/40'
-  };
-
   return (
     <aside className="h-screen w-64 flex-shrink-0 flex flex-col bg-card border-r">
       <div className="flex items-center justify-center h-16 border-b">
@@ -78,7 +83,9 @@ export function AppSidebar() {
         <h1 className="ml-2 text-xl font-bold tracking-tight">Nexus AI</h1>
       </div>
       <nav className="flex-1 px-4 py-4 space-y-2">
-        <NavItems />
+        <Suspense fallback={<NavItemsSkeleton />}>
+            <NavItems />
+        </Suspense>
       </nav>
       <div className="mt-auto p-4 border-t">
         <Button variant="ghost" className="w-full justify-start mb-4">
@@ -86,28 +93,13 @@ export function AppSidebar() {
           Help & Support
         </Button>
         <div className="flex items-center">
-           {user ? (
-            <>
-                <Avatar className="h-9 w-9">
-                    <AvatarImage src={user.photoURL} alt={user.displayName || 'User'} />
-                    <AvatarFallback>{user.displayName?.charAt(0) || 'U'}</AvatarFallback>
-                </Avatar>
-                <div className="ml-3">
-                    <p className="text-sm font-medium">{user.displayName}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
-                </div>
-            </>
-           ) : (
-            <>
-                <Avatar className="h-9 w-9">
-                    <AvatarFallback>??</AvatarFallback>
-                </Avatar>
-                <div className="ml-3">
-                    <p className="text-sm font-medium">Guest</p>
-                    <p className="text-xs text-muted-foreground">Not signed in</p>
-                </div>
-            </>
-           )}
+            <Avatar className="h-9 w-9">
+                <AvatarFallback>??</AvatarFallback>
+            </Avatar>
+            <div className="ml-3">
+                <p className="text-sm font-medium">Guest</p>
+                <p className="text-xs text-muted-foreground">Not signed in</p>
+            </div>
         </div>
       </div>
     </aside>
