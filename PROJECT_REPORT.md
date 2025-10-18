@@ -26,7 +26,7 @@ Nexus AI is built on a modern, serverless, and AI-native stack, designed for rea
 *   **Frontend**: Next.js (App Router with Server Components), TypeScript, Tailwind CSS for styling, and ShadCN for UI components. The UI is fully responsive and features a professional dark theme.
 *   **Backend**: Firebase (for Authentication and real-time data), with Next.js Server Actions handling all backend logic, eliminating the need for separate cloud functions for most operations.
 *   **AI Layer**: Google's Gemini Pro API, orchestrated through Genkit flows. This manages goal decomposition, RCA generation, conversational intelligence, and Text-to-Speech (TTS).
-*   **Authentication**: Firebase Authentication with support for Email/Password and Google Sign-In, providing secure access and user management.
+*   **Authentication**: Firebase Authentication with support for Email/Password, providing secure access and user management.
 
 **Core Agentic Flow**:
 `Goal Input` → `Planner Agent (Gemini)` → `Subtasks (Firestore)` → `Executor Agent (Simulation)` → `Log Analysis` → `Reporter Agent (RCA)` → `Insights Generation`
@@ -71,7 +71,7 @@ Nexus AI is built on a modern, serverless, and AI-native stack, designed for rea
 *   **Command Console**: A simulated IT terminal for demonstrating the AI's command execution knowledge.
 *   **Integrations**: A page to manage connections with third-party services like Jira and Slack.
 *   **Settings**: A page for managing user profiles and application themes.
-*   **Authentication**: A seamless login/signup dialog with support for email/password and Google Sign-In.
+*   **Authentication**: A seamless login/signup dialog with support for email/password.
 
 Each UI element is designed with Nexus AI’s dark theme, using gold and cyan accents to create a professional and futuristic aesthetic.
 
@@ -106,7 +106,7 @@ This section highlights what I, Gemini, developed autonomously as your AI co-dev
 
 ### 9️⃣ Demo Flow Summary
 
-1.  A user visits the dashboard, which is publicly viewable. They click the login button and sign in using Google.
+1.  A user visits the dashboard, which is publicly viewable. They click the login button and sign in using their email and password.
 2.  The user submits a high-level goal like *"Ensure all production servers are patched"*.
 3.  Gemini, via the `multiStepTaskExecution` flow, breaks it down into an actionable plan, creating a new task in Firestore.
 4.  The UI updates in real-time, showing the task "in-progress" as the Executor Agent simulates each step.

@@ -250,12 +250,6 @@ export async function signOut() {
   revalidatePath('/');
 }
 
-export async function signInWithGoogle() {
-  // Placeholder for triggering client-side logic
-  // The actual sign-in happens on the client, this action helps with state.
-  revalidatePath('/');
-}
-
 export async function createSessionCookie(idToken: string) {
   const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
   const sessionCookie = await getAuth().createSessionCookie(idToken, { expiresIn });
