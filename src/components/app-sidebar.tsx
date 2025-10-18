@@ -134,15 +134,6 @@ export function AppSidebar() {
               Help & Support
             </Link>
         </Button>
-        <div className="flex items-center">
-            <Avatar className="h-9 w-9">
-                <AvatarFallback>??</AvatarFallback>
-            </Avatar>
-            <div className="ml-3">
-                <p className="text-sm font-medium">Guest</p>
-                <p className="text-xs text-muted-foreground">Not signed in</p>
-            </div>
-        </div>
       </div>
     </aside>
   );
