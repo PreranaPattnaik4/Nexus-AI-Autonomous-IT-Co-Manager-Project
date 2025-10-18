@@ -62,6 +62,7 @@ export function ChatDialog() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -132,17 +133,19 @@ export function ChatDialog() {
   const [state, formAction] = useActionState(submitChatMessage, null);
 
   useEffect(() => {
-    if (state?.id && state?.role === 'user') {
-      // This is handled optimistically now
-    } else if (state?.id && state?.role === 'model') {
-       setMessages(prev => {
-        // Check if the last message has the same role. If so, update it.
+     if (state?.message) {
+      setMessages(prev => {
         const lastMsg = prev[prev.length - 1];
-        if (lastMsg.role === 'model') {
-            return [...prev.slice(0, -1), state];
+        if (lastMsg.role === 'model' && state.message.role === 'model') {
+            return [...prev.slice(0, -1), state.message];
         }
-        return [...prev, state];
+        return [...prev, state.message];
       });
+
+      if (state.audio && audioRef.current) {
+        audioRef.current.src = state.audio;
+        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+      }
     }
   }, [state]);
 
@@ -242,6 +245,7 @@ export function ChatDialog() {
                         <SubmitButton />
                     </div>
                 </form>
+                 <audio ref={audioRef} className="hidden" />
             </div>
         </div>
       </DialogContent>

@@ -12,6 +12,7 @@ import { nanoid } from 'nanoid';
 import { conversationalRca } from '@/ai/flows/conversational-rca';
 import { commandSimulation } from '@/ai/flows/command-simulation';
 import { getAuth } from 'firebase-admin/auth';
+import { textToSpeech } from '@/ai/flows/tts';
 
 
 export interface GoalFormState {
@@ -168,25 +169,20 @@ export async function retryTask(taskId: string, originalGoal: string) {
     }
 }
 
+export type ChatResponse = {
+    message: ChatMessage;
+    audio?: string;
+}
+
 export async function submitChatMessage(
-  prevState: ChatMessage | null,
+  prevState: ChatResponse | null,
   formData: FormData,
-): Promise<ChatMessage | null> {
+): Promise<ChatResponse | null> {
     const messageContent = formData.get('message') as string;
 
     if (!messageContent) {
         return null;
     }
-
-    const userMessage: ChatMessage = {
-        id: nanoid(),
-        role: 'user',
-        content: messageContent,
-        createdAt: new Date(),
-    };
-
-    // For now, we are not saving the chat history to keep the demo simple.
-    // In a real app, you would save userMessage to Firestore here.
 
     try {
         const { answer } = await conversationalRca({ query: messageContent });
@@ -197,8 +193,10 @@ export async function submitChatMessage(
             content: answer,
             createdAt: new Date(),
         };
-        // You would also save aiMessage to Firestore here.
-        return aiMessage;
+
+        const { audio } = await textToSpeech({ text: answer });
+
+        return { message: aiMessage, audio };
 
     } catch (error) {
         console.error("Error in conversational RCA flow:", error);
@@ -208,7 +206,7 @@ export async function submitChatMessage(
             content: "I'm sorry, something went wrong while I was thinking. Please try again.",
             createdAt: new Date(),
         };
-        return errorMessage;
+        return { message: errorMessage };
     }
 }
 

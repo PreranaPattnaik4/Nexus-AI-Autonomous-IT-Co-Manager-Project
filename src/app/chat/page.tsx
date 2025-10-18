@@ -63,6 +63,7 @@ export default function ChatPage() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -133,16 +134,25 @@ export default function ChatPage() {
   const [state, formAction] = useActionState(submitChatMessage, null);
 
   useEffect(() => {
-    if (state?.id && state?.role === 'user') {
-      // This is handled optimistically
-    } else if (state?.id && state?.role === 'model') {
-       setMessages(prev => {
+    if (state?.message) {
+      setMessages(prev => {
         const lastMsg = prev[prev.length - 1];
-        if (lastMsg.role === 'model') {
-            return [...prev.slice(0, -1), state];
+        // Replace the optimistic user message if it exists
+        if (lastMsg.role === 'user' && state.message.role === 'user') {
+            return [...prev.slice(0, -1), state.message];
         }
-        return [...prev, state];
+        // If the last message was a model response, update it (for streaming)
+        if (lastMsg.role === 'model' && state.message.role === 'model') {
+            return [...prev.slice(0, -1), state.message];
+        }
+        // Otherwise, add the new message
+        return [...prev, state.message];
       });
+
+      if (state.audio && audioRef.current) {
+        audioRef.current.src = state.audio;
+        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+      }
     }
   }, [state]);
 
@@ -231,6 +241,7 @@ export default function ChatPage() {
                     <SubmitButton />
                 </div>
             </form>
+            <audio ref={audioRef} className="hidden" />
       </footer>
     </div>
   );
