@@ -172,7 +172,7 @@ export function ChatDialog() {
       <DialogTrigger asChild>
         <Button
             size="icon"
-            className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg"
+            className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-primary text-primary-foreground"
         >
             <MessageCircle className="h-6 w-6" />
             <span className="sr-only">Open Chat</span>
@@ -180,14 +180,17 @@ export function ChatDialog() {
       </DialogTrigger>
       <DialogContent 
         className={cn(
-            "sm:max-w-md h-screen flex flex-col fixed right-0 top-0 translate-x-0 translate-y-0 rounded-l-lg",
+            "sm:max-w-md h-screen flex flex-col fixed right-0 top-0 translate-x-0 translate-y-0 rounded-l-lg bg-background/80 backdrop-blur-lg",
         )}
       >
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2"><Logo className="w-5 h-5 text-primary"/> Conversational RCA</DialogTitle>
-          <DialogDescription>
-            Ask me anything about past incidents or RCA reports.
-          </DialogDescription>
+          <div className='flex items-center gap-2'>
+            <Logo className="h-6 w-6 text-blue-900 dark:text-blue-900" />
+            <div>
+              <h1 className="text-lg font-bold tracking-tight text-blue-900 dark:text-blue-900">Nexus AI</h1>
+              <DialogDescription>Conversational RCA</DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
         
         <div className="flex-1 flex flex-col min-h-0">
