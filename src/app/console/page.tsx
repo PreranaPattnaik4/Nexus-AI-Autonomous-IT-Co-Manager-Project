@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -6,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import type { CommandSimulationResult } from '@/lib/firestore-types';
-import { marked } from 'marked';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { nanoid } from 'nanoid';
 
@@ -20,8 +20,6 @@ function SubmitButton({ pending }: { pending: boolean }) {
 }
 
 function CommandEntry({ result }: { result: CommandSimulationResult }) {
-  const rawOutput = result.output.replace(/```shell\n|```/g, '');
-
   return (
     <div className="font-mono text-sm">
       <div className="flex items-center gap-2">
@@ -29,9 +27,10 @@ function CommandEntry({ result }: { result: CommandSimulationResult }) {
         <span className="text-muted-foreground">{result.command}</span>
       </div>
       <div 
-        className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap pl-6 pt-1 text-accent-foreground/90"
-        dangerouslySetInnerHTML={{ __html: marked.parse(rawOutput) as string }} 
-      />
+        className="whitespace-pre-wrap pl-6 pt-1 text-accent-foreground/90"
+      >
+        {result.output}
+      </div>
     </div>
   );
 }
@@ -71,7 +70,7 @@ export default function ConsolePage() {
     setHistory(prev => [...prev, commandEntry]);
     
     setTimeout(() => {
-      const simulatedOutput = `\`\`\`shell\n> Simulating output for: ${command}\n> This is a static response. In a real application, the AI would generate a realistic output.\n> For example, for 'ls -la', it might show file listings.\n\`\`\``;
+      const simulatedOutput = `> Simulating output for: ${command}\n> This is a static response. In a real application, the AI would generate a realistic output.\n> For example, for 'ls -la', it might show file listings.`;
 
       setHistory(prev => prev.map(h => 
         h.id === commandEntry.id ? { ...h, output: simulatedOutput } : h

@@ -4,17 +4,14 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Logo } from './icons';
 import AboutPage from '@/app/about/page';
 import ContactPage from '@/app/contact/page';
 import FaqPage from '@/app/faq/page';
-import { Github, Linkedin, Twitter } from 'lucide-react';
+import { Github, Linkedin, Twitter, LifeBuoy } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from './ui/button';
 
 export function AppFooter() {
   return (
@@ -37,9 +34,7 @@ export function AppFooter() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="hover:text-primary">FAQ</button>
-                  </DialogTrigger>
+                   <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><LifeBuoy className="w-4 h-4 mr-2"/>FAQ</Button>
                   <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
                     <FaqPage />
                   </DialogContent>
@@ -47,9 +42,7 @@ export function AppFooter() {
               </li>
               <li>
                 <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="hover:text-primary">Contact</button>
-                  </DialogTrigger>
+                   <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">Contact</Button>
                   <DialogContent>
                     <ContactPage />
                   </DialogContent>
@@ -57,9 +50,7 @@ export function AppFooter() {
               </li>
               <li>
                 <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="hover:text-primary">About NexusAI</button>
-                  </DialogTrigger>
+                   <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">About NexusAI</Button>
                   <DialogContent className="sm:max-w-2xl">
                     <AboutPage />
                   </DialogContent>

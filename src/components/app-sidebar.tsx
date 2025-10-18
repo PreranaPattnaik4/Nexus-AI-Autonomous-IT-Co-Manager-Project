@@ -7,7 +7,6 @@ import { Suspense } from 'react';
 import {
   LayoutDashboard,
   ListChecks,
-  Settings,
   CircleHelp,
   Zap,
   MessageCircle,
@@ -30,9 +29,9 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/console', label: 'Command Console', icon: Terminal },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
-  { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader, isTaskItem: true },
-  { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck, isTaskItem: true },
-  { href: '/tasks?status=failed', label: 'Failed', icon: XCircle, isTaskItem: true },
+  { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader },
+  { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck },
+  { href: '/tasks?status=failed', label: 'Failed', icon: XCircle },
   { href: '/dashboard#alerts', label: 'Active Alerts', icon: AlertTriangle },
   { href: '/history', label: 'History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
@@ -42,53 +41,52 @@ const navItems = [
 function NavItems() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
   const status = searchParams.get('status');
   const tab = searchParams.get('tab');
 
-  let currentPath = pathname;
-  if (status) {
-    currentPath = `${pathname}?status=${status}`;
-  } else if (tab) {
-    // Special handling for history page tabs
-    if (pathname === '/history') {
-      const defaultValue = 'completed';
-      currentPath = `/history?tab=${tab || defaultValue}`;
-      if (tab === 'completed') {
-        const completedTaskPath = '/tasks?status=completed';
-        if(currentPath === completedTaskPath) {
-            currentPath = completedTaskPath;
-        }
-      }
+  const getIsActive = (href: string) => {
+    // Exact match for base path
+    if (href === pathname && !status && !tab) {
+      return true;
     }
-  }
+
+    // Handle query params
+    if (href.includes('?')) {
+      const [base, query] = href.split('?');
+      const params = new URLSearchParams(query);
+      const hasMatchingParams = Array.from(params.entries()).every(([key, value]) => {
+          if (pathname === '/history' && key === 'status') {
+              return searchParams.get('tab') === value;
+          }
+          return searchParams.get(key) === value;
+      });
+
+      return pathname === base && hasMatchingParams;
+    }
+    
+    // Handle special cases for parent routes
+    if (href === '/tasks' && pathname.startsWith('/tasks') && status) {
+        return false; // Don't activate "All Tasks" if a filter is active
+    }
+
+    if (href === '/history' && pathname === '/history' && tab) {
+        return false;
+    }
+    
+    // Handle profile/settings consolidation
+    if ((href === '/profile' || href === '/settings') && (pathname === '/profile' || pathname === '/settings')) {
+        return true;
+    }
+
+    return false;
+  };
 
 
   return (
     <>
       {navItems.map((item) => {
-        let isActive = item.href === currentPath;
-
-        // Ensure parent 'Tasks' is not active when a sub-filter is
-        if (item.href === '/tasks' && status) {
-          isActive = false;
-        }
-        
-        // Handle settings link being active on profile page
-        if (item.href === '/profile' && pathname === '/settings') {
-          isActive = true;
-        }
-
-        // A special check for the "Completed" link in the sidebar to also match the history tab
-        if (item.href.includes('status=completed') && currentPath.includes('tab=completed')) {
-            isActive = true;
-        }
-        
-        if (item.href.includes('status=failed') && currentPath.includes('tab=failed')) {
-            isActive = true;
-        }
-
         const Icon = item.icon;
+        const isActive = getIsActive(item.href);
 
         return (
           <Button
@@ -98,7 +96,7 @@ function NavItems() {
             asChild
           >
             <Link href={item.href}>
-              <Icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && 'animate-spin')} />
+              <Icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && isActive && 'animate-spin')} />
               {item.label}
             </Link>
           </Button>
@@ -139,7 +137,7 @@ export function AppSidebar() {
         <Button variant="ghost" className="w-full justify-start mb-4" asChild>
            <Link href="/help">
               <CircleHelp className="mr-2 h-4 w-4" />
-              Help & Support
+              Help
             </Link>
         </Button>
       </div>
