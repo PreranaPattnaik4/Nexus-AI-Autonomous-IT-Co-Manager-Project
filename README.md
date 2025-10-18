@@ -11,7 +11,7 @@ This project was built for the SuperHack 2025 (Google Cloud + Firebase AI Challe
 *   **Proactive Alert Resolution**: Nexus AI doesn't just display alerts; it uses its "Resolve with AI" capability to autonomously create and execute a plan to fix the issue.
 *   **AI-Powered Self-Healing**: When a task fails, the "Retry with AI" feature allows the system to analyze the failure logs, formulate a corrected plan, and re-initiate the task.
 *   **Automated RCA Reporting**: The Reporter Agent analyzes execution logs to generate detailed, human-readable Root Cause Analysis (RCA) reports in Markdown.
-*   **System Health Assistant**: A conversational chat interface (with voice input) that allows users to ask questions about system health, task status, alerts, and RCA reports.
+*   **Conversational System Health Assistant**: A chat interface with **voice input** and **spoken audio responses (Text-to-Speech)** that allows users to ask questions about system health, tasks, alerts, and RCA reports.
 *   **Dynamic Dashboard**: A real-time overview of system health, task statistics, active alerts, and AI-generated weekly insights.
 *   **Secure Authentication**: Full user authentication system powered by Firebase, supporting both email/password and Google Sign-In.
 
@@ -21,7 +21,7 @@ This project was built for the SuperHack 2025 (Google Cloud + Firebase AI Challe
 |------------|-----------------------------------------------------------|
 | **Frontend**   | Next.js (App Router), TypeScript, Tailwind CSS, ShadCN UI, Recharts |
 | **Backend**    | Next.js Server Actions, Firebase Authentication           |
-| **AI Layer**   | Google Gemini Pro API + Genkit                            |
+| **AI Layer**   | Google Gemini Pro API + Genkit (including TTS models)     |
 | **Data**       | Firestore (Real-time Collections)                         |
 | **Hosting**    | Firebase App Hosting                                      |
 
@@ -63,7 +63,7 @@ This is a Firebase Studio project, which simplifies setup and deployment.
 ### Project Structure
 
 *   `src/app/`: Contains all the pages and layouts for the Next.js application (using the App Router).
-*   `src/ai/flows/`: Genkit flows that define the AI agents' logic (Planner, Executor, Reporter).
+*   `src/ai/flows/`: Genkit flows that define the AI agents' logic (Planner, Executor, Reporter, TTS).
 *   `src/components/`: Reusable React components, including UI elements from ShadCN.
 *   `src/lib/`: Core application logic, including server actions (`actions.ts`) and data type definitions.
 *   `src/firebase/`: Firebase configuration, providers, and custom hooks for interacting with Firebase services.
