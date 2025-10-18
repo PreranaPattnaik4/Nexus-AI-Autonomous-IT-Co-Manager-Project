@@ -226,12 +226,12 @@ export default function DashboardPage({
         <AlertsCard />
       </div>
       
-       <div className="col-span-1 lg:col-span-5">
-        <FaqSection />
-      </div>
-
       <div className="col-span-1 lg:col-span-5">
         <HelpContent />
+      </div>
+      
+       <div className="col-span-1 lg:col-span-5">
+        <FaqSection />
       </div>
     </div>
   );
