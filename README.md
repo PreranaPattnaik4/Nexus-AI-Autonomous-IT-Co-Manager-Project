@@ -59,12 +59,33 @@ This is a Firebase Studio project, which simplifies setup and deployment.
     ```
     This command starts the Genkit development server and watches for changes in your AI flow files.
 
-### Project Structure
+## 📂 Project Structure
 
-*   `src/app/`: Contains all the pages and layouts for the Next.js application (using the App Router).
-*   `src/ai/flows/`: Genkit flows that define the AI agents' logic (Planner, Executor, Reporter, TTS).
-*   `src/components/`: Reusable React components, including UI elements from ShadCN.
-*   `src/lib/`: Core application logic, including server actions (`actions.ts`) and data type definitions.
-*   `src/firebase/`: Firebase configuration, providers, and custom hooks for interacting with Firebase services.
-*   `firestore.rules`: Defines the security rules for the Firestore database, allowing public read access for the demo.
+To make the codebase easy to navigate for judges, the key files are organized into distinct frontend and backend sections.
+
+### Frontend (Next.js & React Components)
+
+*   `src/app/`: Contains all pages and layouts for the Next.js application, following the App Router paradigm. Each folder (e.g., `/dashboard`, `/tasks`) corresponds to a URL route.
+*   `src/components/`: The heart of the UI, containing all reusable React components.
+    *   `src/components/dashboard/`: Components specifically for the main dashboard, like `GoalForm`, `TasksList`, and `AlertsCard`.
+    *   `src/components/ui/`: Reusable, generic UI elements from ShadCN, such as `Button`, `Card`, and `Input`.
+*   `src/firebase/`: Manages all client-side Firebase interactions.
+    *   `client-provider.tsx`: Initializes Firebase on the client.
+    *   `use-collection.tsx` & `use-doc.tsx`: Custom hooks for real-time data fetching from Firestore.
+    *   `auth/use-user.tsx`: A hook for accessing the current authenticated user's state.
+
+### Backend & AI (Server Actions & Genkit Flows)
+
+*   `src/lib/actions.ts`: This file acts as the primary backend endpoint, using **Next.js Server Actions**. It defines all the functions that are called from the client to trigger server-side logic, such as submitting a goal, generating a report, or resolving an alert.
+*   `src/ai/flows/`: This directory contains all the **Genkit AI flows** that define the logic for the different AI agents.
+    *   `multi-step-task-execution.ts`: The "Planner Agent" that breaks down user goals into actionable steps.
+    *   `task-execution-simulation.ts`: The "Executor Agent" that simulates running each task step.
+    *   `rca-report-generation.ts`: The "Reporter Agent" that generates Root Cause Analysis reports.
+    *   `proactive-issue-resolution.ts`: The agent that analyzes alerts and proposes solutions.
+    *   `conversational-rca.ts`: The AI logic for the System Health Assistant, including the tools it can use to query data.
+    *   `command-simulation.ts`: Powers the AI-driven command console.
+    *   `tts.ts`: The Text-to-Speech flow that converts AI responses into spoken audio.
+
+---
 *   `PROJECT_REPORT.md`: A detailed report covering the project's architecture, features, and implementation journey.
+*   `firestore.rules`: Defines the security rules for the Firestore database.
