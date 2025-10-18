@@ -48,7 +48,7 @@ const pageConfig = {
   },
 };
 
-const allStaticTasks: Task[] = [
+export const allStaticTasks: Task[] = [
     {
         id: 'task-1',
         goal: 'Ensure all production servers are patched',

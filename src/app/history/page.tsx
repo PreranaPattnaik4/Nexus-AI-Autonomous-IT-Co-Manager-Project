@@ -1,12 +1,12 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { History, FileText, CheckCheck, XCircle } from 'lucide-react';
+import { History, FileText, CheckCheck, XCircle, BookOpen } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TasksList } from '@/components/dashboard/tasks-list';
-import { Report } from '@/lib/firestore-types';
+import { Task, Report } from '@/lib/firestore-types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { format } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import {
   Accordion,
   AccordionContent,
@@ -15,30 +15,54 @@ import {
 } from "@/components/ui/accordion"
 import { marked } from 'marked';
 import { useSearchParams } from 'next/navigation';
+import { allStaticTasks } from '@/components/dashboard/tasks-list';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 
 function ReportsList() {
-    const staticReports: Report[] = [
+    const staticTasks: Task[] = [
+        ...allStaticTasks,
         {
-            id: 'report-1',
-            taskId: 'task-abc-123',
-            report: marked.parse(`## Root Cause Analysis: Server Patch Failure\n\n**1. Summary:**\n The goal to "Ensure all production servers are patched" failed at the patch application step for 'web-server-02'. The root cause was identified as a timeout error due to a temporary network misconfiguration.\n\n**2. Timeline:**\n- **10:05 AM:** Task initiated.\n- **10:07 AM:** Step 'apply_patch' on 'web-server-02' failed.\n- **10:08 AM:** AI retry mechanism initiated a new goal with corrected network parameters.\n\n**3. Resolution:**\nThe self-healing flow successfully re-ran the patch cycle, and all servers are now confirmed to be up-to-date.`),
-            generatedAt: new Date(),
+            id: 'task-7',
+            goal: 'Migrate legacy database to new cloud instance',
+            status: 'completed',
+            progress: 100,
+            createdAt: subDays(new Date(), 2),
+            steps: []
         },
         {
-            id: 'report-2',
-            taskId: 'task-def-456',
-            report: marked.parse(`## Root Cause Analysis: Proactive CPU Scaling\n\n**1. Summary:**\nAn alert for "High CPU on Cache Server" was detected. Nexus AI proactively initiated a resolution task to vertically scale the cache server instance size.\n\n**2. Actions Taken:**\n- A new task was created: "Scale cache server instance to next size".\n- The task executed successfully, and CPU usage returned to normal levels within 5 minutes.\n\n**3. Outcome:**\nPotential downtime was averted. The system remained stable throughout the automated resolution process.`),
-            generatedAt: new Date(Date.now() - 86400000), // 1 day ago
+            id: 'task-8',
+            goal: 'Perform quarterly security audit',
+            status: 'completed',
+            progress: 100,
+            createdAt: subDays(new Date(), 4),
+            steps: []
+        },
+        {
+            id: 'task-9',
+            goal: 'Update firewall rules for new IP range',
+            status: 'failed',
+            progress: 75,
+            createdAt: subDays(new Date(), 7),
+            steps: []
+        },
+        {
+            id: 'task-10',
+            goal: 'Provision a new staging environment for Project Phoenix',
+            status: 'completed',
+            progress: 100,
+            createdAt: subDays(new Date(), 9),
+            steps: []
         }
-    ];
-    const reports = staticReports;
+    ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
     const loading = false;
 
     if (loading) {
         return (
             <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
+            {[...Array(5)].map((_, i) => (
                 <div key={i} className="flex flex-col space-y-2 border-b pb-4">
                 <Skeleton className="h-6 w-3/4" />
                 <Skeleton className="h-4 w-1/4" />
@@ -49,30 +73,32 @@ function ReportsList() {
     }
 
     return (
-        <Accordion type="single" collapsible className="w-full">
-        {reports && reports.length > 0 ? (
-            reports.map((report) => (
-            <AccordionItem value={report.id} key={report.id}>
-                <AccordionTrigger>
-                <div className="flex flex-col items-start text-left">
-                    <CardTitle className="text-base font-semibold">Report for Task: {report.taskId}</CardTitle>
-                    <p className="text-xs text-muted-foreground mt-1">
-                        {report.generatedAt && format(report.generatedAt, 'PPP p')}
-                    </p>
+         <div className="space-y-2">
+            {staticTasks.map(task => (
+                <div key={task.id} className="p-3 border rounded-md flex items-center justify-between">
+                    <div className='flex-1'>
+                        <p className="font-semibold text-sm">{task.goal}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            {format(task.createdAt, 'PPP')}
+                        </p>
+                    </div>
+                    <Badge
+                        variant={
+                            task.status === 'completed'
+                            ? 'default'
+                            : task.status === 'failed'
+                            ? 'destructive'
+                            : task.status === 'superseded'
+                            ? 'outline'
+                            : 'secondary'
+                        }
+                        className={cn('capitalize w-24 justify-center', task.status === 'completed' && 'bg-green-600' )}
+                        >
+                        {task.status.replace('-', ' ')}
+                    </Badge>
                 </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                    <div 
-                    className="prose prose-sm dark:prose-invert max-w-none p-4 border rounded-md"
-                    dangerouslySetInnerHTML={{ __html: report.report }} 
-                    />
-                </AccordionContent>
-            </AccordionItem>
-            ))
-        ) : (
-            <p className="text-muted-foreground text-center py-8">No reports have been generated yet.</p>
-        )}
-        </Accordion>
+            ))}
+        </div>
     );
 }
 
@@ -88,7 +114,7 @@ export default function HistoryPage() {
           <CardTitle>Task & Report History</CardTitle>
         </div>
         <CardDescription>
-          Review past activities, including completed tasks, failures, and RCA reports.
+          Review past activities, including completed tasks, failures, and a 10-day task log.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -102,9 +128,9 @@ export default function HistoryPage() {
                 <XCircle className="mr-2 h-4 w-4" />
                 Failed
             </TabsTrigger>
-            <TabsTrigger value="reports">
-                <FileText className="mr-2 h-4 w-4" />
-                RCA Reports
+            <TabsTrigger value="log">
+                <BookOpen className="mr-2 h-4 w-4" />
+                10-Day Task Log
             </TabsTrigger>
           </TabsList>
           
@@ -116,7 +142,7 @@ export default function HistoryPage() {
             <TasksList statusFilter="failed" />
           </TabsContent>
 
-          <TabsContent value="reports" className="mt-4">
+          <TabsContent value="log" className="mt-4">
             <ReportsList />
           </TabsContent>
         </Tabs>
