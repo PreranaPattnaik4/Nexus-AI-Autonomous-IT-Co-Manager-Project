@@ -197,13 +197,19 @@ export function ChatDialog() {
             <ScrollArea className="flex-1 -mr-6" ref={scrollAreaRef}>
                 <div className='space-y-6 pb-4 pr-6'>
                     {messages.length === 0 && (
-                        <div className="p-4 text-center">
-                            <p className="text-sm text-muted-foreground">Examples:</p>
-                            <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-left text-accent-foreground/80">
-                                <li>What went wrong with the DB server last week?</li>
-                                <li>Give me a summary of a recent report.</li>
-                                <li>Why did the worker VM go offline?</li>
-                            </ul>
+                        <div className="p-4 text-center space-y-4">
+                            <div>
+                                <h3 className="font-semibold">Welcome to the Nexus AI Assistant.</h3>
+                                <p className="text-sm text-muted-foreground">How can I help you today?</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-muted-foreground mb-2">Or try one of these examples:</p>
+                                <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-left text-accent-foreground/80">
+                                    <li>What went wrong with the DB server last week?</li>
+                                    <li>Give me a summary of a recent report.</li>
+                                    <li>Why did the worker VM go offline?</li>
+                                </ul>
+                            </div>
                         </div>
                     )}
                     {messages.map((msg) => (
