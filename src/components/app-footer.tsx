@@ -1,5 +1,18 @@
-import Link from "next/link";
-import { Logo } from "./icons";
+
+'use client';
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Logo } from './icons';
+import AboutPage from '@/app/about/page';
+import ContactPage from '@/app/contact/page';
+import FaqPage from '@/app/faq/page';
 
 export function AppFooter() {
   return (
@@ -20,9 +33,36 @@ export function AppFooter() {
           <div>
             <h3 className="font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/faq" className="hover:text-primary">FAQ</Link></li>
-              <li><Link href="/contact" className="hover:text-primary">Contact</Link></li>
-              <li><Link href="/about" className="hover:text-primary">About NexusAI</Link></li>
+              <li>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="hover:text-primary">FAQ</button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
+                    <FaqPage />
+                  </DialogContent>
+                </Dialog>
+              </li>
+              <li>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="hover:text-primary">Contact</button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <ContactPage />
+                  </DialogContent>
+                </Dialog>
+              </li>
+              <li>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="hover:text-primary">About NexusAI</button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-2xl">
+                    <AboutPage />
+                  </DialogContent>
+                </Dialog>
+              </li>
             </ul>
           </div>
           <div>
@@ -40,5 +80,3 @@ export function AppFooter() {
     </footer>
   );
 }
-
-    
