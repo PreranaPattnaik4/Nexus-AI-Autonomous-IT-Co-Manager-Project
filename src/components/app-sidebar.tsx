@@ -124,7 +124,10 @@ export function AppSidebar() {
       <div className="flex items-center justify-center h-20 border-b px-4">
         <Link href="/" className='flex items-center gap-2'>
             <Logo className="h-8 w-8 text-primary" />
-            <h1 className="text-sm font-bold tracking-tight">Nexus AI – Autonomous IT Co-Manager with Agentic AI Power</h1>
+            <div>
+              <h1 className="text-lg font-bold tracking-tight">Nexus AI</h1>
+              <p className="text-xs text-muted-foreground">Autonomous IT Co-Manager</p>
+            </div>
         </Link>
       </div>
       <nav className="flex-1 px-4 py-4 space-y-1">
