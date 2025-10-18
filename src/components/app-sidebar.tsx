@@ -12,6 +12,9 @@ import {
   MessageCircle,
   Terminal,
   History,
+  Loader,
+  CheckCheck,
+  XCircle,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -25,6 +28,9 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/console', label: 'Command Console', icon: Terminal },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
+  { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader, isTaskItem: true },
+  { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck, isTaskItem: true },
+  { href: '/tasks?status=failed', label: 'Failed', icon: XCircle, isTaskItem: true },
   { href: '/history', label: 'History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/settings', label: 'Settings', icon: Settings },
@@ -33,19 +39,34 @@ const navItems = [
 function NavItems() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const status = searchParams.get('status');
   const tab = searchParams.get('tab');
 
   let currentPath = pathname;
   if (pathname === '/history' && tab) {
       currentPath = `/history?tab=${tab}`;
   }
-
+  if (pathname === '/tasks' && status) {
+      currentPath = `/tasks?status=${status}`;
+  }
 
   return (
     <>
       {navItems.map((item) => {
-        const isActive = item.href === currentPath || (item.href === '/tasks' && pathname.startsWith('/tasks') && !searchParams.get('status'));
+        let isActive = item.href === currentPath;
+
+        // If the main "All Tasks" is the target and there is a status, it should not be active
+        if (item.href === '/tasks' && status) {
+            isActive = false;
+        }
         
+        // If we are on /tasks with no status, then "All Tasks" is active.
+        if (item.href === '/tasks' && pathname === '/tasks' && !status) {
+            isActive = true;
+        }
+
+        const Icon = item.icon;
+
         return (
           <Button
             key={item.href}
@@ -54,7 +75,7 @@ function NavItems() {
             asChild
           >
             <Link href={item.href}>
-              <item.icon className={cn("mr-2 h-4 w-4")} />
+              <Icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && 'animate-spin')} />
               {item.label}
             </Link>
           </Button>
@@ -81,7 +102,7 @@ export function AppSidebar() {
         <Logo className="h-6 w-6 text-primary" />
         <h1 className="ml-2 text-xl font-bold tracking-tight">Nexus AI</h1>
       </div>
-      <nav className="flex-1 px-4 py-4 space-y-2">
+      <nav className="flex-1 px-4 py-4 space-y-1">
         <Suspense fallback={<NavItemsSkeleton />}>
             <NavItems />
         </Suspense>
