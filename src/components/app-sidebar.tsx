@@ -39,32 +39,22 @@ const navItems = [
 function NavItems() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  
   const status = searchParams.get('status');
   const tab = searchParams.get('tab');
 
   let currentPath = pathname;
-  if (pathname === '/history' && tab) {
-      currentPath = `/history?tab=${tab}`;
+  if (status) {
+    currentPath = `${pathname}?status=${status}`;
+  } else if (tab) {
+    currentPath = `${pathname}?tab=${tab}`;
   }
-  if (pathname === '/tasks' && status) {
-      currentPath = `/tasks?status=${status}`;
-  }
+
 
   return (
     <>
       {navItems.map((item) => {
-        let isActive = item.href === currentPath;
-
-        // If the main "All Tasks" is the target and there is a status, it should not be active
-        if (item.href === '/tasks' && status) {
-            isActive = false;
-        }
-        
-        // If we are on /tasks with no status, then "All Tasks" is active.
-        if (item.href === '/tasks' && pathname === '/tasks' && !status) {
-            isActive = true;
-        }
-
+        const isActive = item.href === currentPath;
         const Icon = item.icon;
 
         return (
