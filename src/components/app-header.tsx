@@ -39,7 +39,7 @@ export function AppHeader() {
   };
 
   return (
-    <header className="flex h-16 shrink-0 items-center border-b bg-background px-6">
+    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center border-b bg-background px-6">
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input

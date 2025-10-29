@@ -21,8 +21,8 @@ function NavItemsSkeleton() {
 
 export function AppSidebar() {
   return (
-    <aside className="h-screen w-64 flex-shrink-0 flex flex-col bg-card border-r">
-      <div className="flex items-center justify-center h-20 border-b px-4">
+    <aside className="fixed inset-y-0 left-0 z-10 hidden h-screen w-64 flex-shrink-0 flex-col border-r bg-card md:flex">
+      <div className="flex items-center justify-center h-20 flex-shrink-0 border-b px-4">
         <Link href="/" className='flex items-center gap-2'>
             <Logo className="h-6 w-6 text-primary" />
             <div>

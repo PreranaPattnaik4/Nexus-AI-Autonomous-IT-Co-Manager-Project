@@ -40,9 +40,9 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <AuthProvider>
-          <div className="flex min-h-screen w-full bg-muted/40">
+          <div className="relative flex min-h-screen w-full bg-muted/40">
             <AppSidebar />
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-1 flex-col md:pl-64">
               <AppHeader />
               <main className="flex-1 p-4 sm:p-6 lg:p-8 relative">
                 {children}
