@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -33,6 +34,7 @@ const navItems = [
   { href: '/history', label: 'History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/profile', label: 'Profile & Settings', icon: User },
+  { href: '/help', label: 'Help & Support', icon: CircleHelp },
 ];
 
 export function AppSidebarNav() {
@@ -42,22 +44,22 @@ export function AppSidebarNav() {
   const getIsActive = (href: string) => {
     const [baseHref, queryString] = href.split('?');
     
-    // Handle hash links for dashboard
     if (href.includes('#')) {
-      // This is a simple check, might need refinement for more complex hash links
       return pathname === baseHref;
     }
 
     if (pathname !== baseHref) {
-      // Handle special cases where parent should be active
       if (baseHref === '/profile' && (pathname === '/settings')) return true;
       if (baseHref === '/history' && (pathname === '/completed' || pathname === '/reports')) return true;
+      if (baseHref === '/tasks' && pathname === '/history' && searchParams.has('tab')) return false; // Prevent "All Tasks" being active on history tabs
       return false;
     }
 
     if (!queryString) {
-      // if there's a status param, don't make the parent active
-      return !searchParams.has('status');
+      if (pathname === '/tasks') {
+        return !searchParams.has('status');
+      }
+      return true;
     }
     
     const hrefParams = new URLSearchParams(queryString);
@@ -68,25 +70,47 @@ export function AppSidebarNav() {
 
 
   return (
-    <div className='p-4 space-y-1'>
-      {navItems.map((item) => {
-        const Icon = item.icon;
-        const isActive = getIsActive(item.href);
+    <div className='p-4 space-y-1 flex-1 flex flex-col'>
+      <div className='space-y-1'>
+        {navItems.slice(0, 11).map((item) => {
+          const Icon = item.icon;
+          const isActive = getIsActive(item.href);
 
-        return (
-          <Button
-            key={item.href}
-            variant={isActive ? 'secondary' : 'ghost'}
-            className="w-full justify-start"
-            asChild
-          >
-            <Link href={item.href}>
-              <Icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && isActive && 'animate-spin')} />
-              {item.label}
-            </Link>
-          </Button>
-        )
-      })}
+          return (
+            <Button
+              key={item.href}
+              variant={isActive ? 'secondary' : 'ghost'}
+              className="w-full justify-start h-9"
+              asChild
+            >
+              <Link href={item.href}>
+                <Icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && isActive && 'animate-spin')} />
+                {item.label}
+              </Link>
+            </Button>
+          )
+        })}
+      </div>
+      <div className='mt-auto'>
+        {(() => {
+          const helpItem = navItems[11];
+          const Icon = helpItem.icon;
+          const isActive = getIsActive(helpItem.href);
+          return (
+            <Button
+              key={helpItem.href}
+              variant={isActive ? 'secondary' : 'ghost'}
+              className="w-full justify-start h-9"
+              asChild
+            >
+              <Link href={helpItem.href}>
+                <Icon className="mr-2 h-4 w-4" />
+                {helpItem.label}
+              </Link>
+            </Button>
+          )
+        })()}
+      </div>
     </div>
   );
 }

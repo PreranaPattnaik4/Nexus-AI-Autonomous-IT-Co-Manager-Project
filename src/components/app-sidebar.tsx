@@ -2,9 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { CircleHelp } from 'lucide-react';
 import { Suspense } from 'react';
-import { Button } from '@/components/ui/button';
 import { Logo } from './icons';
 import { AppSidebarNav } from './app-sidebar-nav';
 import { Skeleton } from './ui/skeleton';
@@ -13,8 +11,8 @@ import { Skeleton } from './ui/skeleton';
 function NavItemsSkeleton() {
     return (
         <div className="p-4 space-y-1">
-            {[...Array(11)].map((_, i) => (
-                <Skeleton key={i} className="h-10 w-full" />
+            {[...Array(12)].map((_, i) => (
+                <Skeleton key={i} className="h-9 w-full" />
             ))}
         </div>
     )
@@ -32,19 +30,11 @@ export function AppSidebar() {
             </div>
         </Link>
       </div>
-      <nav className="flex-1 overflow-y-auto">
+      <nav className="flex flex-col flex-1">
         <Suspense fallback={<NavItemsSkeleton />}>
             <AppSidebarNav />
         </Suspense>
       </nav>
-      <div className="mt-auto p-4 border-t">
-        <Button variant="ghost" className="w-full justify-start" asChild>
-           <Link href="/help">
-              <CircleHelp className="mr-2 h-4 w-4" />
-              Help & Support
-            </Link>
-        </Button>
-      </div>
     </aside>
   );
 }
