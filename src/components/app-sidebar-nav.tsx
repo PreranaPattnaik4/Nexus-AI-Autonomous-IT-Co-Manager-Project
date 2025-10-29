@@ -33,7 +33,6 @@ const navItems = [
   { href: '/dashboard#alerts', label: 'Active Alerts', icon: AlertTriangle },
   { href: '/history', label: 'History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
-  { href: '/profile', label: 'Profile & Settings', icon: User },
   { href: '/help', label: 'Help & Support', icon: CircleHelp },
 ];
 
@@ -72,7 +71,7 @@ export function AppSidebarNav() {
   return (
     <div className='p-4 space-y-1 flex-1 flex flex-col'>
       <div className='space-y-1'>
-        {navItems.slice(0, 11).map((item) => {
+        {navItems.slice(0, 10).map((item) => {
           const Icon = item.icon;
           const isActive = getIsActive(item.href);
 
@@ -93,7 +92,7 @@ export function AppSidebarNav() {
       </div>
       <div className='mt-auto'>
         {(() => {
-          const helpItem = navItems[11];
+          const helpItem = navItems[10];
           const Icon = helpItem.icon;
           const isActive = getIsActive(helpItem.href);
           return (
