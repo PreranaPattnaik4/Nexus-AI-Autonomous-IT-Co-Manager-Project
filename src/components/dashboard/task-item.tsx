@@ -3,8 +3,6 @@
 
 import { useState, useTransition } from 'react';
 import { FileText, CheckCircle2, XCircle, Loader, ChevronDown, ChevronUp, Bot, Recycle } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +11,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { RcaReportDialog } from './rca-report-dialog';
 import { Task } from '@/lib/firestore-types';
 import { useToast } from '@/hooks/use-toast';
+import { ClientTime } from '../client-time';
 
 const statusIcons = {
   'in-progress': <Loader className="h-4 w-4 animate-spin text-blue-500" />,
@@ -90,7 +89,7 @@ export function TaskItem({ task }: { task: Task }) {
             <span className="text-xs font-medium text-muted-foreground w-10 text-right">{task.progress}%</span>
         </div>
          <p className="text-xs text-muted-foreground">
-            Created {formatDistanceToNow(new Date(task.createdAt), { addSuffix: true })}
+            Created <ClientTime date={task.createdAt} />
         </p>
         <div className="flex items-center justify-between mt-2">
           <div className="flex items-center gap-2">
