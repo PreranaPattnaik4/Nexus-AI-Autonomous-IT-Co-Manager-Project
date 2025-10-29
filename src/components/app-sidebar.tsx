@@ -32,13 +32,13 @@ export function AppSidebar() {
             </div>
         </Link>
       </div>
-      <nav className="flex-1">
+      <nav className="flex-1 overflow-y-auto">
         <Suspense fallback={<NavItemsSkeleton />}>
             <AppSidebarNav />
         </Suspense>
       </nav>
       <div className="mt-auto p-4 border-t">
-        <Button variant="ghost" className="w-full justify-start mb-4" asChild>
+        <Button variant="ghost" className="w-full justify-start" asChild>
            <Link href="/help">
               <CircleHelp className="mr-2 h-4 w-4" />
               Help & Support
