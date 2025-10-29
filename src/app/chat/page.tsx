@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { marked } from 'marked';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
+import { Logo } from '@/components/icons';
 
 
 function SubmitButton({ pending }: { pending: boolean }) {
@@ -169,19 +170,32 @@ export default function ChatPage() {
     <div className="flex flex-col h-[calc(100vh-14rem)]">
       <header className='mb-4'>
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Bot className="w-5 h-5"/> System Health Assistant</CardTitle>
-                <CardDescription>Ask me anything about system health, tasks, alerts, or past incidents.</CardDescription>
+             <CardHeader>
+              <div className='flex items-center gap-2'>
+                <Logo className="h-6 w-6 text-primary" />
+                <div>
+                  <CardTitle>Nexus AI</CardTitle>
+                  <CardDescription>Autonomous IT Co-Manager</CardDescription>
+                </div>
+              </div>
             </CardHeader>
              {messages.length === 0 && (
                  <CardContent>
-                    <p className="text-sm text-muted-foreground">Examples:</p>
-                    <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-accent-foreground/80">
-                        <li>How many tasks are in progress?</li>
-                        <li>What is the status of the DB server?</li>
-                        <li>Give me a summary of a recent report.</li>
-                        <li>Why did the worker VM go offline?</li>
-                    </ul>
+                    <div className="p-4 text-center space-y-4">
+                        <div>
+                            <h3 className="font-semibold">Welcome to the Nexus AI Assistant.</h3>
+                            <p className="text-sm text-muted-foreground">How can I help you today?</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-muted-foreground mb-2">Or try one of these examples:</p>
+                            <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-left text-accent-foreground/80">
+                                <li>How many tasks are in progress?</li>
+                                <li>What is the status of the DB server?</li>
+                                <li>Give me a summary of a recent report.</li>
+                                <li>Why did the worker VM go offline?</li>
+                            </ul>
+                        </div>
+                    </div>
                 </CardContent>
             )}
         </Card>
