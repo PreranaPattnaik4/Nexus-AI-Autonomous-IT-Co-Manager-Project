@@ -46,11 +46,11 @@ export default function RootLayout({
               <AppHeader />
               <main className="flex-1 p-4 sm:p-6 lg:p-8 relative">
                 {children}
-                <ChatDialogClient />
               </main>
               <AppFooter />
             </div>
           </div>
+          <ChatDialogClient />
           <Toaster />
         </AuthProvider>
       </body>
