@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -31,7 +32,7 @@ export function AppSidebar() {
             </div>
         </Link>
       </div>
-      <nav className="flex-1 overflow-y-auto">
+      <nav className="flex-1">
         <Suspense fallback={<NavItemsSkeleton />}>
             <AppSidebarNav />
         </Suspense>
