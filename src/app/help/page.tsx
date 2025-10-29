@@ -26,8 +26,8 @@ export default function HelpPage() {
                 <AlertTriangle className="h-5 w-5" />
                 <CardTitle>Important Advisory on AI Usage</CardTitle>
             </div>
-             <CardDescription className="!text-destructive/90">
-                <p className="font-bold">Nexus AI is an assistive tool. Always verify outputs and consult human experts before making professional, financial or safety-critical decisions.</p>
+             <CardDescription className="!text-destructive/90 font-bold">
+                Nexus AI is an assistive tool. Always verify outputs and consult human experts before making professional, financial or safety-critical decisions.
             </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 text-sm">
@@ -144,5 +144,7 @@ export default function HelpPage() {
     </div>
   );
 }
+
+    
 
     
