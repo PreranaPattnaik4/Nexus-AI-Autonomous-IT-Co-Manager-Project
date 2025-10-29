@@ -60,7 +60,7 @@ export default function ContactPage() {
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" placeholder="Please describe your inquiry..." rows={5} required />
+                    <Textarea id="message" placeholder="Please describe your inquiry..." rows={3} required />
                 </div>
                 <div className="flex justify-end">
                     <Button type="submit" disabled={isLoading}>
