@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { Bot, CornerDownLeft, Loader, MessageCircle, Mic, MicOff, User } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -168,8 +168,8 @@ export function ChatDialog() {
   }
   
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Sheet>
+      <SheetTrigger asChild>
         <Button
             size="icon"
             className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-primary text-primary-foreground z-50"
@@ -177,25 +177,25 @@ export function ChatDialog() {
             <MessageCircle className="h-6 w-6" />
             <span className="sr-only">Open Chat</span>
         </Button>
-      </DialogTrigger>
-      <DialogContent 
+      </SheetTrigger>
+      <SheetContent 
         className={cn(
-            "sm:max-w-lg h-[calc(100vh-4rem)] flex flex-col",
+            "w-full sm:max-w-lg flex flex-col p-0"
         )}
       >
-        <DialogHeader>
+        <SheetHeader className="p-6">
           <div className='flex items-center gap-2'>
             <Logo className="h-6 w-6 text-primary" />
             <div>
-              <DialogTitle>Nexus AI</DialogTitle>
-              <DialogDescription>Autonomous IT Co-Manager</DialogDescription>
+              <SheetTitle>Nexus AI</SheetTitle>
+              <SheetDescription>Autonomous IT Co-Manager</SheetDescription>
             </div>
           </div>
-        </DialogHeader>
+        </SheetHeader>
         
-        <div className="flex-1 flex flex-col min-h-0">
-            <ScrollArea className="flex-1 -mr-6" ref={scrollAreaRef}>
-                <div className='space-y-6 pb-4 pr-6'>
+        <div className="flex-1 flex flex-col min-h-0 px-6">
+            <ScrollArea className="flex-1 -mx-6" ref={scrollAreaRef}>
+                <div className='space-y-6 pb-4 px-6'>
                     {messages.length === 0 && (
                         <div className="p-4 text-center space-y-4">
                             <div>
@@ -228,7 +228,7 @@ export function ChatDialog() {
                 </div>
             </ScrollArea>
 
-            <div className="border-t pt-4">
+            <div className="border-t py-4">
                 <form
                     ref={formRef}
                     onSubmit={handleSubmit}
@@ -256,7 +256,7 @@ export function ChatDialog() {
                 </form>
             </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }
