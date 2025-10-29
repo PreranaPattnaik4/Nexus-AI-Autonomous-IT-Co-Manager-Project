@@ -58,7 +58,7 @@ export function AppFooter() {
                    <DialogTrigger asChild>
                     <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><Mail className="w-4 h-4 mr-2"/>Contact</Button>
                    </DialogTrigger>
-                  <DialogContent className="sm:max-w-2xl">
+                  <DialogContent>
                     <DialogHeader>
                         <VisuallyHidden>
                             <DialogTitle>Contact Us</DialogTitle>
