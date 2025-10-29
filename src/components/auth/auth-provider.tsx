@@ -25,19 +25,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Simulate checking for an existing session
     setTimeout(() => {
-      // To test the logged-out state, set the initial user to null.
-      // To test the logged-in state, you can initialize it like this:
-      // setUser({ displayName: 'IT Manager', email: 'manager@example.com' });
+      // Ensure user is logged out on initial load
       setUser(null); 
       setIsUserLoading(false);
-      if (!user) {
-        setLoginDialogOpen(true);
-      }
+      setLoginDialogOpen(true);
     }, 1000);
   }, []);
 
   const login = (newUser: User) => {
     setUser(newUser);
+    setLoginDialogOpen(false);
   };
 
   const logout = () => {

@@ -172,7 +172,7 @@ export function ChatDialog() {
       <DialogTrigger asChild>
         <Button
             size="icon"
-            className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-primary text-primary-foreground"
+            className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-primary text-primary-foreground z-50"
         >
             <MessageCircle className="h-6 w-6" />
             <span className="sr-only">Open Chat</span>
@@ -180,7 +180,7 @@ export function ChatDialog() {
       </DialogTrigger>
       <DialogContent 
         className={cn(
-            "sm:max-w-lg h-full flex flex-col fixed right-0 top-0 translate-x-0 translate-y-0 rounded-l-none border-l bg-background/80 backdrop-blur-lg shadow-lg",
+            "sm:max-w-lg h-full flex flex-col fixed right-0 top-0 translate-x-0 translate-y-0 rounded-l-none border-l bg-background/80 backdrop-blur-lg shadow-lg z-[60]",
             "data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right"
         )}
       >

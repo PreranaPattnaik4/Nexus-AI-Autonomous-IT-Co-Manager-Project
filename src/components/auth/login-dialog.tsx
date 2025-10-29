@@ -16,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from './auth-provider';
 import { Chrome } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export function LoginDialog({ open: controlledOpen, onOpenChange: setControlledOpen }: { open?: boolean; onOpenChange?: (open: boolean) => void; }) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -52,7 +53,19 @@ export function LoginDialog({ open: controlledOpen, onOpenChange: setControlledO
       <DialogTrigger asChild>
         <Button variant="outline">Login / Sign Up</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent 
+        className={cn(
+            "sm:max-w-md w-full",
+            // For the initial welcome screen, make it larger
+            !controlledOpen && "sm:max-w-3xl md:w-1/2"
+        )}
+        onInteractOutside={(e) => {
+            // Prevent closing the initial dialog by clicking outside
+            if (open && !controlledOpen) {
+                e.preventDefault();
+            }
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Welcome to Nexus AI</DialogTitle>
           <DialogDescription>Sign in or create an account to continue. (This is a mock dialog)</DialogDescription>
