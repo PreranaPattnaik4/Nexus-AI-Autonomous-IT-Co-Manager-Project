@@ -51,7 +51,7 @@ export function LoginDialog({ open: controlledOpen, onOpenChange: setControlledO
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Login / Sign Up</Button>
+        <Button variant="default">Login / Sign Up</Button>
       </DialogTrigger>
       <DialogContent 
         className={cn(
