@@ -18,7 +18,7 @@ export function AppFooter() {
   return (
     <footer className="border-t bg-background text-card-foreground">
       <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-2">
               <Logo className="h-8 w-8 text-primary" />
@@ -69,13 +69,6 @@ export function AppFooter() {
                 </Dialog>
               </li>
             </ul>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-4">About the Project</h3>
-            <p className="text-sm text-muted-foreground">
-              This project was built for the SuperHack 2025 (Google Cloud +
-              Firebase AI Challenge) to demonstrate the power of agentic AI.
-            </p>
           </div>
            <div>
             <h3 className="font-semibold mb-4">Follow Us</h3>
