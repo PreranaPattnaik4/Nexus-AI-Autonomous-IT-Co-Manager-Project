@@ -27,66 +27,52 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/console', label: 'Command Console', icon: Terminal },
   { href: '/tasks', label: 'All Tasks', icon: ListChecks },
-  { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader, isTaskItem: true },
-  { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck, isTaskItem: true },
-  { href: '/tasks?status=failed', label: 'Failed', icon: XCircle, isTaskItem: true },
+  { href: '/tasks?status=in-progress', label: 'In Progress', icon: Loader },
+  { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck },
+  { href: '/tasks?status=failed', label: 'Failed', icon: XCircle },
   { href: '/dashboard#alerts', label: 'Active Alerts', icon: AlertTriangle },
   { href: '/history', label: 'History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/profile', label: 'Profile & Settings', icon: User },
-  { href: '/help', label: 'Help & Support', icon: CircleHelp },
 ];
 
 export function AppSidebarNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   
-  const status = searchParams.get('status');
-  const tab = searchParams.get('tab');
-
-  let currentPath = pathname;
-  if (status) {
-    currentPath = `${pathname}?status=${status}`;
-  } else if (tab) {
-    // Special handling for history page tabs
-    if (pathname === '/history') {
-      const defaultValue = 'completed';
-      currentPath = `/history?tab=${tab || defaultValue}`;
-      if (tab === 'completed') {
-        const completedTaskPath = '/tasks?status=completed';
-        if(currentPath === completedTaskPath) {
-            currentPath = completedTaskPath;
-        }
-      }
+  const getIsActive = (href: string) => {
+    const [baseHref, queryString] = href.split('?');
+    
+    // Handle hash links for dashboard
+    if (href.includes('#')) {
+      // This is a simple check, might need refinement for more complex hash links
+      return pathname === baseHref;
     }
-  }
+
+    if (pathname !== baseHref) {
+      // Handle special cases where parent should be active
+      if (baseHref === '/profile' && (pathname === '/settings')) return true;
+      if (baseHref === '/history' && (pathname === '/completed' || pathname === '/reports')) return true;
+      return false;
+    }
+
+    if (!queryString) {
+      // if there's a status param, don't make the parent active
+      return !searchParams.has('status');
+    }
+    
+    const hrefParams = new URLSearchParams(queryString);
+    const statusParam = hrefParams.get('status');
+
+    return searchParams.get('status') === statusParam;
+  };
 
 
   return (
     <div className='p-4 space-y-1'>
       {navItems.map((item) => {
-        let isActive = item.href === currentPath;
-
-        // Ensure parent 'Tasks' is not active when a sub-filter is
-        if (item.href === '/tasks' && status) {
-          isActive = false;
-        }
-        
-        // Handle settings link being active on profile page
-        if (item.href === '/profile' && pathname === '/settings') {
-          isActive = true;
-        }
-
-        // A special check for the "Completed" link in the sidebar to also match the history tab
-        if (item.href.includes('status=completed') && currentPath.includes('tab=completed')) {
-            isActive = true;
-        }
-        
-        if (item.href..includes('status=failed') && currentPath.includes('tab=failed')) {
-            isActive = true;
-        }
-
         const Icon = item.icon;
+        const isActive = getIsActive(item.href);
 
         return (
           <Button
@@ -96,7 +82,7 @@ export function AppSidebarNav() {
             asChild
           >
             <Link href={item.href}>
-              <Icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && 'animate-spin')} />
+              <Icon className={cn("mr-2 h-4 w-4", item.label === 'In Progress' && isActive && 'animate-spin')} />
               {item.label}
             </Link>
           </Button>
