@@ -55,7 +55,7 @@ export function AppFooter() {
               </li>
                <li>
                 <a href="mailto:contact@example.com" className="inline-flex items-center text-muted-foreground hover:text-primary">
-                    <Mail className="w-4 h-4 mr-2"/> Mail Us
+                    <Mail className="w-4 h-4 mr-2"/> Mail Us: contact@example.com
                 </a>
               </li>
               <li>
