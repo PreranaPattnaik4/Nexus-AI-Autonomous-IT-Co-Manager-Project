@@ -4,12 +4,13 @@
 import {
   Dialog,
   DialogContent,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Logo } from './icons';
 import AboutPage from '@/app/about/page';
 import ContactPage from '@/app/contact/page';
-import FaqPage from '@/app/faq/page';
-import { Github, Linkedin, Twitter, LifeBuoy } from 'lucide-react';
+import HelpPage from '@/app/help/page';
+import { Github, Linkedin, Twitter, LifeBuoy, Info, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
 
@@ -34,25 +35,36 @@ export function AppFooter() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Dialog>
-                   <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><LifeBuoy className="w-4 h-4 mr-2"/>FAQ</Button>
-                  <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
-                    <FaqPage />
+                   <DialogTrigger asChild>
+                      <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><Info className="w-4 h-4 mr-2"/>About Us</Button>
+                   </DialogTrigger>
+                  <DialogContent className="sm:max-w-2xl">
+                    <AboutPage />
                   </DialogContent>
                 </Dialog>
               </li>
               <li>
                 <Dialog>
-                   <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">Contact</Button>
+                   <DialogTrigger asChild>
+                    <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">Contact</Button>
+                   </DialogTrigger>
                   <DialogContent>
                     <ContactPage />
                   </DialogContent>
                 </Dialog>
               </li>
+               <li>
+                <a href="mailto:contact@nexusai.dev" className="inline-flex items-center text-muted-foreground hover:text-primary">
+                    <Mail className="w-4 h-4 mr-2"/> Mail Us
+                </a>
+              </li>
               <li>
                 <Dialog>
-                   <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">About NexusAI</Button>
-                  <DialogContent className="sm:max-w-2xl">
-                    <AboutPage />
+                   <DialogTrigger asChild>
+                    <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><LifeBuoy className="w-4 h-4 mr-2"/>Help & Support</Button>
+                   </DialogTrigger>
+                  <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
+                    <HelpPage />
                   </DialogContent>
                 </Dialog>
               </li>
