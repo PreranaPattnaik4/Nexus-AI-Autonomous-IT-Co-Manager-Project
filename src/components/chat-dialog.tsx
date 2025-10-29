@@ -29,7 +29,7 @@ function Message({ msg }: { msg: ChatMessage }) {
   return (
     <div className={cn('flex items-start gap-4', isUser && 'justify-end')}>
       {!isUser && (
-        <Avatar className="h-9 w-9 border">
+        <Avatar className="h-9 w-9 border border-border">
           <AvatarFallback>AI</AvatarFallback>
         </Avatar>
       )}
@@ -38,7 +38,7 @@ function Message({ msg }: { msg: ChatMessage }) {
           'max-w-md rounded-lg p-3',
           isUser
             ? 'bg-primary text-primary-foreground'
-            : 'bg-muted'
+            : 'bg-muted text-foreground'
         )}
       >
         {msg.role === 'model' ? (
@@ -49,7 +49,7 @@ function Message({ msg }: { msg: ChatMessage }) {
        
       </div>
       {isUser && (
-        <Avatar className="h-9 w-9 border">
+        <Avatar className="h-9 w-9 border border-border">
           <AvatarFallback>IT</AvatarFallback>
         </Avatar>
       )}
@@ -180,32 +180,33 @@ export function ChatDialog() {
       </DialogTrigger>
       <DialogContent 
         className={cn(
-            "sm:max-w-lg h-full flex flex-col fixed right-0 top-0 translate-x-0 translate-y-0 rounded-l-none border-l bg-background/80 backdrop-blur-lg shadow-lg z-[60]",
+            "sm:max-w-lg h-full flex flex-col fixed right-0 top-0 translate-x-0 translate-y-0 rounded-l-none border-l z-[60]",
+            "bg-white/80 dark:bg-zinc-900/80 text-slate-900 dark:text-slate-50 backdrop-blur-lg shadow-lg",
             "data-[state=open]:slide-in-from-right data-[state=closed]:slide-out-to-right"
         )}
       >
         <DialogHeader>
           <div className='flex items-center gap-2'>
-            <Logo className="h-6 w-6 text-blue-900 dark:text-blue-900" />
+            <Logo className="h-6 w-6 text-blue-900" />
             <div>
-              <DialogTitle className="text-lg font-bold tracking-tight text-blue-900 dark:text-blue-900">Nexus AI</DialogTitle>
-              <DialogDescription>Autonomous IT Co-Manager with Agentic AI Power</DialogDescription>
+              <DialogTitle className="text-lg font-bold tracking-tight text-blue-900">Nexus AI</DialogTitle>
+              <DialogDescription className="text-slate-600">Autonomous IT Co-Manager with Agentic AI Power</DialogDescription>
             </div>
           </div>
         </DialogHeader>
         
-        <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex-1 flex flex-col min-h-0 text-navy-900">
             <ScrollArea className="flex-1 -mr-6" ref={scrollAreaRef}>
                 <div className='space-y-6 pb-4 pr-6'>
                     {messages.length === 0 && (
                         <div className="p-4 text-center space-y-4">
                             <div>
-                                <h3 className="font-semibold">Welcome to the Nexus AI Assistant.</h3>
-                                <p className="text-sm text-muted-foreground">How can I help you today?</p>
+                                <h3 className="font-semibold text-slate-800">Welcome to the Nexus AI Assistant.</h3>
+                                <p className="text-sm text-slate-500">How can I help you today?</p>
                             </div>
                             <div>
-                                <p className="text-sm text-muted-foreground mb-2">Or try one of these examples:</p>
-                                <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-left text-accent-foreground/80">
+                                <p className="text-sm text-slate-500 mb-2">Or try one of these examples:</p>
+                                <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-left text-slate-600">
                                     <li>What went wrong with the DB server last week?</li>
                                     <li>Give me a summary of a recent report.</li>
                                     <li>Why did the worker VM go offline?</li>
@@ -218,18 +219,18 @@ export function ChatDialog() {
                     ))}
                     {isPending && (
                         <div className="flex items-start gap-4">
-                            <Avatar className="h-9 w-9 border">
-                                <AvatarFallback>AI</AvatarFallback>
+                            <Avatar className="h-9 w-9 border border-slate-300">
+                                <AvatarFallback className="bg-slate-200 text-slate-600">AI</AvatarFallback>
                             </Avatar>
-                            <div className="max-w-md rounded-lg p-3 bg-muted">
-                                <Loader className="h-5 w-5 animate-spin" />
+                            <div className="max-w-md rounded-lg p-3 bg-slate-200">
+                                <Loader className="h-5 w-5 animate-spin text-slate-600" />
                             </div>
                         </div>
                     )}
                 </div>
             </ScrollArea>
 
-            <div className="border-t pt-4">
+            <div className="border-t border-slate-200 pt-4">
                 <form
                     ref={formRef}
                     onSubmit={handleSubmit}
@@ -239,7 +240,7 @@ export function ChatDialog() {
                         ref={inputRef}
                         name="message"
                         placeholder={isRecording ? "Listening..." : "Ask about a past incident..."}
-                        className="pr-24 bg-background/80"
+                        className="pr-24 bg-white/80 border-slate-300 text-slate-900 placeholder:text-slate-500"
                         autoComplete="off"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
@@ -247,7 +248,7 @@ export function ChatDialog() {
                     />
                     <div className="absolute right-12">
                         <Button type="button" size="icon" variant="ghost" onClick={handleMicClick}>
-                            {isRecording ? <MicOff className="h-4 w-4 text-red-500" /> : <Mic className="h-4 w-4" />}
+                            {isRecording ? <MicOff className="h-4 w-4 text-red-500" /> : <Mic className="h-4 w-4 text-slate-600" />}
                             <span className="sr-only">{isRecording ? 'Stop recording' : 'Start recording'}</span>
                         </Button>
                     </div>
