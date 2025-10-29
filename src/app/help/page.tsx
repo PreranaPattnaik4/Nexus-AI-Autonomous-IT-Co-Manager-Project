@@ -12,7 +12,7 @@ export default function HelpPage() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <CircleHelp className="h-5 w-5" />
-            <CardTitle>Help & Support</CardTitle>
+            <CardTitle>Help &amp; Support</CardTitle>
           </div>
           <CardDescription>
             Instructions, tips, and policies for using Nexus AI.
@@ -117,7 +117,7 @@ export default function HelpPage() {
         <CardHeader>
             <div className='flex items-center gap-2'>
                 <ShieldCheck className="h-5 w-5" />
-                <CardTitle>Usage Policy & Rules</CardTitle>
+                <CardTitle>Usage Policy &amp; Rules</CardTitle>
             </div>
             <CardDescription>This is a demo environment with simulated actions.</CardDescription>
         </CardHeader>
@@ -139,6 +139,23 @@ export default function HelpPage() {
                     <strong>Responsible AI:</strong> The simulation-only nature of this tool is a core part of its design, ensuring a safe environment for exploring AI capabilities without real-world risk.
                 </li>
             </ul>
+        </CardContent>
+      </Card>
+        <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Phone className="h-5 w-5" />
+            <CardTitle>Contact Us</CardTitle>
+          </div>
+          <CardDescription>
+            Have a question or need direct support? We're here to help.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+            <p className='text-sm text-muted-foreground'>For any inquiries or if you need to escalate an issue, please don't hesitate to reach out to our support team.</p>
+            <Button asChild className="mt-4">
+                <Link href="/contact">Contact Support</Link>
+            </Button>
         </CardContent>
       </Card>
     </div>
