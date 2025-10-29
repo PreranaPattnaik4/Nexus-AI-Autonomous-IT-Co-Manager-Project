@@ -20,7 +20,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 export function AppFooter() {
   return (
-    <footer className="border-t bg-background text-card-foreground">
+    <footer className="border-t bg-primary text-primary-foreground">
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
@@ -30,7 +30,7 @@ export function AppFooter() {
               </div>
               <h2 className="text-lg font-bold">Nexus AI</h2>
             </div>
-            <p className="text-sm text-muted-foreground pr-8">
+            <p className="text-sm text-primary-foreground/80 pr-8">
               Nexus AI is an autonomous IT co-manager that uses agentic AI to
               understand goals, create plans, and execute tasks across your
               infrastructure.
@@ -38,11 +38,11 @@ export function AppFooter() {
           </div>
           <div>
             <h3 className="font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <ul className="space-y-2 text-sm text-primary-foreground/80">
               <li>
                 <Dialog>
                    <DialogTrigger asChild>
-                      <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><Info className="w-4 h-4 mr-2"/>About Us</Button>
+                      <Button variant="link" className="p-0 h-auto font-normal text-primary-foreground/80 hover:text-primary-foreground"><Info className="w-4 h-4 mr-2"/>About Us</Button>
                    </DialogTrigger>
                   <DialogContent className="sm:max-w-2xl">
                     <DialogHeader>
@@ -58,7 +58,7 @@ export function AppFooter() {
               <li>
                 <Dialog>
                    <DialogTrigger asChild>
-                    <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><Mail className="w-4 h-4 mr-2"/>Contact</Button>
+                    <Button variant="link" className="p-0 h-auto font-normal text-primary-foreground/80 hover:text-primary-foreground"><Mail className="w-4 h-4 mr-2"/>Contact</Button>
                    </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
@@ -72,14 +72,14 @@ export function AppFooter() {
                 </Dialog>
               </li>
                <li>
-                <a href="mailto:contact@example.com" className="inline-flex items-center text-muted-foreground hover:text-primary">
+                <a href="mailto:contact@example.com" className="inline-flex items-center text-primary-foreground/80 hover:text-primary-foreground">
                     <Mail className="w-4 h-4 mr-2"/> Mail Us: contact@example.com
                 </a>
               </li>
               <li>
                 <Dialog>
                    <DialogTrigger asChild>
-                    <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><LifeBuoy className="w-4 h-4 mr-2"/>Help & Support</Button>
+                    <Button variant="link" className="p-0 h-auto font-normal text-primary-foreground/80 hover:text-primary-foreground"><LifeBuoy className="w-4 h-4 mr-2"/>Help & Support</Button>
                    </DialogTrigger>
                   <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
@@ -97,22 +97,22 @@ export function AppFooter() {
            <div>
             <h3 className="font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
-              <Link href="#" className="text-muted-foreground hover:text-primary">
+              <Link href="#" className="text-primary-foreground/80 hover:text-primary-foreground">
                 <Twitter className="h-5 w-5" />
                 <span className="sr-only">Twitter</span>
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary">
+              <Link href="#" className="text-primary-foreground/80 hover:text-primary-foreground">
                 <Linkedin className="h-5 w-5" />
                  <span className="sr-only">LinkedIn</span>
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary">
+              <Link href="#" className="text-primary-foreground/80 hover:text-primary-foreground">
                 <Github className="h-5 w-5" />
                  <span className="sr-only">GitHub</span>
               </Link>
             </div>
           </div>
         </div>
-        <div className="mt-8 border-t pt-4 text-center text-xs text-muted-foreground">
+        <div className="mt-8 border-t border-primary-foreground/20 pt-4 text-center text-xs text-primary-foreground/60">
           © 2025 Nexus AI | Built by FutureCoders with Google Gemini + Firebase
         </div>
       </div>
