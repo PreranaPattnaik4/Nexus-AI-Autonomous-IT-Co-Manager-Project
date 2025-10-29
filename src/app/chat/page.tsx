@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -172,7 +173,9 @@ export default function ChatPage() {
         <Card>
              <CardHeader>
               <div className='flex items-center gap-2'>
-                <Logo className="h-6 w-6 text-primary" />
+                <div className="bg-primary text-primary-foreground p-1 rounded-md">
+                    <Logo className="h-6 w-6" />
+                </div>
                 <div>
                   <CardTitle>Nexus AI</CardTitle>
                   <CardDescription>Autonomous IT Co-Manager</CardDescription>

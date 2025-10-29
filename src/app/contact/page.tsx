@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -35,7 +36,9 @@ export default function ContactPage() {
     <Card className="border-none shadow-none">
         <CardHeader className="text-center">
             <div className="flex justify-center items-center gap-2 mb-2">
-                <Logo className="h-8 w-8 text-primary" />
+                <div className="bg-primary text-primary-foreground p-2 rounded-lg">
+                    <Logo className="h-8 w-8" />
+                </div>
             </div>
             <CardTitle>Welcome to Nexus AI</CardTitle>
             <CardDescription>

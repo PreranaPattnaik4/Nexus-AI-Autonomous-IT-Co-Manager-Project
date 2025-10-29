@@ -25,7 +25,9 @@ export function AppFooter() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-2">
-              <Logo className="h-8 w-8 text-primary" />
+              <div className="bg-primary text-primary-foreground p-2 rounded-lg">
+                <Logo className="h-8 w-8" />
+              </div>
               <h2 className="text-lg font-bold">Nexus AI</h2>
             </div>
             <p className="text-sm text-muted-foreground pr-8">
