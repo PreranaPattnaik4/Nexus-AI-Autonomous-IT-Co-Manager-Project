@@ -5,6 +5,9 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Logo } from './icons';
 import AboutPage from '@/app/about/page';
@@ -13,6 +16,7 @@ import HelpPage from '@/app/help/page';
 import { Github, Linkedin, Twitter, LifeBuoy, Info, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 export function AppFooter() {
   return (
@@ -39,6 +43,12 @@ export function AppFooter() {
                       <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><Info className="w-4 h-4 mr-2"/>About Us</Button>
                    </DialogTrigger>
                   <DialogContent className="sm:max-w-2xl">
+                    <DialogHeader>
+                      <VisuallyHidden>
+                        <DialogTitle>About Us</DialogTitle>
+                        <DialogDescription>Information about Nexus AI.</DialogDescription>
+                      </VisuallyHidden>
+                    </DialogHeader>
                     <AboutPage />
                   </DialogContent>
                 </Dialog>
@@ -49,6 +59,12 @@ export function AppFooter() {
                     <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><Mail className="w-4 h-4 mr-2"/>Contact</Button>
                    </DialogTrigger>
                   <DialogContent className="sm:max-w-2xl">
+                    <DialogHeader>
+                        <VisuallyHidden>
+                            <DialogTitle>Contact Us</DialogTitle>
+                            <DialogDescription>Contact form to send an inquiry.</DialogDescription>
+                        </VisuallyHidden>
+                    </DialogHeader>
                     <ContactPage />
                   </DialogContent>
                 </Dialog>
@@ -64,6 +80,12 @@ export function AppFooter() {
                     <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><LifeBuoy className="w-4 h-4 mr-2"/>Help & Support</Button>
                    </DialogTrigger>
                   <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                        <VisuallyHidden>
+                            <DialogTitle>Help & Support</DialogTitle>
+                            <DialogDescription>Help, support, and FAQ for Nexus AI.</DialogDescription>
+                        </VisuallyHidden>
+                    </DialogHeader>
                     <HelpPage />
                   </DialogContent>
                 </Dialog>
