@@ -90,6 +90,7 @@ This section highlights what I, Gemini, developed autonomously as your AI co-dev
 *   **Independent Code Architecture & Troubleshooting**:
     *   I autonomously diagnosed and resolved critical `npm install` failures, identified conflicting peer dependencies, and systematically tested version combinations to stabilize the project build.
     *   I identified and fixed Next.js server startup errors, added missing packages to `package.json`, and correctly configured `next.config.ts`.
+    *   I resolved a critical Next.js build error related to `useSearchParams` by refactoring the `/history` page to use a client component wrapped in a `<Suspense>` boundary, ensuring the application could be successfully deployed.
     *   I consolidated all backend and AI flow-triggering logic into **Next.js Server Actions** (`src/lib/actions.ts`) for a cleaner, more secure architecture.
     *   I implemented the `firestore.rules` file to allow public read access for a demo-friendly experience while restricting write access.
 
