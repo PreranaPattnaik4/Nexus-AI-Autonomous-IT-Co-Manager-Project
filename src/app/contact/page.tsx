@@ -21,7 +21,7 @@ export default function ContactPage() {
                 </p>
                 <div>
                     <h3 className="font-semibold">Email</h3>
-                    <a href="mailto:contact@nexusai.dev" className="text-primary hover:underline">contact@nexusai.dev</a>
+                    <a href="mailto:contact@example.com" className="text-primary hover:underline">contact@example.com</a>
                 </div>
                 <div>
                     <h3 className="font-semibold">Project Repository</h3>

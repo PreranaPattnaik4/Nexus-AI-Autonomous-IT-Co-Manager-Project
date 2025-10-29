@@ -46,7 +46,7 @@ export function AppFooter() {
               <li>
                 <Dialog>
                    <DialogTrigger asChild>
-                    <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary">Contact</Button>
+                    <Button variant="link" className="p-0 h-auto font-normal text-muted-foreground hover:text-primary"><Mail className="w-4 h-4 mr-2"/>Contact</Button>
                    </DialogTrigger>
                   <DialogContent>
                     <ContactPage />
@@ -54,7 +54,7 @@ export function AppFooter() {
                 </Dialog>
               </li>
                <li>
-                <a href="mailto:contact@nexusai.dev" className="inline-flex items-center text-muted-foreground hover:text-primary">
+                <a href="mailto:contact@example.com" className="inline-flex items-center text-muted-foreground hover:text-primary">
                     <Mail className="w-4 h-4 mr-2"/> Mail Us
                 </a>
               </li>
