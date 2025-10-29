@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Search, Bell, AlertTriangle, Info, User } from 'lucide-react';
@@ -17,6 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LoginDialog } from './auth/login-dialog';
 import { initialAlerts } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from './auth/auth-provider';
+import { useToast } from '@/hooks/use-toast';
 
 const severityIcons: { [key: string]: React.ReactNode } = {
   high: <AlertTriangle className="h-4 w-4 text-red-500" />,
@@ -25,16 +26,20 @@ const severityIcons: { [key: string]: React.ReactNode } = {
 };
 
 export function AppHeader() {
-  const user = {
-    displayName: 'IT Manager',
-    email: 'manager@example.com',
-    photoURL: 'https://picsum.photos/seed/user/40/40',
-  };
-  const isUserLoading = false;
+  const { user, isUserLoading, logout } = useAuth();
+  const { toast } = useToast();
   const notifications = initialAlerts;
 
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: 'Logged Out',
+      description: 'You have been successfully logged out.',
+    });
+  };
+
   return (
-    <header className="flex h-16 items-center px-6">
+    <header className="flex h-16 shrink-0 items-center border-b bg-background px-6">
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
@@ -84,7 +89,7 @@ export function AppHeader() {
         </DropdownMenu>
 
         {isUserLoading ? (
-          <Avatar className="h-9 w-9 animate-pulse bg-muted" />
+          <Avatar className="h-9 w-9 animate-pulse bg-muted rounded-full" />
         ) : user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -93,14 +98,7 @@ export function AppHeader() {
                 className="relative h-9 w-9 rounded-full"
               >
                 <Avatar className="h-9 w-9">
-                  <AvatarImage
-                    src={user.photoURL || ''}
-                    alt={user.displayName || 'User'}
-                    data-ai-hint="person avatar"
-                  />
-                  <AvatarFallback>
-                    {user.displayName?.charAt(0) || user.email?.charAt(0) || 'U'}
-                  </AvatarFallback>
+                  <AvatarFallback>ME</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -123,7 +121,7 @@ export function AppHeader() {
                 <Link href="/settings">Settings</Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -7,6 +7,7 @@ import { AppFooter } from '@/components/app-footer';
 import { Inter, Source_Code_Pro } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import ChatDialogClient from '@/components/chat-dialog-client';
+import { AuthProvider } from '@/components/auth/auth-provider';
 
 const fontSans = Inter({
   subsets: ['latin'],
@@ -38,18 +39,20 @@ export default function RootLayout({
         )}
         suppressHydrationWarning
       >
-        <div className="flex min-h-screen w-full bg-muted/40">
-          <AppSidebar />
-          <div className="flex flex-1 flex-col">
-            <AppHeader />
-            <main className="flex-1 p-4 sm:p-6 lg:p-8 relative">
-              {children}
-              <ChatDialogClient />
-            </main>
-            <AppFooter />
+        <AuthProvider>
+          <div className="flex min-h-screen w-full bg-muted/40">
+            <AppSidebar />
+            <div className="flex flex-1 flex-col">
+              <AppHeader />
+              <main className="flex-1 p-4 sm:p-6 lg:p-8 relative">
+                {children}
+                <ChatDialogClient />
+              </main>
+              <AppFooter />
+            </div>
           </div>
-        </div>
-        <Toaster />
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );
