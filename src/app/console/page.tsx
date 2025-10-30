@@ -39,16 +39,13 @@ function CommandEntry({ result }: { result: CommandSimulationResult }) {
 export default function ConsolePage() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const [history, setHistory] = useState<CommandSimulationResult[]>([]);
   const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-        const scrollContainer = scrollAreaRef.current.querySelector('div:first-child') as HTMLDivElement;
-        if(scrollContainer) {
-            scrollContainer.scrollTop = scrollContainer.scrollHeight;
-        }
+    if (viewportRef.current) {
+        viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
     }
   }, [history]);
 
@@ -94,7 +91,7 @@ export default function ConsolePage() {
       </CardHeader>
       
       <CardContent className="flex-1 flex flex-col min-h-0">
-        <ScrollArea className="flex-1 -mr-6" ref={scrollAreaRef}>
+        <ScrollArea className="flex-1 -mr-6" viewportRef={viewportRef}>
             <div className='space-y-6 pr-6'>
                  {history.length === 0 && (
                     <div className="p-4 text-left">
