@@ -9,6 +9,7 @@ import { Inter, Source_Code_Pro } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import ChatDialogClient from '@/components/chat-dialog-client';
 import { AuthProvider } from '@/components/auth/auth-provider';
+import { WelcomeDialog } from '@/components/welcome-dialog';
 
 const fontSans = Inter({
   subsets: ['latin'],
@@ -41,6 +42,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <AuthProvider>
+          <WelcomeDialog />
           <div className="relative flex min-h-screen w-full bg-muted/40">
             <AppSidebar />
             <div className="flex flex-1 flex-col md:pl-64">

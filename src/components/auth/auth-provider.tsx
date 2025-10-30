@@ -20,26 +20,22 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
-  const [isLoginDialogOpen, setLoginDialogOpen] = useState(false);
 
   useEffect(() => {
     // Simulate checking for an existing session
-    setTimeout(() => {
-      // Ensure user is logged out on initial load
+    const sessionCheck = setTimeout(() => {
       setUser(null); 
       setIsUserLoading(false);
-      setLoginDialogOpen(true);
     }, 1000);
+    return () => clearTimeout(sessionCheck);
   }, []);
 
   const login = (newUser: User) => {
     setUser(newUser);
-    setLoginDialogOpen(false);
   };
 
   const logout = () => {
     setUser(null);
-    setLoginDialogOpen(true);
   };
 
   const value = { user, isUserLoading, login, logout };
@@ -47,9 +43,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider value={value}>
       {children}
-      {!user && !isUserLoading && (
-         <LoginDialog open={isLoginDialogOpen} onOpenChange={setLoginDialogOpen} />
-      )}
     </AuthContext.Provider>
   );
 }
