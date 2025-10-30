@@ -168,8 +168,8 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-14rem)]">
-      <header className='mb-4'>
+    <div className="flex flex-col h-[calc(100vh-8rem)]">
+      <header className='mb-4 shrink-0'>
         <Card>
              <CardHeader>
               <div className='flex items-center gap-2'>
@@ -204,7 +204,7 @@ export default function ChatPage() {
         </Card>
       </header>
 
-      <main className="flex-1">
+      <main className="flex-1 min-h-0">
         <ScrollArea className="h-full" ref={scrollAreaRef}>
             <div className='space-y-6 pb-4 pr-4'>
                 {messages.map((msg) => (
@@ -224,7 +224,7 @@ export default function ChatPage() {
         </ScrollArea>
       </main>
 
-      <footer className="border-t pt-4">
+      <footer className="border-t pt-4 shrink-0">
             <form
                 ref={formRef}
                 onSubmit={handleSubmit}
