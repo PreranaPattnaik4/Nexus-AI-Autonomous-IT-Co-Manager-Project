@@ -61,7 +61,7 @@ function Message({ msg }: { msg: ChatMessage }) {
 export default function ChatPage() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -128,11 +128,8 @@ export default function ChatPage() {
 
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-        const scrollContainer = scrollAreaRef.current.querySelector('div:first-child') as HTMLDivElement;
-        if(scrollContainer) {
-            scrollContainer.scrollTop = scrollContainer.scrollHeight;
-        }
+    if (viewportRef.current) {
+        viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
     }
   }, [messages]);
 
@@ -205,7 +202,7 @@ export default function ChatPage() {
       </header>
 
       <main className="flex-1 min-h-0">
-        <ScrollArea className="h-full" ref={scrollAreaRef}>
+        <ScrollArea className="h-full" viewportRef={viewportRef}>
             <div className='space-y-6 pb-4 pr-4'>
                 {messages.map((msg) => (
                     <Message key={msg.id} msg={msg} />
