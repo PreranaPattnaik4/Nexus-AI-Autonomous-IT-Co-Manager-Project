@@ -1,6 +1,10 @@
 # Nexus AI – Autonomous IT Co-Manager
 ## SuperHack 2025 Project Report
 
+Developed in Firebase AI Studio with Gemini Pro and Genkit, Nexus demonstrates the future of autonomous IT operations. Currently deployed on Render, Nexus is planned to be further developed and deployed in Firebase AI Studio with Gemini Pro and Genkit — showcasing the future of autonomous IT operations.
+🔗 Live Prototype :
+https://nexus-ai-autonomous-it-co-manager-project.onrender.com/dashboard
+
 ---
 
 ### 1️⃣ Our Proposed Solution: The Future of Agentic AI for IT Management
@@ -13,7 +17,7 @@ We are building a proactive Agentic AI solution for IT management called **Nexus
 *   **Goal-Based Task Management**: Users can give the agent natural language goals (e.g., "Ensure all systems are patched to the latest security standards").
 *   **Multi-step Task Execution**: The agent can break down a single goal into multiple, sequential tasks and execute them across different systems.
 *   **Proactive Issue Resolution**: Identifies and fixes problems autonomously without waiting for a human to create a ticket or send a command.
-*   **Conversational AI with Voice**: Allows for quick, natural-language interaction with the agent through a chat interface that supports both voice input (Speech-to-Text) and spoken audio responses (Text-to-Speech).
+*   **Conversational AI with Voice**: Allows for quick, natural-language interaction with the agent through a chat interface that supports both voice input (Speech-to-Text), spoken audio responses (Text-to-Speech), and chat history.
 *   **Automated Root Cause Analysis**: Generates detailed reports explaining its reasoning and the steps it took to solve a problem.
 *   **Third-Party Integrations**: Seamlessly connects with existing IT tools like Jira for ticketing, Slack for communication, and various monitoring systems.
 
@@ -38,7 +42,7 @@ Nexus AI is built on a modern, serverless, and AI-native stack, designed for rea
 *   `/systems/{systemId}`: Stores mock data for system health metrics.
 *   `/users/{userId}`: Manages user profile information.
 
-### 4️⃣ Implemented Features (Milestones 1–9)
+### 4️⃣ Implemented Features (Milestones 1–10)
 
 | Milestone | Feature                     | Description                                          | Status      |
 |-----------|-----------------------------|------------------------------------------------------|-------------|
@@ -52,13 +56,14 @@ Nexus AI is built on a modern, serverless, and AI-native stack, designed for rea
 | 7         | System Health & AI Insights | Dynamic charts and a weekly Gemini-generated insight card. | ✅ Complete |
 | 8         | Authentication & UI Polish  | Added full user authentication and refined UI/UX.      | ✅ Complete |
 | 9         | Conversational AI Speech    | Assistant features voice input and spoken audio responses (TTS). | ✅ Complete |
+| 10        | Settings & History Views    | Added Chat History tab and configurable AI tool settings. | ✅ Complete |
 
 
 ### 5️⃣ Unique Intelligent Capabilities
 
 *   **Self-Healing Retry Flow**: When a task fails, Gemini analyzes the failure logs, formulates a new, corrected goal, and re-initiates the task—a complete autonomous recovery loop.
 *   **Proactive Resolution**: Nexus AI doesn't just show alerts; it suggests and initiates resolutions, turning alerts into automated actions.
-*   **Conversational System Health Assistant**: Users can chat with an AI assistant that has full context on tasks, alerts, systems, and past RCA reports. It accepts **voice input** and provides **spoken audio responses**, creating a true co-pilot experience.
+*   **Conversational System Health Assistant**: Users can chat with an AI assistant that has full context on tasks, alerts, systems, and past RCA reports. It accepts **voice input**, provides **spoken audio responses**, and maintains a **chat history**, creating a true co-pilot experience.
 *   **Simulated Command Execution**: The Command Console uses Gemini to provide realistic, simulated outputs for any given shell command, creating a powerful and safe training/demo tool.
 *   **AI Insights Card**: Gemini provides a weekly summary of optimizations and system performance improvements, demonstrating its value over time.
 
@@ -66,11 +71,11 @@ Nexus AI is built on a modern, serverless, and AI-native stack, designed for rea
 
 *   **Dashboard**: The central hub displaying task statistics, system health score, the AI Insights card, and active alerts. The layout is optimized for a clear, at-a-glance overview.
 *   **Tasks Views**: Filterable lists for "All Tasks," "In Progress," "Completed," and "Failed," allowing for focused task management.
-*   **Reports**: An accordion view of all generated RCA reports, stored durably in Firestore.
-*   **Chat**: A dedicated page for the System Health Assistant, featuring voice input and spoken audio output for hands-free interaction.
+*   **Task & Report History**: A consolidated view of all past activities, including a 30-day log of all tasks (completed, failed, etc.) and generated reports.
+*   **Chat**: A dedicated page for the System Health Assistant, featuring a "Live Chat" tab and a "History" tab for reviewing past conversations. Supports voice input and spoken audio output for hands-free interaction.
 *   **Command Console**: A simulated IT terminal for demonstrating the AI's command execution knowledge.
 *   **Integrations**: A page to manage connections with third-party services like Jira and Slack.
-*   **Settings**: A page for managing user profiles and application themes.
+*   **Settings**: A page for managing user profiles, application themes, and configurable AI tool settings.
 *   **Authentication**: A seamless login/signup dialog with support for email/password.
 
 Each UI element is designed with Nexus AI’s dark theme, using gold and cyan accents to create a professional and futuristic aesthetic.
@@ -98,6 +103,7 @@ This section highlights what I, Gemini, developed autonomously as your AI co-dev
     *   I designed and built the **Integrations**, **Settings**, **Command Console**, and **Chat** pages from scratch.
     *   I proactively suggested and implemented the **"Retry with AI"** feature to enhance the system's self-healing capabilities.
     *   I proactively added **Voice-to-Text** and **Text-to-Speech (TTS)** capabilities to the chat interfaces, creating a more engaging and accessible conversational experience.
+    *   I implemented the **Chat History** tab and the **Nexus AI Tools Settings** section with a restore defaults option.
     *   I refined the dashboard layout and navigation order to improve visual flow and user experience.
 
 *   **Backend Reasoning and Data Simulation**:
@@ -114,7 +120,7 @@ This section highlights what I, Gemini, developed autonomously as your AI co-dev
 5.  An alert, such as *"High CPU on Cache Server"*, appears on the dashboard. The user clicks **"Resolve with AI."**
 6.  Gemini autonomously creates and starts a new task to diagnose and fix the CPU issue.
 7.  Another task fails. The user clicks **"Retry with AI."** Gemini analyzes the failure log, creates a corrected plan, and supersedes the failed task.
-8.  The user opens the **System Health Assistant**, clicks the mic icon, and asks, "How many tasks are failing?" The assistant provides a real-time **spoken answer**.
+8.  The user opens the **System Health Assistant**, clicks the mic icon, and asks, "How many tasks are failing?" The assistant provides a real-time **spoken answer**. They can also switch to the **History** tab to review past chats.
 9.  Once a task is complete, the user can view a detailed, AI-generated RCA report. The dashboard updates with the latest task stats and a new weekly **AI Insight**.
 
 ### 🔟 Technology Stack Table
@@ -125,7 +131,7 @@ This section highlights what I, Gemini, developed autonomously as your AI co-dev
 | **Backend**    | Next.js Server Actions, Firebase Authentication           |
 | **AI Layer**   | Gemini Pro API + Genkit (including TTS models)            |
 | **Data**       | Firestore (Real-time Collections)                         |
-| **Hosting**    | Firebase App Hosting                                      |
+| **Hosting**    | Firebase App Hosting & Render                           |
 | **Design**     | Dark theme with muted blue, gold, and cyan accents        |
 
 ### 11️⃣ Project Readiness

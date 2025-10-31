@@ -1,5 +1,9 @@
 # Nexus AI – Autonomous IT Co-Manager
 
+Developed in Firebase AI Studio with Gemini Pro and Genkit, Nexus demonstrates the future of autonomous IT operations. Currently deployed on Render, Nexus is planned to be further developed and deployed in Firebase AI Studio with Gemini Pro and Genkit — showcasing the future of autonomous IT operations.
+🔗 Live Prototype :
+https://nexus-ai-autonomous-it-co-manager-project.onrender.com/dashboard
+
 Nexus is a proactive Agentic AI solution for IT management that redefines IT operations by moving beyond simple automation to create a truly autonomous, intelligent partner. Unlike traditional IT automation tools that only follow predefined rules, Nexus can understand high-level goals and independently plan, execute, and adapt its actions to achieve them. It acts as an intelligent "project manager" for your IT infrastructure, handling everything from routine tasks to complex, multi-step problem-solving.
 
 This project was built for the SuperHack 2025 (Google Cloud + Firebase AI Challenge).
@@ -10,7 +14,7 @@ This project was built for the SuperHack 2025 (Google Cloud + Firebase AI Challe
 *   **Goal-Based Task Management**: Users can give the agent natural language goals (e.g., "Ensure all systems are patched to the latest security standards").
 *   **Multi-step Task Execution**: The agent can break down a single goal into multiple, sequential tasks and execute them across different systems.
 *   **Proactive Issue Resolution**: Identifies and fixes problems autonomously without waiting for a human to create a ticket or send a command.
-*   **Conversational AI with Voice**: Allows for quick, natural-language interaction with the agent through a chat interface that supports both voice input (Speech-to-Text) and spoken audio responses (Text-to-Speech).
+*   **Conversational AI with Voice**: Allows for quick, natural-language interaction with the agent through a chat interface that supports both voice input (Speech-to-Text), spoken audio responses (Text-to-Speech), and chat history.
 *   **Automated Root Cause Analysis**: Generates detailed reports explaining its reasoning and the steps it took to solve a problem.
 *   **Third-Party Integrations**: Seamlessly connects with existing IT tools like Jira for ticketing, Slack for communication, and various monitoring systems.
 
@@ -22,7 +26,7 @@ This project was built for the SuperHack 2025 (Google Cloud + Firebase AI Challe
 | **Backend**    | Next.js Server Actions, Firebase Authentication           |
 | **AI Layer**   | Google Gemini Pro API + Genkit (including TTS models)     |
 | **Data**       | Firestore (Real-time Collections)                         |
-| **Hosting**    | Firebase App Hosting                                      |
+| **Hosting**    | Firebase App Hosting & Render                               |
 
 ## 🏁 Getting Started
 
