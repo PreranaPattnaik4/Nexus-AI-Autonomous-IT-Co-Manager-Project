@@ -16,7 +16,6 @@ import {
   CheckCheck,
   XCircle,
   AlertTriangle,
-  User,
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -34,6 +33,7 @@ const navItems = [
   { href: '/history', label: 'Task & Report History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/help', label: 'Help & Support', icon: CircleHelp },
+  { href: '/profile', label: 'Settings', icon: Settings },
 ];
 
 export function AppSidebarNav() {
@@ -48,9 +48,11 @@ export function AppSidebarNav() {
     }
 
     if (pathname !== baseHref) {
-      if (baseHref === '/profile' && (pathname === '/settings')) return true;
+      // Special handling for pages that are logically grouped
+      if (baseHref === '/profile' && pathname === '/settings') return true;
+      if (baseHref === '/settings' && pathname === '/profile') return true;
       if (baseHref === '/history' && (pathname === '/completed' || pathname === '/reports')) return true;
-      if (baseHref === '/tasks' && pathname === '/history' && searchParams.has('tab')) return false; // Prevent "All Tasks" being active on history tabs
+      if (baseHref === '/tasks' && pathname === '/history' && searchParams.has('tab')) return false;
       return false;
     }
 
@@ -90,25 +92,24 @@ export function AppSidebarNav() {
           )
         })}
       </div>
-      <div className='mt-auto'>
-        {(() => {
-          const helpItem = navItems[10];
-          const Icon = helpItem.icon;
-          const isActive = getIsActive(helpItem.href);
-          return (
+      <div className='mt-auto space-y-1'>
+        {navItems.slice(10).map((item) => {
+          const Icon = item.icon;
+          const isActive = getIsActive(item.href);
+           return (
             <Button
-              key={helpItem.href}
+              key={item.href}
               variant={isActive ? 'secondary' : 'ghost'}
               className="w-full justify-start h-9"
               asChild
             >
-              <Link href={helpItem.href}>
+              <Link href={item.href}>
                 <Icon className="mr-2 h-4 w-4" />
-                {helpItem.label}
+                {item.label}
               </Link>
             </Button>
           )
-        })()}
+        })}
       </div>
     </div>
   );
