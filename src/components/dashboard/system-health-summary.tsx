@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -39,7 +40,7 @@ export function SystemHealthSummary() {
         </div>
       </CardHeader>
       <CardContent className="flex items-center justify-around">
-        <div className="h-28 w-28">
+        <div className="relative h-28 w-28">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
@@ -57,7 +58,7 @@ export function SystemHealthSummary() {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform text-center">
+          <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-2xl font-bold" style={{ color: healthColor }}>
               {healthData.score}%
             </span>
