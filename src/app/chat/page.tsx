@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { nanoid } from 'nanoid';
-import { Bot, CornerDownLeft, Loader, Mic, MicOff, User } from 'lucide-react';
+import { Bot, CornerDownLeft, Loader, Mic, MicOff, User, History } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,8 @@ import { marked } from 'marked';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
 import { Logo } from '@/components/icons';
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { format, subDays } from 'date-fns';
 
 function SubmitButton({ pending }: { pending: boolean }) {
   return (
@@ -58,7 +59,7 @@ function Message({ msg }: { msg: ChatMessage }) {
   );
 }
 
-export default function ChatPage() {
+function LiveChat() {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -165,42 +166,24 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)]">
-      <header className='mb-4 shrink-0'>
-        <Card>
-             <CardHeader>
-              <div className='flex items-center gap-2'>
-                <div className="bg-primary text-primary-foreground p-1 rounded-md">
-                    <Logo className="h-6 w-6" />
-                </div>
-                <div>
-                  <CardTitle>Nexus AI</CardTitle>
-                  <CardDescription>Autonomous IT Co-Manager</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-             {messages.length === 0 && (
-                 <CardContent>
-                    <div className="p-4 text-center space-y-4">
-                        <div>
-                            <h3 className="font-semibold">Welcome to the Nexus AI Assistant.</h3>
-                            <p className="text-sm text-muted-foreground">How can I help you today?</p>
-                        </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground mb-2">Or try one of these examples:</p>
-                            <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-left text-accent-foreground/80">
-                                <li>How many tasks are in progress?</li>
-                                <li>What is the status of the DB server?</li>
-                                <li>Give me a summary of a recent report.</li>
-                                <li>Why did the worker VM go offline?</li>
-                            </ul>
-                        </div>
-                    </div>
-                </CardContent>
-            )}
-        </Card>
-      </header>
-
+    <div className="flex flex-col h-[calc(100vh-14rem)]">
+      {messages.length === 0 && (
+         <div className="p-4 text-center space-y-4">
+            <div>
+                <h3 className="font-semibold">Welcome to the Nexus AI Assistant.</h3>
+                <p className="text-sm text-muted-foreground">How can I help you today?</p>
+            </div>
+            <div>
+                <p className="text-sm text-muted-foreground mb-2">Or try one of these examples:</p>
+                <ul className="text-sm list-disc pl-5 mt-2 space-y-1 font-mono text-left text-accent-foreground/80">
+                    <li>How many tasks are in progress?</li>
+                    <li>What is the status of the DB server?</li>
+                    <li>Give me a summary of a recent report.</li>
+                    <li>Why did the worker VM go offline?</li>
+                </ul>
+            </div>
+        </div>
+      )}
       <main className="flex-1 min-h-0">
         <ScrollArea className="h-full" viewportRef={viewportRef}>
             <div className='space-y-6 pb-4 pr-4'>
@@ -220,33 +203,92 @@ export default function ChatPage() {
             </div>
         </ScrollArea>
       </main>
-
       <footer className="border-t pt-4 shrink-0">
-            <form
-                ref={formRef}
-                onSubmit={handleSubmit}
-                className="relative flex w-full items-center gap-2"
-            >
-                <Input
-                    ref={inputRef}
-                    name="message"
-                    placeholder={isRecording ? "Listening..." : "Ask about system health..."}
-                    className="pr-24"
-                    autoComplete="off"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                />
-                <div className="absolute right-12">
-                   <Button type="button" size="icon" variant="ghost" onClick={handleMicClick}>
-                        {isRecording ? <MicOff className="h-4 w-4 text-red-500" /> : <Mic className="h-4 w-4" />}
-                        <span className="sr-only">{isRecording ? 'Stop recording' : 'Start recording'}</span>
-                    </Button>
-                </div>
-                <div className="absolute right-2">
-                    <SubmitButton pending={isPending} />
-                </div>
-            </form>
+        <form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            className="relative flex w-full items-center gap-2"
+        >
+            <Input
+                ref={inputRef}
+                name="message"
+                placeholder={isRecording ? "Listening..." : "Ask about system health..."}
+                className="pr-24"
+                autoComplete="off"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+            />
+            <div className="absolute right-12">
+               <Button type="button" size="icon" variant="ghost" onClick={handleMicClick}>
+                    {isRecording ? <MicOff className="h-4 w-4 text-red-500" /> : <Mic className="h-4 w-4" />}
+                    <span className="sr-only">{isRecording ? 'Stop recording' : 'Start recording'}</span>
+                </Button>
+            </div>
+            <div className="absolute right-2">
+                <SubmitButton pending={isPending} />
+            </div>
+        </form>
       </footer>
     </div>
+  )
+}
+
+function ChatHistory() {
+    const history = [
+        { id: 'chat-1', summary: 'Discussion about the Q3 server maintenance schedule.', lastMessage: 'OK, sounds good. Let\'s proceed.', timestamp: subDays(new Date(), 1) },
+        { id: 'chat-2', summary: 'Troubleshooting high CPU usage on the main database.', lastMessage: 'The issue appears to be resolved now.', timestamp: subDays(new Date(), 2) },
+        { id: 'chat-3', summary: 'Planning for the upcoming website migration.', lastMessage: 'I will prepare the initial migration script.', timestamp: subDays(new Date(), 5) },
+    ];
+    return (
+        <ScrollArea className="h-[calc(100vh-14rem)]">
+            <div className="space-y-4">
+                {history.map(chat => (
+                    <Button variant="outline" className="w-full h-auto justify-start p-4" key={chat.id}>
+                        <div className="flex items-start gap-4 text-left">
+                            <Avatar className="h-9 w-9 border">
+                                <AvatarFallback>AI</AvatarFallback>
+                            </Avatar>
+                            <div className='flex-1'>
+                                <p className="font-semibold text-sm truncate">{chat.summary}</p>
+                                <p className="text-xs text-muted-foreground mt-1 truncate">{chat.lastMessage}</p>
+                                <p className="text-xs text-muted-foreground mt-2">{format(chat.timestamp, 'PPP')}</p>
+                            </div>
+                        </div>
+                    </Button>
+                ))}
+            </div>
+        </ScrollArea>
+    )
+}
+
+export default function ChatPage() {
+  return (
+    <Card className='h-[calc(100vh-8rem)] flex flex-col'>
+      <CardHeader>
+        <div className='flex items-center gap-2'>
+          <div className="bg-primary text-primary-foreground p-1 rounded-md">
+              <Logo className="h-6 w-6" />
+          </div>
+          <div>
+            <CardTitle>Nexus AI</CardTitle>
+            <CardDescription>Autonomous IT Co-Manager</CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="flex-1 flex flex-col min-h-0">
+        <Tabs defaultValue="chat" className="w-full flex-1 flex flex-col min-h-0">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="chat">Live Chat</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
+          </TabsList>
+          <TabsContent value="chat" className="flex-1 mt-4">
+            <LiveChat />
+          </TabsContent>
+          <TabsContent value="history" className="flex-1 mt-4">
+            <ChatHistory />
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   );
 }
