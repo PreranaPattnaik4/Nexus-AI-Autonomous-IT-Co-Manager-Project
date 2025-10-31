@@ -31,7 +31,7 @@ const navItems = [
   { href: '/tasks?status=completed', label: 'Completed', icon: CheckCheck },
   { href: '/tasks?status=failed', label: 'Failed', icon: XCircle },
   { href: '/dashboard#alerts', label: 'Active Alerts', icon: AlertTriangle },
-  { href: '/history', label: 'History', icon: History },
+  { href: '/history', label: 'Task & Report History', icon: History },
   { href: '/integrations', label: 'Integrations', icon: Zap },
   { href: '/help', label: 'Help & Support', icon: CircleHelp },
 ];
