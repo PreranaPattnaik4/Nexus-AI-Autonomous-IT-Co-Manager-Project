@@ -2,16 +2,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, Settings, Bot } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProfilePage() {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
@@ -25,6 +27,14 @@ export default function ProfilePage() {
     } else {
       document.documentElement.classList.remove('dark');
     }
+  };
+
+  const handleRestoreDefaults = () => {
+    toast({
+      title: "Settings Restored (Mock)",
+      description: "AI tool settings have been restored to their default values.",
+    });
+    // Here you would typically reset state to default values
   };
 
   return (
@@ -55,10 +65,10 @@ export default function ProfilePage() {
               <Input id="email" type="email" defaultValue="manager@example.com" disabled />
             </div>
           </div>
-          <div className="flex justify-end">
-            <Button>Save Changes</Button>
-          </div>
         </CardContent>
+        <CardFooter className='justify-end'>
+            <Button>Save Changes</Button>
+        </CardFooter>
       </Card>
       
       <Card>
@@ -108,8 +118,11 @@ export default function ProfilePage() {
             <Switch id="slack-notifications" />
           </div>
         </CardContent>
+        <CardFooter className="justify-between">
+            <Button variant="ghost" onClick={handleRestoreDefaults}>Restore Defaults</Button>
+            <Button>Save Settings</Button>
+        </CardFooter>
       </Card>
     </div>
   );
 }
-
