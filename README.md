@@ -1,6 +1,6 @@
-Developed in Firebase AI Studio with Gemini Pro and Genkit, Nexus demonstrates the future of autonomous IT operations. Currently deployed on Render, Nexus is planned to be further developed and deployed in Firebase AI Studio with Gemini Pro and Genkit — showcasing the future of autonomous IT operations. 🔗 Live Prototype : https://nexus-ai-autonomous-it-co-manager-project.onrender.com/dashboard
-
 # Nexus AI – Autonomous IT Co-Manager
+
+Developed in Firebase AI Studio with Gemini Pro and Genkit, Nexus demonstrates the future of autonomous IT operations. Currently deployed on Render, Nexus is planned to be further developed and deployed in Firebase AI Studio with Gemini Pro and Genkit — showcasing the future of autonomous IT operations. 🔗 Live Prototype : https://nexus-ai-autonomous-it-co-manager-project.onrender.com/dashboard
 
 > **Note**: For a detailed overview of the project's architecture, features, and development journey, please see the [**Full Project Report**](./PROJECT_REPORT.md).
 
