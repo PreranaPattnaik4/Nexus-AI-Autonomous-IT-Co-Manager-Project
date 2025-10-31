@@ -119,7 +119,7 @@ export default function ProfilePage() {
           </div>
         </CardContent>
         <CardFooter className="justify-between">
-            <Button variant="ghost" onClick={handleRestoreDefaults}>Restore Defaults</Button>
+            <Button variant="outline" onClick={handleRestoreDefaults}>Restore Defaults</Button>
             <Button>Save Settings</Button>
         </CardFooter>
       </Card>
