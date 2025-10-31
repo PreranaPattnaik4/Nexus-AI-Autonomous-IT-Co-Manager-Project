@@ -4,6 +4,8 @@ Nexus is a proactive Agentic AI solution for IT management that redefines IT ope
 
 This project was built for the SuperHack 2025 (Google Cloud + Firebase AI Challenge).
 
+> **Note**: For a detailed overview of the project's architecture, features, and development journey, please see the [**Full Project Report**](./PROJECT_REPORT.md).
+
 ## 🚀 The Nexus Advantage: Key Features
 
 *   **Real-time Dashboard**: A central web application for IT managers to oversee the agent's actions, view performance metrics, and set high-level goals.
