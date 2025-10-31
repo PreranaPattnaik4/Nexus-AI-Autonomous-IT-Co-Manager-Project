@@ -263,7 +263,7 @@ function ChatHistory() {
 
 export default function ChatPage() {
   return (
-    <Card className='h-[calc(100vh-8rem)] flex flex-col mb-8'>
+    <Card className='h-[calc(100vh-8rem)] flex flex-col mb-16'>
       <CardHeader>
         <div className='flex items-center gap-2'>
           <div className="bg-primary text-primary-foreground p-1 rounded-md">
