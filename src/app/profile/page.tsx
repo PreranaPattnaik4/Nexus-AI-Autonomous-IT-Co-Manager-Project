@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { User, Settings } from 'lucide-react';
+import { User, Settings, Bot } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
 export default function ProfilePage() {
@@ -76,6 +76,40 @@ export default function ProfilePage() {
           </div>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Bot className="h-5 w-5" />
+            <CardTitle>Nexus AI Tools Settings</CardTitle>
+          </div>
+          <CardDescription>Manage and configure the platform's AI capabilities.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between p-3 rounded-lg border">
+            <div>
+                <Label htmlFor="proactive-resolution" className='font-medium'>Proactive Issue Resolution</Label>
+                <p className='text-xs text-muted-foreground'>Allow AI to autonomously resolve detected issues.</p>
+            </div>
+            <Switch id="proactive-resolution" defaultChecked />
+          </div>
+           <div className="flex items-center justify-between p-3 rounded-lg border">
+            <div>
+                <Label htmlFor="ai-insights" className='font-medium'>AI-Generated Insights</Label>
+                <p className='text-xs text-muted-foreground'>Enable weekly performance and optimization insights.</p>
+            </div>
+            <Switch id="ai-insights" defaultChecked />
+          </div>
+           <div className="flex items-center justify-between p-3 rounded-lg border">
+            <div>
+                <Label htmlFor="slack-notifications" className='font-medium'>Slack Notifications</Label>
+                <p className='text-xs text-muted-foreground'>Send real-time alerts and reports to connected Slack channels.</p>
+            </div>
+            <Switch id="slack-notifications" />
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
+
